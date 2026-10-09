@@ -1,0 +1,44 @@
+generated: '2026-10-09'
+method: searched
+source: https://docs.dependencytrack.org/integrations/rest-api/
+derived_from:
+- openapi/dependency-track-openapi.yml
+- openapi/dependency-track-v2-openapi.yml
+auth:
+  style: X-Api-Key header (team API key) or bearer session token
+  note: '"Prior to using the REST APIs, an API Key must be generated. By default, creating a team will NOT create an API key." Since 4.13 keys are stored hashed and shown only once.'
+  see: authentication/dependency-track-authentication.yml
+contract_discovery:
+  endpoints:
+  - http://{hostname}:{port}/api/openapi.json
+  - http://{hostname}:{port}/api/openapi.yaml
+  note: Served by the backend API server of each self-hosted instance, not the frontend.
+idempotency:
+  coverage: none
+  note: No Idempotency-Key header or replay protection is declared in either contract or documented.
+pagination:
+  v1:
+    style: page/offset
+    params: [pageNumber, pageSize, offset, limit, sortName, sortOrder]
+    response_fields: [X-Total-Count header]
+  v2:
+    style: cursor
+    params: [limit, page_token, sort_by, sort_direction]
+field_expansion:
+  v2_param: expand
+errors:
+  v1: plain HTTP status codes (401/403/404/409 dominant), no shared error envelope
+  v2: application/problem+json (problem-details schema, RFC 9457 shape)
+  see: errors/
+request_id: none declared
+caching: v1 declares 304 responses on 17 operations
+rate_limit_signaling: none documented
+see_rate_limits: rate-limits/dependency-track-rate-limits.yml
+versioning:
+  style: URL path (/api/v1, /api/v2)
+  see: lifecycle/dependency-track-lifecycle.yml
+reversibility:
+  status: none
+  note: The API has a write surface (111 mutating operations in v1, 26 in v2), including DELETE operations, but the docs state no undo/restore/rollback operation or reversal window. Findings can be re-analysed and suppressions changed through the analysis endpoints, but no reversal window is documented, so none is asserted.
+dry_run:
+  status: none

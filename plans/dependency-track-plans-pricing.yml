@@ -1,0 +1,21 @@
+name: Dependency-Track Plans
+generated: '2026-10-09'
+method: searched
+source: https://dependencytrack.org/
+audience: business-product
+pricing_basis: free
+published: false
+plan_count: 1
+delivery:
+  delivery: self-hosted
+  evidence: Dependency-Track is free and open source.
+  free_edition: Dependency-Track
+  managed_tier: null
+note: No pricing page or paid tier is published; the project is OWASP open source software deployed by the user (Docker / Kubernetes / executable WAR).
+plans:
+- name: Dependency-Track (open source)
+  description: Self-hosted open source platform; no paid tiers published.
+  price: 0
+  price_text: Dependency-Track is free and open source.
+  features: []
+  limits: []

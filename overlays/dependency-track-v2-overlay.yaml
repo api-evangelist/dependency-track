@@ -1,0 +1,34 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist agent overlay for OWASP Dependency-Track REST API v2
+  version: 1.0.0
+extends: ../openapi/_original/dependency-track-v2-openapi.yml
+x-generated: '2026-10-09'
+x-method: generated
+x-source: openapi/dependency-track-v2-openapi.yml
+x-rationale: Adds a templated self-hosted server and read-only markers to the v2 contract without mutating it.
+actions:
+- target: $
+  description: Replace the relative /api/v2 server with a templated absolute server for self-hosted instances.
+  update:
+    servers:
+    - url: '{scheme}://{host}/api/v2'
+      description: Operator-run Dependency-Track API server (self-hosted; there is no vendor-hosted instance).
+      variables:
+        scheme:
+          default: https
+          enum:
+          - https
+          - http
+        host:
+          default: localhost:8080
+          description: Host (and port) of your Dependency-Track API server.
+- target: $.paths.*.get
+  description: Mark read-only operations for agent tool generation.
+  update:
+    x-agent-readonly: true
+- target: $.paths['/oauth/token'].post
+  description: Token endpoint is how bearer tokens are obtained (per bearerAuth description).
+  update:
+    x-agent-hints:
+      role: token-issuance

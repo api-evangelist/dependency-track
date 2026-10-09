@@ -1,0 +1,894 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Vuln Policies API
+  version: 2.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+    email: dependencytrack@owasp.org
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged Vuln Policies across 2 of this provider''s published API definitions: dependency-track-openapi-v2.yaml, dependency-track-v2-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api/v2
+security:
+- apiKeyAuth: []
+- bearerAuth: []
+tags:
+- name: Vuln Policies
+  description: Endpoints related to vulnerability policies
+paths:
+  /vuln-policies:
+    get:
+      tags:
+      - Vuln Policies
+      summary: List vulnerability policies
+      description: 'Returns a paginated list of vulnerability policies, sorted by priority
+
+        (ascending) and name (ascending).
+
+
+        Reports `EXACT` total counts for up to 500 items, and `AT_LEAST` past that.
+
+
+        Requires permission `POLICY_MANAGEMENT` or `POLICY_MANAGEMENT_READ`.'
+      operationId: listVulnPolicies
+      parameters:
+      - name: limit
+        in: query
+        description: Maximum number of items to retrieve from the collection
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 100
+      - name: page_token
+        in: query
+        description: Opaque token pointing to a specific position in a collection
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Filter by name (partial match, case-insensitive)
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Paginated list of vulnerability policies
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-vuln-policies-response'
+        '400':
+          $ref: '#/components/responses/invalid-request-error'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    post:
+      tags:
+      - Vuln Policies
+      summary: Create a vulnerability policy
+      description: 'Creates a user-managed vulnerability policy.
+
+
+        CEL conditions are compiled server-side. On compilation failure,
+
+        a 400 response with structured error details is returned.
+
+
+        Requires permission `POLICY_MANAGEMENT` or `POLICY_MANAGEMENT_CREATE`.'
+      operationId: createVulnPolicy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-vuln-policy-request'
+        required: true
+      responses:
+        '201':
+          description: Policy created
+          headers:
+            Location:
+              description: URL of the created policy
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                required:
+                - uuid
+                type: object
+                properties:
+                  uuid:
+                    type: string
+                    format: uuid
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/invalid-cel-expression-problem-details'
+                - $ref: '#/components/schemas/invalid-request-problem-details'
+                - $ref: '#/components/schemas/problem-details'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        '409':
+          $ref: '#/components/responses/generic-conflict-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+  /vuln-policies/{uuid}:
+    get:
+      tags:
+      - Vuln Policies
+      summary: Get a vulnerability policy
+      description: 'Returns a vulnerability policy.
+
+
+        Requires permission `POLICY_MANAGEMENT` or `POLICY_MANAGEMENT_READ`.'
+      operationId: getVulnPolicy
+      parameters:
+      - name: uuid
+        in: path
+        description: UUID of the vulnerability policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: The vulnerability policy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-vuln-policy-response'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        '404':
+          $ref: '#/components/responses/generic-not-found-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    put:
+      tags:
+      - Vuln Policies
+      summary: Replace a vulnerability policy
+      description: 'Replaces a user-managed vulnerability policy with the provided data.
+
+
+        Policies managed by a bundle can not be modified.
+
+
+        Requires permission `POLICY_MANAGEMENT` or `POLICY_MANAGEMENT_UPDATE`.'
+      operationId: updateVulnPolicy
+      parameters:
+      - name: uuid
+        in: path
+        description: UUID of the vulnerability policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-vuln-policy-request'
+        required: true
+      responses:
+        '204':
+          description: Policy updated
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/invalid-cel-expression-problem-details'
+                - $ref: '#/components/schemas/invalid-request-problem-details'
+                - $ref: '#/components/schemas/problem-details'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        '404':
+          $ref: '#/components/responses/generic-not-found-error'
+        '409':
+          $ref: '#/components/responses/generic-conflict-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    delete:
+      tags:
+      - Vuln Policies
+      summary: Delete a vulnerability policy
+      description: 'Deletes a user-managed vulnerability policy.
+
+
+        Policies managed by a bundle can not be deleted.
+
+
+        Analysis records matched by this policy are reset upon deletion.
+
+
+        Requires permission `POLICY_MANAGEMENT` or `POLICY_MANAGEMENT_DELETE`.'
+      operationId: deleteVulnPolicy
+      parameters:
+      - name: uuid
+        in: path
+        description: UUID of the vulnerability policy
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Policy deleted
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        '404':
+          $ref: '#/components/responses/generic-not-found-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+  /vuln-policy-bundles:
+    get:
+      tags:
+      - Vuln Policies
+      summary: List vulnerability policy bundles
+      description: 'Returns a list of vulnerability policy bundles.
+
+
+        Requires permission `POLICY_MANAGEMENT` or `POLICY_MANAGEMENT_READ`.'
+      operationId: listVulnPolicyBundles
+      responses:
+        '200':
+          description: List of vulnerability policy bundles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-vuln-policy-bundles-response'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+  /vuln-policy-bundles/{uuid}:
+    delete:
+      tags:
+      - Vuln Policies
+      summary: Delete a vulnerability policy bundle
+      description: 'Deletes a vulnerability policy bundle and cascade-deletes all associated policies.
+
+
+        Analysis records matched by deleted policies are reset.
+
+
+        Requires permission `POLICY_MANAGEMENT` or `POLICY_MANAGEMENT_DELETE`.'
+      operationId: deleteVulnPolicyBundle
+      parameters:
+      - name: uuid
+        in: path
+        description: UUID of the vulnerability policy bundle
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Bundle deleted
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        '404':
+          $ref: '#/components/responses/generic-not-found-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+  /vuln-policy-bundles/{uuid}/sync-runs:
+    post:
+      tags:
+      - Vuln Policies
+      summary: Trigger a vulnerability policy bundle sync run
+      description: 'Triggers a synchronization run for the given vulnerability policy bundle.
+
+
+        Requires permission `POLICY_MANAGEMENT` or `POLICY_MANAGEMENT_UPDATE`.'
+      operationId: triggerVulnPolicyBundleSyncRun
+      parameters:
+      - name: uuid
+        in: path
+        description: UUID of the vulnerability policy bundle
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '202':
+          description: Sync run triggered
+          headers:
+            Location:
+              description: URL of the latest sync run resource.
+              schema:
+                type: string
+                format: uri
+        '400':
+          description: Sync run cannot be started
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem-details'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        '404':
+          $ref: '#/components/responses/generic-not-found-error'
+        '409':
+          description: A sync run is already in progress
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem-details'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+  /vuln-policy-bundles/{uuid}/sync-runs/latest:
+    get:
+      tags:
+      - Vuln Policies
+      summary: Get the latest vulnerability policy bundle sync run
+      description: 'Returns the status of the most recent synchronization run for a given
+
+        vulnerability policy bundle.
+
+
+        Returns 404 if no sync run is available
+
+        (e.g. none has been triggered yet, or the most recent run
+
+        is no longer retained), or if the bundle is unknown.
+
+
+        Requires permission `POLICY_MANAGEMENT` or `POLICY_MANAGEMENT_READ`.'
+      operationId: getLatestVulnPolicyBundleSyncRun
+      parameters:
+      - name: uuid
+        in: path
+        description: UUID of the vulnerability policy bundle
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Sync run status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vuln-policy-bundle-sync-status'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        '404':
+          $ref: '#/components/responses/generic-not-found-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+components:
+  schemas:
+    paginated-response:
+      required:
+      - total
+      type: object
+      properties:
+        next_page_token:
+          type: string
+          description: Token to retrieve the next page. Absent when no more items exist.
+        total:
+          $ref: '#/components/schemas/total-count'
+      x-parent: true
+    constraint-violation-error:
+      required:
+      - message
+      type: object
+      properties:
+        path:
+          type: string
+          description: Path to the invalid field in the request
+        value:
+          type: string
+          description: The invalid value
+        message:
+          type: string
+          description: Message explaining the error
+    list-vuln-policies-response-item:
+      required:
+      - name
+      - operation_mode
+      - priority
+      - source
+      - uuid
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        author:
+          type: string
+        priority:
+          type: integer
+          format: int32
+        operation_mode:
+          $ref: '#/components/schemas/vuln-policy-operation-mode'
+        source:
+          $ref: '#/components/schemas/vuln-policy-source'
+    list-vuln-policies-response:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/list-vuln-policies-response-item'
+      allOf:
+      - $ref: '#/components/schemas/paginated-response'
+    list-vuln-policy-bundles-response-item:
+      required:
+      - url
+      - uuid
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        url:
+          type: string
+        hash:
+          type: string
+        last_successful_sync:
+          $ref: '#/components/schemas/timestamp'
+        created:
+          $ref: '#/components/schemas/timestamp'
+        updated:
+          $ref: '#/components/schemas/timestamp'
+    timestamp:
+      type: integer
+      description: Epoch timestamp in milliseconds since January 1, 1970 UTC.
+      format: int64
+      example: 1752209050377
+    vuln-policy-operation-mode:
+      type: string
+      enum:
+      - DISABLED
+      - APPLY
+      - LOG
+    vuln-policy-analysis:
+      required:
+      - state
+      type: object
+      properties:
+        state:
+          type: string
+          enum:
+          - EXPLOITABLE
+          - IN_TRIAGE
+          - FALSE_POSITIVE
+          - NOT_AFFECTED
+          - RESOLVED
+        justification:
+          type: string
+          enum:
+          - CODE_NOT_PRESENT
+          - CODE_NOT_REACHABLE
+          - REQUIRES_CONFIGURATION
+          - REQUIRES_DEPENDENCY
+          - REQUIRES_ENVIRONMENT
+          - PROTECTED_BY_COMPILER
+          - PROTECTED_AT_RUNTIME
+          - PROTECTED_AT_PERIMETER
+          - PROTECTED_BY_MITIGATING_CONTROL
+        vendor_response:
+          type: string
+          enum:
+          - CAN_NOT_FIX
+          - WILL_NOT_FIX
+          - UPDATE
+          - ROLLBACK
+          - WORKAROUND_AVAILABLE
+        details:
+          type: string
+        suppress:
+          type: boolean
+          default: false
+    vuln-policy-source:
+      type: string
+      enum:
+      - USER
+      - BUNDLE
+    invalid-request-problem-details:
+      required:
+      - errors
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/constraint-violation-error'
+      allOf:
+      - $ref: '#/components/schemas/problem-details'
+    total-count-type:
+      type: string
+      enum:
+      - AT_LEAST
+      - EXACT
+    vuln-policy-rating:
+      required:
+      - method
+      - severity
+      type: object
+      properties:
+        method:
+          type: string
+          enum:
+          - CVSSV2
+          - CVSSV3
+          - CVSSV4
+          - OWASP
+        severity:
+          type: string
+          enum:
+          - CRITICAL
+          - HIGH
+          - MEDIUM
+          - LOW
+          - INFO
+        vector:
+          type: string
+        score:
+          type: number
+          format: double
+    vuln-policy-bundle-sync-status:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of the synchronization.
+          enum:
+          - PENDING
+          - RUNNING
+          - COMPLETED
+          - FAILED
+        started_at:
+          $ref: '#/components/schemas/timestamp'
+        completed_at:
+          $ref: '#/components/schemas/timestamp'
+        failure_reason:
+          type: string
+          description: Reason for why the synchronization failed.
+    invalid-cel-expression-problem-details:
+      required:
+      - errors
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/cel-expression-error'
+      allOf:
+      - $ref: '#/components/schemas/problem-details'
+    problem-details:
+      required:
+      - detail
+      - title
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+          format: uri-reference
+          default: about:blank
+        status:
+          maximum: 599
+          minimum: 400
+          type: integer
+          description: HTTP status code generated by the origin server for this occurrence of the problem
+          format: int32
+          example: 500
+        title:
+          maxLength: 255
+          type: string
+          description: Short, human-readable summary of the problem type
+        detail:
+          maxLength: 1024
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          description: Reference URI that identifies the specific occurrence of the problem
+          format: uri-reference
+      description: An RFC 9457 problem object.
+      externalDocs:
+        url: https://www.rfc-editor.org/rfc/rfc9457.html
+      x-parent: true
+    cel-expression-error:
+      required:
+      - column
+      - line
+      - message
+      type: object
+      properties:
+        line:
+          type: integer
+          description: Line number where the error occurred
+          format: int32
+        column:
+          type: integer
+          description: Column number where the error occurred
+          format: int32
+        message:
+          type: string
+          description: Description of the error
+    update-vuln-policy-request:
+      required:
+      - analysis
+      - condition
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          minLength: 1
+          type: string
+        description:
+          maxLength: 512
+          type: string
+        author:
+          maxLength: 255
+          type: string
+        condition:
+          maxLength: 4096
+          minLength: 1
+          type: string
+        analysis:
+          $ref: '#/components/schemas/vuln-policy-analysis'
+        ratings:
+          maxItems: 3
+          type: array
+          items:
+            $ref: '#/components/schemas/vuln-policy-rating'
+        operation_mode:
+          $ref: '#/components/schemas/vuln-policy-operation-mode'
+        priority:
+          maximum: 100
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+        valid_from:
+          $ref: '#/components/schemas/timestamp'
+        valid_until:
+          $ref: '#/components/schemas/timestamp'
+    list-vuln-policy-bundles-response:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/list-vuln-policy-bundles-response-item'
+      allOf:
+      - $ref: '#/components/schemas/paginated-response'
+    create-vuln-policy-request:
+      required:
+      - analysis
+      - condition
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          minLength: 1
+          type: string
+        description:
+          maxLength: 512
+          type: string
+        author:
+          maxLength: 255
+          type: string
+        condition:
+          maxLength: 4096
+          minLength: 1
+          type: string
+        analysis:
+          $ref: '#/components/schemas/vuln-policy-analysis'
+        ratings:
+          maxItems: 3
+          type: array
+          items:
+            $ref: '#/components/schemas/vuln-policy-rating'
+        operation_mode:
+          $ref: '#/components/schemas/vuln-policy-operation-mode'
+        priority:
+          maximum: 100
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+        valid_from:
+          $ref: '#/components/schemas/timestamp'
+        valid_until:
+          $ref: '#/components/schemas/timestamp'
+    total-count:
+      required:
+      - count
+      - type
+      type: object
+      properties:
+        count:
+          minimum: 0
+          type: integer
+          description: The total number of records across all pages. Might be an exact count, or a lower bound. Refer to the `type` field for the applicable semantics.
+          format: int64
+        type:
+          $ref: '#/components/schemas/total-count-type'
+    get-vuln-policy-response:
+      required:
+      - analysis
+      - condition
+      - name
+      - operation_mode
+      - priority
+      - source
+      - uuid
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        author:
+          type: string
+        condition:
+          type: string
+        analysis:
+          $ref: '#/components/schemas/vuln-policy-analysis'
+        ratings:
+          maxItems: 3
+          type: array
+          items:
+            $ref: '#/components/schemas/vuln-policy-rating'
+        operation_mode:
+          $ref: '#/components/schemas/vuln-policy-operation-mode'
+        priority:
+          maximum: 100
+          minimum: 0
+          type: integer
+          format: int32
+        source:
+          $ref: '#/components/schemas/vuln-policy-source'
+        valid_from:
+          $ref: '#/components/schemas/timestamp'
+        valid_until:
+          $ref: '#/components/schemas/timestamp'
+        created:
+          $ref: '#/components/schemas/timestamp'
+        updated:
+          $ref: '#/components/schemas/timestamp'
+  responses:
+    invalid-request-error:
+      description: Bad request
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/invalid-request-problem-details'
+          example:
+            type: about:blank
+            status: 400
+            title: Bad Request
+            detail: The request could not be processed because it failed validation.
+            errors:
+            - path: foo.bar
+              value: baz
+              message: Must be a number
+    generic-error:
+      description: Unexpected error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+    generic-forbidden-error:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 403
+            title: Forbidden
+            detail: Not permitted to access the requested resource.
+    generic-conflict-error:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 409
+            title: Conflict
+            detail: The resource already exists.
+    generic-not-found-error:
+      description: Not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 404
+            title: Not Found
+            detail: The requested resource could not be found.
+    generic-unauthorized-error:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 401
+            title: Unauthorized
+            detail: Not authorized to access the requested resource.
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Authentication via API key.
+      name: X-Api-Key
+      in: header
+    bearerAuth:
+      type: http
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login`,
+
+        `POST /api/v1/user/oidc/login`, or `POST /api/v2/oauth/token`.'
+      scheme: bearer
+      bearerFormat: Opaque
+x-refined-from:
+- dependency-track-openapi-v2.yaml
+- dependency-track-v2-openapi.yml

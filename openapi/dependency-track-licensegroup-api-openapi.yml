@@ -1,0 +1,398 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track License Group API
+  version: 1.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged licenseGroup across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api
+tags:
+- name: licenseGroup
+paths:
+  /v1/licenseGroup:
+    get:
+      description: Requires permission POLICY_MANAGEMENT or POLICY_MANAGEMENT_READ
+      operationId: getLicenseGroups
+      parameters:
+      - description: The page to return. To be used in conjunction with <code>pageSize</code>.
+        in: query
+        name: pageNumber
+        schema:
+          type: string
+          default: '1'
+      - description: Number of elements to return per page. To be used in conjunction with <code>pageNumber</code>.
+        in: query
+        name: pageSize
+        schema:
+          type: string
+          default: '100'
+      - description: Offset to start returning elements from. To be used in conjunction with <code>limit</code>.
+        in: query
+        name: offset
+        schema:
+          type: string
+      - description: Number of elements to return per page. To be used in conjunction with <code>offset</code>.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Name of the resource field to sort on.
+        in: query
+        name: sortName
+        schema:
+          type: string
+      - description: Ordering of items when sorting with <code>sortName</code>.
+        in: query
+        name: sortOrder
+        schema:
+          type: string
+          enum:
+          - asc, desc
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LicenseGroupResponse'
+          description: A list of all license groups
+          headers:
+            X-Total-Count:
+              description: The total number of license groups
+              schema:
+                format: integer
+              style: simple
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all license groups
+      tags:
+      - licenseGroup
+    post:
+      description: Requires permission POLICY_MANAGEMENT or POLICY_MANAGEMENT_UPDATE
+      operationId: updateLicenseGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLicenseGroupRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseGroupResponse'
+          description: The updated license group
+        '401':
+          description: Unauthorized
+        '404':
+          description: The license group could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Updates a license group
+      tags:
+      - licenseGroup
+    put:
+      description: Requires permission POLICY_MANAGEMENT or POLICY_MANAGEMENT_CREATE
+      operationId: createLicenseGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLicenseGroupRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseGroupResponse'
+          description: The created license group
+        '401':
+          description: Unauthorized
+        '409':
+          description: A license group with the specified name already exists
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Creates a new license group
+      tags:
+      - licenseGroup
+    servers:
+    - url: /api
+  /v1/licenseGroup/{uuid}:
+    delete:
+      description: Requires permission POLICY_MANAGEMENT or POLICY_MANAGEMENT_DELETE
+      operationId: deleteLicenseGroup
+      parameters:
+      - description: The UUID of the license group to delete
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: License group removed successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: The UUID of the license group could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Deletes a license group
+      tags:
+      - licenseGroup
+    get:
+      description: Requires permission POLICY_MANAGEMENT or POLICY_MANAGEMENT_READ
+      operationId: getLicenseGroup
+      parameters:
+      - description: The UUID of the license group to retrieve
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseGroupResponse'
+          description: A specific license group
+        '401':
+          description: Unauthorized
+        '404':
+          description: The license group could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a specific license group
+      tags:
+      - licenseGroup
+    servers:
+    - url: /api
+  /v1/licenseGroup/{uuid}/license/{licenseUuid}:
+    delete:
+      description: Requires permission POLICY_MANAGEMENT or POLICY_MANAGEMENT_UPDATE
+      operationId: removeLicenseFromLicenseGroup
+      parameters:
+      - description: A valid license group
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - description: A valid license
+        in: path
+        name: licenseUuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseGroupResponse'
+          description: The updated license group
+        '304':
+          description: The license is not a member with the license group
+        '401':
+          description: Unauthorized
+        '404':
+          description: The license group or license could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Removes the license from the license group
+      tags:
+      - licenseGroup
+    post:
+      description: Requires permission POLICY_MANAGEMENT or POLICY_MANAGEMENT_UPDATE
+      operationId: addLicenseToLicenseGroup
+      parameters:
+      - description: A valid license group
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - description: A valid license
+        in: path
+        name: licenseUuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseGroupResponse'
+          description: The updated license group
+        '304':
+          description: The license group already has the specified license assigned
+        '401':
+          description: Unauthorized
+        '404':
+          description: The license group or license could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Adds the license to the specified license group
+      tags:
+      - licenseGroup
+    servers:
+    - url: /api
+components:
+  schemas:
+    LicenseGroup:
+      type: object
+      properties:
+        licenses:
+          type: array
+          items:
+            $ref: '#/components/schemas/License'
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        riskWeight:
+          type: integer
+          format: int32
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - name
+      - uuid
+    CreateLicenseGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the license group
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+      required:
+      - name
+    LicenseGroupResponse:
+      type: object
+      properties:
+        licenses:
+          type: array
+          description: Licenses belonging to the license group
+          items:
+            $ref: '#/components/schemas/License'
+        name:
+          type: string
+          description: Name of the license group
+        riskWeight:
+          type: integer
+          format: int32
+          description: Risk weight assigned to violations of this group
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the license group
+      required:
+      - licenses
+      - name
+      - riskWeight
+      - uuid
+    License:
+      type: object
+      properties:
+        isCustomLicense:
+          type: boolean
+        isDeprecatedLicenseId:
+          type: boolean
+        isFsfLibre:
+          type: boolean
+        isOsiApproved:
+          type: boolean
+        licenseComments:
+          type: string
+        licenseGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/LicenseGroup'
+        licenseId:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[a-zA-Z0-9_.\-+]*$
+        licenseText:
+          type: string
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        seeAlso:
+          type: array
+          items:
+            type: string
+        standardLicenseHeader:
+          type: string
+        standardLicenseTemplate:
+          type: string
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - licenseId
+      - name
+      - uuid
+    UpdateLicenseGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: New name of the license group
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the license group to update
+      required:
+      - name
+      - uuid
+  securitySchemes:
+    ApiKeyAuth:
+      description: Authentication via API key.
+      in: header
+      name: X-Api-Key
+      type: apiKey
+    BearerAuth:
+      bearerFormat: Opaque
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login` or
+
+        `POST /api/v1/user/oidc/login`.'
+      scheme: bearer
+      type: http
+x-refined-from:
+- dependency-track-openapi-v1.yaml
+- dependency-track-openapi.yml

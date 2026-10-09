@@ -1,0 +1,468 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Repository API
+  version: 1.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged repository across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api
+tags:
+- name: Repository
+paths:
+  /v1/repository:
+    get:
+      description: Requires permission SYSTEM_CONFIGURATION or SYSTEM_CONFIGURATION_READ
+      operationId: getRepositories
+      parameters:
+      - description: The page to return. To be used in conjunction with <code>pageSize</code>.
+        in: query
+        name: pageNumber
+        schema:
+          type: string
+          default: '1'
+      - description: Number of elements to return per page. To be used in conjunction with <code>pageNumber</code>.
+        in: query
+        name: pageSize
+        schema:
+          type: string
+          default: '100'
+      - description: Offset to start returning elements from. To be used in conjunction with <code>limit</code>.
+        in: query
+        name: offset
+        schema:
+          type: string
+      - description: Number of elements to return per page. To be used in conjunction with <code>offset</code>.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Name of the resource field to sort on.
+        in: query
+        name: sortName
+        schema:
+          type: string
+      - description: Ordering of items when sorting with <code>sortName</code>.
+        in: query
+        name: sortOrder
+        schema:
+          type: string
+          enum:
+          - asc, desc
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RepositoryResponse'
+          description: A list of all repositories
+          headers:
+            X-Total-Count:
+              description: The total number of repositories
+              schema:
+                type: integer
+              style: simple
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all repositories
+      tags:
+      - Repository
+    post:
+      description: Requires permission SYSTEM_CONFIGURATION or SYSTEM_CONFIGURATION_UPDATE
+      operationId: updateRepository
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRepositoryRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositoryResponse'
+          description: The updated repository
+        '401':
+          description: Unauthorized
+        '404':
+          description: The UUID of the repository could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Updates a repository
+      tags:
+      - Repository
+    put:
+      description: Requires permission SYSTEM_CONFIGURATION or SYSTEM_CONFIGURATION_CREATE
+      operationId: createRepository
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRepositoryRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositoryResponse'
+          description: The created repository
+        '401':
+          description: Unauthorized
+        '409':
+          description: A repository with the specified identifier already exists
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Creates a new repository
+      tags:
+      - Repository
+    servers:
+    - url: /api
+  /v1/repository/latest:
+    get:
+      operationId: getRepositoryMetaComponent
+      parameters:
+      - description: The Package URL for the component to query
+        in: query
+        name: purl
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositoryMetaComponent'
+          description: The latest version of the component available in the configured repositories
+        '204':
+          description: The request was successful, but no repositories are configured to support the specified Package URL
+        '400':
+          description: The specified Package URL is invalid and not in the correct format
+        '401':
+          description: Unauthorized
+        '404':
+          description: The repository metadata for the specified component cannot be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Attempts to resolve the latest version of the component available in the…
+      tags:
+      - Repository
+    servers:
+    - url: /api
+  /v1/repository/{type}:
+    get:
+      description: Requires permission SYSTEM_CONFIGURATION or SYSTEM_CONFIGURATION_READ
+      operationId: getRepositoriesByType
+      parameters:
+      - description: The page to return. To be used in conjunction with <code>pageSize</code>.
+        in: query
+        name: pageNumber
+        schema:
+          type: string
+          default: '1'
+      - description: Number of elements to return per page. To be used in conjunction with <code>pageNumber</code>.
+        in: query
+        name: pageSize
+        schema:
+          type: string
+          default: '100'
+      - description: Offset to start returning elements from. To be used in conjunction with <code>limit</code>.
+        in: query
+        name: offset
+        schema:
+          type: string
+      - description: Number of elements to return per page. To be used in conjunction with <code>offset</code>.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Name of the resource field to sort on.
+        in: query
+        name: sortName
+        schema:
+          type: string
+      - description: Ordering of items when sorting with <code>sortName</code>.
+        in: query
+        name: sortOrder
+        schema:
+          type: string
+          enum:
+          - asc, desc
+      - description: The type of repositories to retrieve
+        in: path
+        name: type
+        required: true
+        schema:
+          type: string
+          enum:
+          - MAVEN
+          - NPM
+          - GEM
+          - PYPI
+          - NUGET
+          - HEX
+          - COMPOSER
+          - CARGO
+          - GO_MODULES
+          - CPAN
+          - GITHUB
+          - HACKAGE
+          - NIXPKGS
+          - UNSUPPORTED
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RepositoryResponse'
+          description: A list of repositories that support the provided type
+          headers:
+            X-Total-Count:
+              description: The total number of repositories
+              schema:
+                format: integer
+              style: simple
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns repositories that support the specific type
+      tags:
+      - Repository
+    servers:
+    - url: /api
+  /v1/repository/{uuid}:
+    delete:
+      description: Requires permission SYSTEM_CONFIGURATION or SYSTEM_CONFIGURATION_DELETE
+      operationId: deleteRepository
+      parameters:
+      - description: The UUID of the repository to delete
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Repository removed successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: The UUID of the repository could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Deletes a repository
+      tags:
+      - Repository
+    servers:
+    - url: /api
+components:
+  schemas:
+    RepositoryMetaComponent:
+      type: object
+      properties:
+        lastCheck:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        latestVersion:
+          type: string
+        latestVersionPublishedAt:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        name:
+          type: string
+        namespace:
+          type: string
+        repositoryType:
+          type: string
+          enum:
+          - MAVEN
+          - NPM
+          - GEM
+          - PYPI
+          - NUGET
+          - HEX
+          - COMPOSER
+          - CARGO
+          - GO_MODULES
+          - CPAN
+          - GITHUB
+          - HACKAGE
+          - NIXPKGS
+          - UNSUPPORTED
+    CreateRepositoryRequest:
+      type: object
+      properties:
+        authenticationRequired:
+          type: boolean
+          description: Whether the repository requires authentication
+        enabled:
+          type: boolean
+          description: Whether the repository is enabled
+        identifier:
+          type: string
+          description: Unique identifier of the repository within its type
+          minLength: 1
+        internal:
+          type: boolean
+          description: Whether the repository is internal to the organization
+        password:
+          type: string
+          description: Name of the secret holding the password or token
+        type:
+          type: string
+          description: Type of the repository
+          enum:
+          - MAVEN
+          - NPM
+          - GEM
+          - PYPI
+          - NUGET
+          - HEX
+          - COMPOSER
+          - CARGO
+          - GO_MODULES
+          - CPAN
+          - GITHUB
+          - HACKAGE
+          - NIXPKGS
+          - UNSUPPORTED
+        url:
+          type: string
+          description: URL of the repository
+          minLength: 1
+        username:
+          type: string
+          description: Username to authenticate with
+      required:
+      - authenticationRequired
+      - enabled
+      - identifier
+      - type
+      - url
+    RepositoryResponse:
+      type: object
+      properties:
+        authenticationRequired:
+          type: boolean
+          description: Whether the repository requires authentication
+        enabled:
+          type: boolean
+          description: Whether the repository is enabled
+        identifier:
+          type: string
+          description: Unique identifier of the repository within its type
+        internal:
+          type: boolean
+          description: Whether the repository is internal to the organization
+        password:
+          type: string
+          description: Name of the secret holding the password or token
+        resolutionOrder:
+          type: integer
+          format: int32
+          description: Order in which the repository is queried during version resolution
+        type:
+          type: string
+          description: Type of the repository
+          enum:
+          - MAVEN
+          - NPM
+          - GEM
+          - PYPI
+          - NUGET
+          - HEX
+          - COMPOSER
+          - CARGO
+          - GO_MODULES
+          - CPAN
+          - GITHUB
+          - HACKAGE
+          - NIXPKGS
+          - UNSUPPORTED
+        url:
+          type: string
+          description: URL of the repository
+        username:
+          type: string
+          description: Username to authenticate with
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the repository
+      required:
+      - authenticationRequired
+      - enabled
+      - identifier
+      - resolutionOrder
+      - type
+      - url
+      - uuid
+    UpdateRepositoryRequest:
+      type: object
+      properties:
+        authenticationRequired:
+          type: boolean
+          description: Whether the repository requires authentication
+        enabled:
+          type: boolean
+          description: Whether the repository is enabled
+        internal:
+          type: boolean
+          description: Whether the repository is internal to the organization
+        password:
+          type: string
+          description: Name of the secret holding the password or token
+        url:
+          type: string
+          description: URL of the repository
+          minLength: 1
+        username:
+          type: string
+          description: Username to authenticate with
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the repository to update
+      required:
+      - authenticationRequired
+      - enabled
+      - url
+      - uuid
+  securitySchemes:
+    ApiKeyAuth:
+      description: Authentication via API key.
+      in: header
+      name: X-Api-Key
+      type: apiKey
+    BearerAuth:
+      bearerFormat: Opaque
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login` or
+
+        `POST /api/v1/user/oidc/login`.'
+      scheme: bearer
+      type: http
+x-refined-from:
+- dependency-track-openapi-v1.yaml
+- dependency-track-openapi.yml

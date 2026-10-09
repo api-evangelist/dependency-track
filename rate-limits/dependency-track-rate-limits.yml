@@ -1,0 +1,7 @@
+name: Dependency-Track Rate Limits
+generated: '2026-10-09'
+method: none
+source: https://docs.dependencytrack.org/integrations/rest-api/
+limit_count: 0
+note: No API rate limits or rate-limit headers are documented (REST API page, FAQ, best practices checked) and neither OpenAPI contract declares 429 or X-RateLimit headers. As self-hosted software, limits are whatever the operator configures.
+limits: []

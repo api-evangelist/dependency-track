@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/dependency-track/main/json-schema/dependency-track-update-workload-identity-provider-request-schema.json",
+  "title": "update-workload-identity-provider-request",
+  "x-generated": "2026-10-09",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/dependency-track-v2-openapi.yml#/components/schemas/update-workload-identity-provider-request",
+  "type": "object",
+  "properties": {
+    "issuer": {
+      "maxLength": 255,
+      "type": "string",
+      "description": "The expected `iss` claim for `OIDC` providers, or the SPIFFE trust domain for `SPIFFE` providers, such as `example.org`."
+    },
+    "audience": {
+      "maxLength": 255,
+      "type": "string",
+      "description": "The value that the token's `aud` claim must contain."
+    },
+    "jwks_url": {
+      "maxLength": 2048,
+      "type": "string",
+      "description": "The URL to fetch the signing keys from. Must be `https`."
+    },
+    "jwks": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "An RFC 7517 JSON Web Key Set holding the issuer's public signing keys."
+    },
+    "session_lifetime_seconds": {
+      "maximum": 86400,
+      "minimum": 60,
+      "type": "integer",
+      "description": "The lifetime of sessions created through this provider, unless a binding sets its own.",
+      "format": "int32"
+    }
+  }
+}

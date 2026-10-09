@@ -1,0 +1,183 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Ldap API
+  version: 1.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged ldap across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api
+tags:
+- name: LDAP
+paths:
+  /v1/ldap/groups:
+    get:
+      description: 'This API performs a pass-through query to the configured LDAP server.
+
+
+        Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_READ'
+      operationId: retrieveLdapGroups
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+          description: DNs of all accessible groups within the directory
+          headers:
+            X-Total-Count:
+              description: The total number of ldap groups that match the specified search criteria
+              schema:
+                format: integer
+              style: simple
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns the DNs of all accessible groups within the directory
+      tags:
+      - LDAP
+    servers:
+    - url: /api
+  /v1/ldap/mapping:
+    put:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_CREATE
+      operationId: addMapping_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MappedLdapGroupRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MappedLdapGroupResponse'
+          description: The created mapping
+        '401':
+          description: Unauthorized
+        '404':
+          description: The UUID of the team could not be found
+        '409':
+          description: A mapping with the same team and dn already exists
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Adds a mapping
+      tags:
+      - LDAP
+    servers:
+    - url: /api
+  /v1/ldap/mapping/{uuid}:
+    delete:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_DELETE
+      operationId: deleteMapping_1
+      parameters:
+      - description: The UUID of the mapping to delete
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Mapping removed successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: The UUID of the mapping could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Removes a mapping
+      tags:
+      - LDAP
+    servers:
+    - url: /api
+  /v1/ldap/team/{uuid}:
+    get:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_READ
+      operationId: retrieveLdapGroups_1
+      parameters:
+      - description: The UUID of the team to retrieve mappings for
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MappedLdapGroupResponse'
+          description: DNs of all groups mapped to the specified team
+        '401':
+          description: Unauthorized
+        '404':
+          description: The UUID of the team could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns the DNs of all groups mapped to the specified team
+      tags:
+      - LDAP
+    servers:
+    - url: /api
+components:
+  schemas:
+    MappedLdapGroupResponse:
+      type: object
+      properties:
+        dn:
+          type: string
+          description: Distinguished name of the mapped LDAP group
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the mapping
+      required:
+      - dn
+      - uuid
+    MappedLdapGroupRequest:
+      type: object
+      properties:
+        dn:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        team:
+          type: string
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      required:
+      - dn
+      - team
+  securitySchemes:
+    ApiKeyAuth:
+      description: Authentication via API key.
+      in: header
+      name: X-Api-Key
+      type: apiKey
+    BearerAuth:
+      bearerFormat: Opaque
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login` or
+
+        `POST /api/v1/user/oidc/login`.'
+      scheme: bearer
+      type: http
+x-refined-from:
+- dependency-track-openapi-v1.yaml
+- dependency-track-openapi.yml

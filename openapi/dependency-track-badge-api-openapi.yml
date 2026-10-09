@@ -1,0 +1,153 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Badge API
+  version: 1.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged badge across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api
+tags:
+- name: badge
+paths:
+  /v1/badge/violations/project/{name}/{version}:
+    get:
+      operationId: getProjectPolicyViolationsBadge_1
+      parameters:
+      - description: The name of the project to query on
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: The version of the project to query on
+        in: path
+        name: version
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            image/svg+xml:
+              schema:
+                type: string
+          description: A badge displaying current policy violation metrics of a project in SVG format
+        '403':
+          description: Badges are disabled
+        '404':
+          description: The project could not be found
+      summary: Returns a policy violations badge for a specific project
+      tags:
+      - badge
+    servers:
+    - url: /api
+  /v1/badge/violations/project/{uuid}:
+    get:
+      operationId: getProjectPolicyViolationsBadge
+      parameters:
+      - description: The UUID of the project to retrieve a badge for
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          content:
+            image/svg+xml:
+              schema:
+                type: string
+          description: A badge displaying current policy violation metrics of a project in SVG format
+        '403':
+          description: Badges are disabled
+        '404':
+          description: The project could not be found
+      summary: Returns a policy violations badge for a specific project
+      tags:
+      - badge
+    servers:
+    - url: /api
+  /v1/badge/vulns/project/{name}/{version}:
+    get:
+      operationId: getProjectVulnerabilitiesBadge_1
+      parameters:
+      - description: The name of the project to query on
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: The version of the project to query on
+        in: path
+        name: version
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            image/svg+xml:
+              schema:
+                type: string
+          description: A badge displaying current vulnerability metrics for a project in SVG format
+        '403':
+          description: Badges are disabled
+        '404':
+          description: The project could not be found
+      summary: Returns current metrics for a specific project
+      tags:
+      - badge
+    servers:
+    - url: /api
+  /v1/badge/vulns/project/{uuid}:
+    get:
+      operationId: getProjectVulnerabilitiesBadge
+      parameters:
+      - description: The UUID of the project to retrieve metrics for
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          content:
+            image/svg+xml:
+              schema:
+                type: string
+          description: A badge displaying current vulnerability metrics for a project in SVG format
+        '403':
+          description: Badges are disabled
+        '404':
+          description: The project could not be found
+      summary: Returns current metrics for a specific project
+      tags:
+      - badge
+    servers:
+    - url: /api
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      description: Authentication via API key.
+      in: header
+      name: X-Api-Key
+      type: apiKey
+    BearerAuth:
+      bearerFormat: Opaque
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login` or
+
+        `POST /api/v1/user/oidc/login`.'
+      scheme: bearer
+      type: http
+x-refined-from:
+- dependency-track-openapi-v1.yaml
+- dependency-track-openapi.yml

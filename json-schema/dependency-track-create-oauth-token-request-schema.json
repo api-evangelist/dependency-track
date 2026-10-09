@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/dependency-track/main/json-schema/dependency-track-create-oauth-token-request-schema.json",
+  "title": "create-oauth-token-request",
+  "x-generated": "2026-10-09",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/dependency-track-v2-openapi.yml#/components/schemas/create-oauth-token-request",
+  "required": [
+    "grant_type"
+  ],
+  "type": "object",
+  "properties": {
+    "grant_type": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "The grant type. Only `urn:ietf:params:oauth:grant-type:token-exchange` is supported."
+    },
+    "subject_token": {
+      "maxLength": 16384,
+      "type": "string",
+      "description": "The token to exchange. Required for the token exchange grant. At most 16 KiB."
+    },
+    "subject_token_type": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "The type of the subject token. Required for the token exchange grant. `urn:ietf:params:oauth:token-type:jwt` for all workload identity providers, or `urn:ietf:params:oauth:token-type:id_token` for `OIDC` providers."
+    },
+    "requested_token_type": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "The type of token to issue. Optional. Only `urn:ietf:params:oauth:token-type:access_token` is supported."
+    },
+    "workload_identity_provider": {
+      "$ref": "#/$defs/workload-identity-provider-name"
+    },
+    "service_account": {
+      "$ref": "#/$defs/service-account-name"
+    }
+  },
+  "$defs": {
+    "service-account-name": {
+      "maxLength": 59,
+      "pattern": "^(?![sS][vV][cC]:)[a-zA-Z0-9][a-zA-Z0-9+=,.:@_-]*$",
+      "type": "string",
+      "description": "The name of the service account, without the reserved `svc:` prefix."
+    },
+    "workload-identity-provider-name": {
+      "maxLength": 63,
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
+      "type": "string",
+      "description": "The name of the workload identity provider."
+    }
+  }
+}

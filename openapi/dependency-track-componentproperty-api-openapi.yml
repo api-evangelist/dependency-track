@@ -1,0 +1,262 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Component Property API
+  version: 1.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged componentProperty across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api
+tags:
+- name: componentProperty
+paths:
+  /v1/component/{uuid}/property:
+    get:
+      description: Requires permission VIEW_PORTFOLIO
+      operationId: getProperties
+      parameters:
+      - description: The UUID of the component to retrieve properties for
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ComponentPropertyResponse'
+          description: A list of all properties for the specified component
+        '401':
+          description: Unauthorized
+        '403':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Access to the requested project is forbidden
+        '404':
+          description: The project could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all properties for the specified component
+      tags:
+      - componentProperty
+    put:
+      description: Requires permission PORTFOLIO_MANAGEMENT or PORTFOLIO_MANAGEMENT_CREATE
+      operationId: createProperty
+      parameters:
+      - description: The UUID of the component to create a property for
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateComponentPropertyRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComponentPropertyResponse'
+          description: The created component
+        '401':
+          description: Unauthorized
+        '403':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Access to the requested project is forbidden
+        '404':
+          description: The component could not be found
+        '409':
+          description: A property with the specified component/group/name combination already exists
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Creates a new component property
+      tags:
+      - componentProperty
+    servers:
+    - url: /api
+  /v1/component/{uuid}/property/{propertyUuid}:
+    delete:
+      description: Requires permission PORTFOLIO_MANAGEMENT or PORTFOLIO_MANAGEMENT_DELETE
+      operationId: deleteProperty
+      parameters:
+      - description: The UUID of the component to delete a property from
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - description: The UUID of the component property to delete
+        in: path
+        name: propertyUuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Property removed successfully
+        '401':
+          description: Unauthorized
+        '403':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Access to the requested project is forbidden
+        '404':
+          description: The component or component property could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Deletes a config property
+      tags:
+      - componentProperty
+    servers:
+    - url: /api
+components:
+  schemas:
+    ComponentPropertyResponse:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Description of the property
+        groupName:
+          type: string
+          description: Group the property belongs to
+        propertyName:
+          type: string
+          description: Name of the property
+        propertyType:
+          type: string
+          description: Type of the property
+          enum:
+          - BOOLEAN
+          - INTEGER
+          - NUMBER
+          - STRING
+          - TIMESTAMP
+          - URL
+          - UUID
+        propertyValue:
+          type: string
+          description: Value of the property
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the property
+      required:
+      - propertyName
+      - propertyType
+      - uuid
+    CreateComponentPropertyRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Description of the property
+          maxLength: 255
+          minLength: 0
+          pattern: \P{Cc}+
+        groupName:
+          type: string
+          description: Group the property belongs to
+          maxLength: 255
+          minLength: 1
+          pattern: \P{Cc}+
+        propertyName:
+          type: string
+          description: Name of the property
+          maxLength: 255
+          minLength: 1
+          pattern: \P{Cc}+
+        propertyType:
+          type: string
+          description: Type of the property
+          enum:
+          - BOOLEAN
+          - INTEGER
+          - NUMBER
+          - STRING
+          - TIMESTAMP
+          - URL
+          - UUID
+        propertyValue:
+          type: string
+          description: Value of the property
+          maxLength: 1024
+          minLength: 0
+          pattern: \P{Cc}+
+      required:
+      - propertyName
+      - propertyType
+    ProblemDetails:
+      type: object
+      description: An RFC 9457 problem object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+          example: Example detail
+        instance:
+          type: string
+          format: uri
+          description: Reference URI that identifies the specific occurrence of the problem
+          example: https://api.example.org/foo/bar/example-instance
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code generated by the origin server for this occurrence of the problem
+          example: 400
+        title:
+          type: string
+          description: Short, human-readable summary of the problem type
+          example: Example title
+        type:
+          type: string
+          format: uri
+          description: A URI reference that identifies the problem type
+          example: https://api.example.org/foo/bar/example-problem
+      required:
+      - detail
+      - status
+      - title
+  securitySchemes:
+    ApiKeyAuth:
+      description: Authentication via API key.
+      in: header
+      name: X-Api-Key
+      type: apiKey
+    BearerAuth:
+      bearerFormat: Opaque
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login` or
+
+        `POST /api/v1/user/oidc/login`.'
+      scheme: bearer
+      type: http
+x-refined-from:
+- dependency-track-openapi-v1.yaml
+- dependency-track-openapi.yml

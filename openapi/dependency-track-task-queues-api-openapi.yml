@@ -1,0 +1,335 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Task Queues API
+  version: 2.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+    email: dependencytrack@owasp.org
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged Task Queues across 2 of this provider''s published API definitions: dependency-track-openapi-v2.yaml, dependency-track-v2-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api/v2
+security:
+- apiKeyAuth: []
+- bearerAuth: []
+tags:
+- name: Task Queues
+  description: Endpoints related to task queue management
+paths:
+  /internal/task-queues/{type}:
+    get:
+      tags:
+      - Task Queues
+      summary: List task queues
+      description: 'Returns a paginated list of task queues of the given type.
+
+
+        Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_READ` permission.'
+      operationId: listTaskQueues
+      parameters:
+      - name: type
+        in: path
+        description: Type of task queues to list
+        required: true
+        schema:
+          $ref: '#/components/schemas/task-queue-type'
+      - name: limit
+        in: query
+        description: Maximum number of items to retrieve from the collection
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 100
+      - name: page_token
+        in: query
+        description: Opaque token pointing to a specific position in a collection
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Paginated list of task queues
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-task-queues-response'
+        '400':
+          $ref: '#/components/responses/invalid-request-error'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+  /internal/task-queues/{type}/{name}:
+    patch:
+      tags:
+      - Task Queues
+      summary: Update a task queue
+      description: 'Updates the status and/or capacity of a task queue.
+
+
+        Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_UPDATE` permission.'
+      operationId: updateTaskQueue
+      parameters:
+      - name: type
+        in: path
+        description: Type of the task queue
+        required: true
+        schema:
+          $ref: '#/components/schemas/task-queue-type'
+      - name: name
+        in: path
+        description: Name of the task queue
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update-task-queue-request'
+        required: true
+      responses:
+        '204':
+          description: Task queue updated
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        '404':
+          $ref: '#/components/responses/generic-not-found-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+components:
+  responses:
+    invalid-request-error:
+      description: Bad request
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/invalid-request-problem-details'
+          example:
+            type: about:blank
+            status: 400
+            title: Bad Request
+            detail: The request could not be processed because it failed validation.
+            errors:
+            - path: foo.bar
+              value: baz
+              message: Must be a number
+    generic-error:
+      description: Unexpected error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+    generic-not-found-error:
+      description: Not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 404
+            title: Not Found
+            detail: The requested resource could not be found.
+    generic-unauthorized-error:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 401
+            title: Unauthorized
+            detail: Not authorized to access the requested resource.
+    generic-forbidden-error:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 403
+            title: Forbidden
+            detail: Not permitted to access the requested resource.
+  schemas:
+    paginated-response:
+      required:
+      - total
+      type: object
+      properties:
+        next_page_token:
+          type: string
+          description: Token to retrieve the next page. Absent when no more items exist.
+        total:
+          $ref: '#/components/schemas/total-count'
+      x-parent: true
+    update-task-queue-request:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/task-queue-status'
+        capacity:
+          minimum: 1
+          type: integer
+          format: int32
+    task-queue-type:
+      type: string
+      enum:
+      - ACTIVITY
+      - WORKFLOW
+    task-queue:
+      required:
+      - capacity
+      - created_at
+      - depth
+      - name
+      - status
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/task-queue-status'
+        capacity:
+          minimum: 1
+          type: integer
+          format: int32
+        depth:
+          minimum: 0
+          type: integer
+          format: int32
+        created_at:
+          $ref: '#/components/schemas/timestamp'
+        updated_at:
+          $ref: '#/components/schemas/timestamp'
+    constraint-violation-error:
+      required:
+      - message
+      type: object
+      properties:
+        path:
+          type: string
+          description: Path to the invalid field in the request
+        value:
+          type: string
+          description: The invalid value
+        message:
+          type: string
+          description: Message explaining the error
+    problem-details:
+      required:
+      - detail
+      - title
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+          format: uri-reference
+          default: about:blank
+        status:
+          maximum: 599
+          minimum: 400
+          type: integer
+          description: HTTP status code generated by the origin server for this occurrence of the problem
+          format: int32
+          example: 500
+        title:
+          maxLength: 255
+          type: string
+          description: Short, human-readable summary of the problem type
+        detail:
+          maxLength: 1024
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          description: Reference URI that identifies the specific occurrence of the problem
+          format: uri-reference
+      description: An RFC 9457 problem object.
+      externalDocs:
+        url: https://www.rfc-editor.org/rfc/rfc9457.html
+      x-parent: true
+    total-count:
+      required:
+      - count
+      - type
+      type: object
+      properties:
+        count:
+          minimum: 0
+          type: integer
+          description: The total number of records across all pages. Might be an exact count, or a lower bound. Refer to the `type` field for the applicable semantics.
+          format: int64
+        type:
+          $ref: '#/components/schemas/total-count-type'
+    list-task-queues-response:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/task-queue'
+      allOf:
+      - $ref: '#/components/schemas/paginated-response'
+    timestamp:
+      type: integer
+      description: Epoch timestamp in milliseconds since January 1, 1970 UTC.
+      format: int64
+      example: 1752209050377
+    task-queue-status:
+      type: string
+      enum:
+      - ACTIVE
+      - PAUSED
+    invalid-request-problem-details:
+      required:
+      - errors
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/constraint-violation-error'
+      allOf:
+      - $ref: '#/components/schemas/problem-details'
+    total-count-type:
+      type: string
+      enum:
+      - AT_LEAST
+      - EXACT
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Authentication via API key.
+      name: X-Api-Key
+      in: header
+    bearerAuth:
+      type: http
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login`,
+
+        `POST /api/v1/user/oidc/login`, or `POST /api/v2/oauth/token`.'
+      scheme: bearer
+      bearerFormat: Opaque
+x-refined-from:
+- dependency-track-openapi-v2.yaml
+- dependency-track-v2-openapi.yml

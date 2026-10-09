@@ -1,0 +1,166 @@
+generated: '2026-10-09'
+method: derived
+status: candidate
+source: 'Derived from openapi/dependency-track-openapi.yml (Dependency-Track REST API v1, 219 operations). No official MCP
+  server found: searched the web (Dependency-Track MCP server), GitHub repository search in the DependencyTrack org for "mcp"
+  returned 0 repositories, and docs.dependencytrack.org/llms.txt returned 404 on 2026-10-09.'
+name: Dependency-Track (candidate MCP tool list)
+deployment:
+  mode: none
+  auth: api-key
+  verified: derived
+  note: Dependency-Track is self-hosted; there is no vendor-hosted API host and no official MCP server. Any MCP server must
+    point at an operator-run instance (<base>/api). Auth would be the X-Api-Key header or a Bearer session token per the spec
+    securitySchemes.
+official_server: null
+community_servers:
+- name: dependency-track-mcp-server
+  registry: npm
+  url: https://www.npmjs.com/package/dependency-track-mcp-server
+  version: 0.2.0
+  published: '2026-05-10'
+  official: false
+  evidence: https://registry.npmjs.org/dependency-track-mcp-server (probed 200 on 2026-10-09; author "Dependency Track MCP
+    Server", no repository field); README at https://cdn.jsdelivr.net/npm/dependency-track-mcp-server@0.2.0/README.md describes
+    read-only access over Streamable HTTP.
+- name: daniel-brenner-fnt/dependency-track-mcp-server
+  registry: glama
+  url: https://glama.ai/mcp/servers/daniel-brenner-fnt/dependency-track-mcp-server
+  official: false
+  evidence: Glama listing found by web search 2026-10-09; third-party stdio server, not published by the DependencyTrack project.
+provider_agent_files:
+- url: https://github.com/DependencyTrack/dependency-track/blob/master/AGENTS.md
+  status: 200
+  kind: contributor coding-agent build instructions (make targets), not an API surface
+- url: https://github.com/DependencyTrack/hyades-apiserver/blob/main/AGENTS.md
+  status: 200
+  kind: contributor coding-agent build instructions, not an API surface
+tools:
+- name: list_projects
+  operationId: getProjects
+  method: GET
+  path: /api/v1/project
+  readOnly: true
+  summary: Returns a list of all projects
+- name: get_project
+  operationId: getProject
+  method: GET
+  path: /api/v1/project/{uuid}
+  readOnly: true
+  summary: Returns a specific project
+- name: lookup_project
+  operationId: getProjectByNameAndVersion
+  method: GET
+  path: /api/v1/project/lookup
+  readOnly: true
+  summary: Returns a specific project by its name and version
+- name: create_project
+  operationId: createProject
+  method: PUT
+  path: /api/v1/project
+  readOnly: false
+  summary: Creates a new project
+- name: upload_bom
+  operationId: UploadBom
+  method: POST
+  path: /api/v1/bom
+  readOnly: false
+  summary: Upload a supported bill of material format document
+- name: check_event_token
+  operationId: isTokenBeingProcessed_1
+  method: GET
+  path: /api/v1/event/token/{uuid}
+  readOnly: true
+  summary: Determines if there are any tasks associated with the token that are being processed, or in the queue to be processed.
+- name: get_project_findings
+  operationId: getFindingsByProject
+  method: GET
+  path: /api/v1/finding/project/{uuid}
+  readOnly: true
+  summary: 'Returns a list of all findings for a specific project or generates SARIF file if Accept: application/sarif+json
+    header is provided'
+- name: analyze_project
+  operationId: analyzeProject
+  method: POST
+  path: /api/v1/finding/project/{uuid}/analyze
+  readOnly: false
+  summary: Triggers Vulnerability Analysis on a specific project
+- name: export_project_findings
+  operationId: exportFindingsByProject
+  method: GET
+  path: /api/v1/finding/project/{uuid}/export
+  readOnly: true
+  summary: Returns the findings for the specified project as FPF
+- name: list_project_components
+  operationId: getAllComponents
+  method: GET
+  path: /api/v1/component/project/{uuid}
+  readOnly: true
+  summary: Returns a list of all components for a given project
+- name: get_component_by_identity
+  operationId: getComponentByIdentity
+  method: GET
+  path: /api/v1/component/identity
+  readOnly: true
+  summary: Returns a list of components that have the specified component identity. This resource accepts coordinates (group,
+    name, version) or purl, cpe, or swidTagId
+- name: get_vulnerability
+  operationId: getVulnerabilityByVulnId
+  method: GET
+  path: /api/v1/vulnerability/source/{source}/vuln/{vuln}
+  readOnly: true
+  summary: Returns a specific vulnerability
+- name: get_affected_projects
+  operationId: getAffectedProject
+  method: GET
+  path: /api/v1/vulnerability/source/{source}/vuln/{vuln}/projects
+  readOnly: true
+  summary: Returns a list of all projects affected by a specific vulnerability
+- name: get_analysis
+  operationId: retrieveAnalysis
+  method: GET
+  path: /api/v1/analysis
+  readOnly: true
+  summary: Retrieves an analysis trail
+- name: update_analysis
+  operationId: updateAnalysis
+  method: PUT
+  path: /api/v1/analysis
+  readOnly: false
+  summary: Records an analysis decision
+- name: get_project_metrics
+  operationId: getProjectCurrentMetrics
+  method: GET
+  path: /api/v1/metrics/project/{uuid}/current
+  readOnly: true
+  summary: Returns current metrics for a specific project
+- name: get_portfolio_metrics
+  operationId: getPortfolioCurrentMetrics
+  method: GET
+  path: /api/v1/metrics/portfolio/current
+  readOnly: true
+  summary: Returns current metrics for the entire portfolio
+- name: get_project_violations
+  operationId: getViolationsByProject
+  method: GET
+  path: /api/v1/violation/project/{uuid}
+  readOnly: true
+  summary: Returns a list of all policy violations for a specific project
+- name: export_project_sbom
+  operationId: exportProjectAsCycloneDx
+  method: GET
+  path: /api/v1/bom/cyclonedx/project/{uuid}
+  readOnly: true
+  summary: Returns dependency metadata for a project in CycloneDX format
+- name: upload_vex
+  operationId: uploadVex
+  method: PUT
+  path: /api/v1/vex
+  readOnly: false
+  summary: Upload a supported VEX document
+- name: get_version
+  operationId: getVersion
+  method: GET
+  path: /api/version
+  readOnly: true
+  summary: Returns application version information

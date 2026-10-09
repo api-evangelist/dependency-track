@@ -1,0 +1,232 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Kev Data Sources API
+  version: 2.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+    email: dependencytrack@owasp.org
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged Kev Data Sources across 2 of this provider''s published API definitions: dependency-track-openapi-v2.yaml, dependency-track-v2-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api/v2
+security:
+- apiKeyAuth: []
+- bearerAuth: []
+tags:
+- name: Kev Data Sources
+  description: Endpoints related to KEV data sources
+paths:
+  /kev-data-sources/{name}/mirror-runs:
+    post:
+      tags:
+      - Kev Data Sources
+      summary: Trigger a KEV data source mirror run
+      description: 'Triggers a mirror run for the given KEV data source.
+
+
+        Requires permission `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_UPDATE`.'
+      operationId: triggerKevDataSourceMirrorRun
+      parameters:
+      - name: name
+        in: path
+        description: Name of the KEV data source (e.g. `cisa`, `enisa`).
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Mirror run triggered
+          headers:
+            Location:
+              description: URL of the latest mirror run resource.
+              schema:
+                type: string
+                format: uri
+        '400':
+          description: Mirror run cannot be started
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem-details'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        '404':
+          $ref: '#/components/responses/generic-not-found-error'
+        '409':
+          description: A mirror run is already in progress
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/problem-details'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+  /kev-data-sources/{name}/mirror-runs/latest:
+    get:
+      tags:
+      - Kev Data Sources
+      summary: Get the latest KEV data source mirror run
+      description: 'Returns the status of the most recent mirror run for a given
+
+        KEV data source.
+
+
+        Returns 404 if no mirror run is available
+
+        (e.g. none has been triggered yet, or the most recent run
+
+        is no longer retained), or if the data source is unknown.
+
+
+        Requires permission `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_READ`.'
+      operationId: getLatestKevDataSourceMirrorRun
+      parameters:
+      - name: name
+        in: path
+        description: Name of the KEV data source (e.g. `cisa`, `enisa`).
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Mirror run status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/kev-data-source-mirror-status'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        '404':
+          $ref: '#/components/responses/generic-not-found-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+components:
+  responses:
+    generic-error:
+      description: Unexpected error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+    generic-not-found-error:
+      description: Not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 404
+            title: Not Found
+            detail: The requested resource could not be found.
+    generic-unauthorized-error:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 401
+            title: Unauthorized
+            detail: Not authorized to access the requested resource.
+    generic-forbidden-error:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 403
+            title: Forbidden
+            detail: Not permitted to access the requested resource.
+  schemas:
+    kev-data-source-mirror-status:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of the mirror run.
+          enum:
+          - PENDING
+          - RUNNING
+          - COMPLETED
+          - FAILED
+        started_at:
+          $ref: '#/components/schemas/timestamp'
+        completed_at:
+          $ref: '#/components/schemas/timestamp'
+        failure_reason:
+          type: string
+          description: Reason for why the mirror run failed.
+    problem-details:
+      required:
+      - detail
+      - title
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+          format: uri-reference
+          default: about:blank
+        status:
+          maximum: 599
+          minimum: 400
+          type: integer
+          description: HTTP status code generated by the origin server for this occurrence of the problem
+          format: int32
+          example: 500
+        title:
+          maxLength: 255
+          type: string
+          description: Short, human-readable summary of the problem type
+        detail:
+          maxLength: 1024
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          description: Reference URI that identifies the specific occurrence of the problem
+          format: uri-reference
+      description: An RFC 9457 problem object.
+      externalDocs:
+        url: https://www.rfc-editor.org/rfc/rfc9457.html
+      x-parent: true
+    timestamp:
+      type: integer
+      description: Epoch timestamp in milliseconds since January 1, 1970 UTC.
+      format: int64
+      example: 1752209050377
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Authentication via API key.
+      name: X-Api-Key
+      in: header
+    bearerAuth:
+      type: http
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login`,
+
+        `POST /api/v1/user/oidc/login`, or `POST /api/v2/oauth/token`.'
+      scheme: bearer
+      bearerFormat: Opaque
+x-refined-from:
+- dependency-track-openapi-v2.yaml
+- dependency-track-v2-openapi.yml

@@ -1,0 +1,706 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Finding API
+  version: 1.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged finding across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api
+tags:
+- name: finding
+paths:
+  /v1/finding:
+    get:
+      description: Requires permission VIEW_VULNERABILITY
+      operationId: getAllFindings_1
+      parameters:
+      - description: The page to return. To be used in conjunction with <code>pageSize</code>.
+        in: query
+        name: pageNumber
+        schema:
+          type: string
+          default: '1'
+      - description: Number of elements to return per page. To be used in conjunction with <code>pageNumber</code>.
+        in: query
+        name: pageSize
+        schema:
+          type: string
+          default: '100'
+      - description: Offset to start returning elements from. To be used in conjunction with <code>limit</code>.
+        in: query
+        name: offset
+        schema:
+          type: string
+      - description: Number of elements to return per page. To be used in conjunction with <code>offset</code>.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Name of the resource field to sort on.
+        in: query
+        name: sortName
+        schema:
+          type: string
+      - description: Ordering of items when sorting with <code>sortName</code>.
+        in: query
+        name: sortOrder
+        schema:
+          type: string
+          enum:
+          - asc, desc
+      - description: Show inactive projects
+        in: query
+        name: showInactive
+        schema:
+          type: boolean
+      - description: Show suppressed findings
+        in: query
+        name: showSuppressed
+        schema:
+          type: boolean
+      - description: Filter by severity
+        in: query
+        name: severity
+        schema:
+          type: string
+      - description: Filter by analysis status
+        in: query
+        name: analysisStatus
+        schema:
+          type: string
+      - description: Filter by vendor response
+        in: query
+        name: vendorResponse
+        schema:
+          type: string
+      - description: Filter published from this date
+        in: query
+        name: publishDateFrom
+        schema:
+          type: string
+      - description: Filter published to this date
+        in: query
+        name: publishDateTo
+        schema:
+          type: string
+      - description: Filter attributed on from this date
+        in: query
+        name: attributedOnDateFrom
+        schema:
+          type: string
+      - description: Filter attributed on to this date
+        in: query
+        name: attributedOnDateTo
+        schema:
+          type: string
+      - description: Filter the text input in these fields
+        in: query
+        name: textSearchField
+        schema:
+          type: string
+      - description: Filter by this text input
+        in: query
+        name: textSearchInput
+        schema:
+          type: string
+      - description: Filter CVSSv2 from this value
+        in: query
+        name: cvssv2From
+        schema:
+          type: string
+      - description: Filter CVSSv2 from this Value
+        in: query
+        name: cvssv2To
+        schema:
+          type: string
+      - description: Filter CVSSv3 from this value
+        in: query
+        name: cvssv3From
+        schema:
+          type: string
+      - description: Filter CVSSv3 from this Value
+        in: query
+        name: cvssv3To
+        schema:
+          type: string
+      - description: Filter CVSSv4 from this value
+        in: query
+        name: cvssv4From
+        schema:
+          type: string
+      - description: Filter CVSSv4 to this value
+        in: query
+        name: cvssv4To
+        schema:
+          type: string
+      - description: Filter EPSS from this value
+        in: query
+        name: epssFrom
+        schema:
+          type: string
+      - description: Filter EPSS to this value
+        in: query
+        name: epssTo
+        schema:
+          type: string
+      - description: Filter EPSS Percentile from this value
+        in: query
+        name: epssPercentileFrom
+        schema:
+          type: string
+      - description: Filter EPSS Percentile to this value
+        in: query
+        name: epssPercentileTo
+        schema:
+          type: string
+      - description: 'Filter by known exploited vulnerability (KEV) status: omit for any, true for KEVs only, false to exclude KEVs'
+        in: query
+        name: isKev
+        schema:
+          type: boolean
+      - description: The counting mode for `X-Total-Count`. With `BOUNDED`, the count stops at a fixed server-side cap. `X-Total-Count` is then exact when the count finishes within the cap, or when the requested page ends the result set. Otherwise it is a lower bound, never below the end of the requested page. `X-Total-Count-Type` says which case applies. See the Pagination section of the API description.
+        in: query
+        name: totalCount
+        schema:
+          type: string
+          default: EXACT
+          description: The counting mode for the `X-Total-Count` response header.
+          enum:
+          - EXACT
+          - BOUNDED
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Finding'
+          description: A list of all findings
+          headers:
+            X-Total-Count:
+              description: The number of findings, exact or a lower bound. See `X-Total-Count-Type`.
+              schema:
+                format: integer
+              style: simple
+            X-Total-Count-Type:
+              $ref: '#/components/headers/TotalCountType'
+              style: simple
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Invalid query parameter
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all findings
+      tags:
+      - finding
+    servers:
+    - url: /api
+  /v1/finding/grouped:
+    get:
+      description: Requires permission VIEW_VULNERABILITY
+      operationId: getAllFindings
+      parameters:
+      - description: The page to return. To be used in conjunction with <code>pageSize</code>.
+        in: query
+        name: pageNumber
+        schema:
+          type: string
+          default: '1'
+      - description: Number of elements to return per page. To be used in conjunction with <code>pageNumber</code>.
+        in: query
+        name: pageSize
+        schema:
+          type: string
+          default: '100'
+      - description: Offset to start returning elements from. To be used in conjunction with <code>limit</code>.
+        in: query
+        name: offset
+        schema:
+          type: string
+      - description: Number of elements to return per page. To be used in conjunction with <code>offset</code>.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Name of the resource field to sort on.
+        in: query
+        name: sortName
+        schema:
+          type: string
+      - description: Ordering of items when sorting with <code>sortName</code>.
+        in: query
+        name: sortOrder
+        schema:
+          type: string
+          enum:
+          - asc, desc
+      - description: Show inactive projects
+        in: query
+        name: showInactive
+        schema:
+          type: boolean
+      - description: Filter by severity
+        in: query
+        name: severity
+        schema:
+          type: string
+      - description: Filter published from this date
+        in: query
+        name: publishDateFrom
+        schema:
+          type: string
+      - description: Filter published to this date
+        in: query
+        name: publishDateTo
+        schema:
+          type: string
+      - description: Filter the text input in these fields
+        in: query
+        name: textSearchField
+        schema:
+          type: string
+      - description: Filter by this text input
+        in: query
+        name: textSearchInput
+        schema:
+          type: string
+      - description: Filter CVSSv2 from this value
+        in: query
+        name: cvssv2From
+        schema:
+          type: string
+      - description: Filter CVSSv2 to this value
+        in: query
+        name: cvssv2To
+        schema:
+          type: string
+      - description: Filter CVSSv3 from this value
+        in: query
+        name: cvssv3From
+        schema:
+          type: string
+      - description: Filter CVSSv3 to this value
+        in: query
+        name: cvssv3To
+        schema:
+          type: string
+      - description: Filter CVSSv4 from this value
+        in: query
+        name: cvssv4From
+        schema:
+          type: string
+      - description: Filter CVSSv4 to this value
+        in: query
+        name: cvssv4To
+        schema:
+          type: string
+      - description: Filter EPSS from this value
+        in: query
+        name: epssFrom
+        schema:
+          type: string
+      - description: Filter EPSS to this value
+        in: query
+        name: epssTo
+        schema:
+          type: string
+      - description: Filter EPSS Percentile from this value
+        in: query
+        name: epssPercentileFrom
+        schema:
+          type: string
+      - description: Filter EPSS Percentile to this value
+        in: query
+        name: epssPercentileTo
+        schema:
+          type: string
+      - description: Filter occurrences in projects from this value
+        in: query
+        name: occurrencesFrom
+        schema:
+          type: string
+      - description: Filter occurrences in projects to this value
+        in: query
+        name: occurrencesTo
+        schema:
+          type: string
+      - description: 'Filter by known exploited vulnerability (KEV) status: omit for any, true for KEVs only, false to exclude KEVs'
+        in: query
+        name: isKev
+        schema:
+          type: boolean
+      - description: The counting mode for `X-Total-Count`. With `BOUNDED`, the count is skipped and `X-Total-Count` reports what the requested page itself proves. `X-Total-Count-Type` is then `EXACT` when the page ends the result set, and `AT_LEAST` otherwise. A page past the end reports `AT_LEAST` with a count of 0, which means the total is unknown. See the Pagination section of the API description.
+        in: query
+        name: totalCount
+        schema:
+          type: string
+          default: EXACT
+          description: The counting mode for the `X-Total-Count` response header.
+          enum:
+          - EXACT
+          - BOUNDED
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Finding'
+          description: A list of all findings grouped by vulnerability
+          headers:
+            X-Total-Count:
+              description: The number of findings, exact or a lower bound. See `X-Total-Count-Type`.
+              schema:
+                format: integer
+              style: simple
+            X-Total-Count-Type:
+              $ref: '#/components/headers/TotalCountType'
+              style: simple
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Invalid query parameter
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all findings grouped by vulnerability
+      tags:
+      - finding
+    servers:
+    - url: /api
+  /v1/finding/project/{uuid}:
+    get:
+      description: Requires permission VIEW_VULNERABILITY
+      operationId: getFindingsByProject
+      parameters:
+      - description: Case-insensitive substring filter matched against component name, component group, and vulnerability ID. Additionally matched as an exact value against component UUID, vulnerability UUID, and the `componentUuid:vulnerabilityUuid` pair.
+        in: query
+        name: searchText
+        schema:
+          type: string
+      - description: The page to return. To be used in conjunction with <code>pageSize</code>.
+        in: query
+        name: pageNumber
+        schema:
+          type: string
+          default: '1'
+      - description: Number of elements to return per page. To be used in conjunction with <code>pageNumber</code>.
+        in: query
+        name: pageSize
+        schema:
+          type: string
+          default: '100'
+      - description: Offset to start returning elements from. To be used in conjunction with <code>limit</code>.
+        in: query
+        name: offset
+        schema:
+          type: string
+      - description: Number of elements to return per page. To be used in conjunction with <code>offset</code>.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Name of the resource field to sort on.
+        in: query
+        name: sortName
+        schema:
+          type: string
+      - description: Ordering of items when sorting with <code>sortName</code>.
+        in: query
+        name: sortOrder
+        schema:
+          type: string
+          enum:
+          - asc, desc
+      - description: The UUID of the project
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - description: Optionally includes suppressed findings
+        in: query
+        name: suppressed
+        schema:
+          type: boolean
+      - description: Optionally limit findings to specific sources of vulnerability intelligence
+        in: query
+        name: source
+        schema:
+          type: string
+          enum:
+          - NVD
+          - GITHUB
+          - VULNDB
+          - OSSINDEX
+          - INTERNAL
+          - OSV
+          - SNYK
+          - CX
+          - JVN
+          - UNKNOWN
+      - in: header
+        name: accept
+        schema:
+          type: string
+      - description: Whether to include only projects with existing analysis.
+        in: query
+        name: hasAnalysis
+        schema:
+          type: boolean
+      - description: Filter EPSS score from this value (inclusive)
+        in: query
+        name: epssFrom
+        schema:
+          type: number
+      - description: Filter EPSS score to this value (inclusive)
+        in: query
+        name: epssTo
+        schema:
+          type: number
+      - description: 'Filter by known exploited vulnerability (KEV) status: omit for any, true for KEVs only, false to exclude KEVs'
+        in: query
+        name: isKev
+        schema:
+          type: boolean
+      - description: The counting mode for `X-Total-Count`. With `BOUNDED`, the count stops at a fixed server-side cap. `X-Total-Count` is then exact when the count finishes within the cap, or when the requested page ends the result set. Otherwise it is a lower bound, never below the end of the requested page. `X-Total-Count-Type` says which case applies. See the Pagination section of the API description.
+        in: query
+        name: totalCount
+        schema:
+          type: string
+          default: EXACT
+          description: The counting mode for the `X-Total-Count` response header.
+          enum:
+          - EXACT
+          - BOUNDED
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Finding'
+            application/sarif+json:
+              schema:
+                type: string
+          description: A list of all findings for a specific project, or a SARIF file. SARIF responses carry no count headers.
+          headers:
+            X-Total-Count:
+              description: The number of findings, exact or a lower bound. See `X-Total-Count-Type`.
+              schema:
+                format: integer
+              style: simple
+            X-Total-Count-Type:
+              $ref: '#/components/headers/TotalCountType'
+              style: simple
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Invalid query parameter
+        '401':
+          description: Unauthorized
+        '403':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Access to the requested project is forbidden
+        '404':
+          description: The project could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all findings for a specific project or generates SARIF file…
+      tags:
+      - finding
+    servers:
+    - url: /api
+  /v1/finding/project/{uuid}/analyze:
+    post:
+      description: Requires permission VULNERABILITY_ANALYSIS
+      operationId: analyzeProject
+      parameters:
+      - description: The UUID of the project to analyze
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BomUploadResponse'
+          description: Token to be used for checking analysis progress
+        '401':
+          description: Unauthorized
+        '403':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Access to the requested project is forbidden
+        '404':
+          description: The project could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Triggers Vulnerability Analysis on a specific project
+      tags:
+      - finding
+    servers:
+    - url: /api
+  /v1/finding/project/{uuid}/export:
+    get:
+      description: Requires permission VIEW_VULNERABILITY
+      operationId: exportFindingsByProject
+      parameters:
+      - description: The UUID of the project
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: The findings for the specified project as FPF
+        '401':
+          description: Unauthorized
+        '403':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Access to the requested project is forbidden
+        '404':
+          description: The project could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns the findings for the specified project as FPF
+      tags:
+      - finding
+    servers:
+    - url: /api
+components:
+  schemas:
+    BomUploadResponse:
+      type: object
+      properties:
+        projectUuid:
+          type: string
+          format: uuid
+          description: UUID of the project the BOM was uploaded for
+        token:
+          type: string
+          format: uuid
+          description: Token used to check task progress
+      required:
+      - projectUuid
+      - token
+    ProblemDetails:
+      type: object
+      description: An RFC 9457 problem object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+          example: Example detail
+        instance:
+          type: string
+          format: uri
+          description: Reference URI that identifies the specific occurrence of the problem
+          example: https://api.example.org/foo/bar/example-instance
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code generated by the origin server for this occurrence of the problem
+          example: 400
+        title:
+          type: string
+          description: Short, human-readable summary of the problem type
+          example: Example title
+        type:
+          type: string
+          format: uri
+          description: A URI reference that identifies the problem type
+          example: https://api.example.org/foo/bar/example-problem
+      required:
+      - detail
+      - status
+      - title
+    Finding:
+      type: object
+      properties:
+        analysis:
+          type: object
+          additionalProperties:
+            type: object
+        attribution:
+          type: object
+          additionalProperties:
+            type: object
+        component:
+          type: object
+          additionalProperties:
+            type: object
+        matrix:
+          type: string
+        vulnerability:
+          type: object
+          additionalProperties:
+            type: object
+  headers:
+    TotalCountType:
+      description: Whether `X-Total-Count` is exact (`EXACT`) or a lower bound (`AT_LEAST`). `AT_LEAST` with a count of 0 means the total is unknown.
+      schema:
+        type: string
+        enum:
+        - EXACT
+        - AT_LEAST
+  securitySchemes:
+    ApiKeyAuth:
+      description: Authentication via API key.
+      in: header
+      name: X-Api-Key
+      type: apiKey
+    BearerAuth:
+      bearerFormat: Opaque
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login` or
+
+        `POST /api/v1/user/oidc/login`.'
+      scheme: bearer
+      type: http
+x-refined-from:
+- dependency-track-openapi-v1.yaml
+- dependency-track-openapi.yml

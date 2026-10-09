@@ -1,0 +1,40 @@
+generated: '2026-10-09'
+method: searched
+source: https://github.com/DependencyTrack/dependency-track/blob/master/README.md
+note: >-
+  Dependency-Track is an OWASP open-source project, self-hosted by its users, not a hosted service.
+  The pre-flight dossier found no legal pages, the homepage https://dependencytrack.org/ (200) links to
+  no privacy, terms or trust page, and https://dependencytrack.org/privacy returns 404. The only
+  regulatory-relevant language the project publishes is about distribution-variant support status.
+signals:
+  support_lifetime:
+    url: https://github.com/DependencyTrack/dependency-track/blob/master/README.md
+    section: 'Distributions'
+    evidence:
+    - source: https://raw.githubusercontent.com/DependencyTrack/dependency-track/master/README.md
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: >-
+        The Bundled variant combines the API Server and the Frontend user interface. This variant was previously
+        referred to as the executable war and was the preferred distribution from Dependency-Track v3.0 - v3.8.
+        This variant is supported but deprecated and will be discontinued in a future release.
+    - source: https://raw.githubusercontent.com/DependencyTrack/dependency-track/master/README.md
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: >-
+        The Traditional variant combines the API Server and the Frontend user interface and must be deployed to a
+        Servlet container. This variant is not supported, deprecated, and will be discontinued in a future release.
+    note: >-
+      States per-distribution support status (supported / deprecated / not supported) but gives no end-of-support
+      dates and no version support window. A weak support-lifetime statement, not a dated policy.
+observations:
+  sbom_artifact:
+    url: https://github.com/DependencyTrack/dependency-track/releases/tag/5.2.0
+    http_status: 200
+    fetched: '2026-10-09'
+    asset: https://github.com/DependencyTrack/dependency-track/releases/download/5.2.0/bom.json
+    note: >-
+      The 5.2.0 release (2026-10-08) ships a bom.json asset (200, CycloneDX 1.4, metadata component
+      apiserver 5.2.0, 237 components) alongside an in-toto attestation (.intoto.jsonl). This is an
+      observed artifact, not a written SBOM commitment; no provider sentence was found stating an SBOM
+      policy, so it is not recorded as an `sbom` signal.

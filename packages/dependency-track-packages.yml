@@ -1,0 +1,45 @@
+generated: '2026-10-09'
+method: searched
+source: https://docs.dependencytrack.org/getting-started/distributions/
+note: Dependency-Track is distributed as self-hosted server software (Docker images, Helm chart), not as API client SDKs. No first-party REST client SDK was found on npm, PyPI, NuGet or Maven Central; the only org.dependencytrack artifact on Maven Central is public-api-java, last released 2018.
+packages:
+- name: dependencytrack/apiserver
+  registry: docker
+  url: https://hub.docker.com/r/dependencytrack/apiserver
+  language: java
+  official: true
+  version: 4.14.5
+  published: '2026-10-05'
+  note: API Server distribution (serves the REST API). Version/date from hub.docker.com/v2/repositories/dependencytrack/apiserver/tags/4.14.5.
+- name: dependencytrack/frontend
+  registry: docker
+  url: https://hub.docker.com/r/dependencytrack/frontend
+  language: javascript
+  official: true
+  version: 5.2.0
+  published: '2026-10-08'
+  note: Frontend single page application. Latest numeric tag by last_updated; a 4.14.5 tag was also pushed 2026-10-05.
+- name: dependencytrack/bundled
+  registry: docker
+  url: https://hub.docker.com/r/dependencytrack/bundled
+  language: java
+  official: true
+  version: 4.14.5
+  published: '2026-10-05'
+  note: Bundled API Server + Frontend; the distributions page states this variant "is supported but deprecated and will be discontinued in a future release."
+- name: dependency-track (Helm chart)
+  registry: helm
+  url: https://github.com/DependencyTrack/helm-charts
+  language: yaml
+  official: true
+  version: 2.7.0
+  published: '2026-10-08'
+  note: From GitHub releases of DependencyTrack/helm-charts (tag dependency-track-2.7.0).
+- name: org.dependencytrack:public-api-java
+  registry: maven
+  url: https://search.maven.org/artifact/org.dependencytrack/public-api-java
+  language: java
+  official: true
+  version: 1.0.1
+  published: '2018-11-30'
+  note: POM name "Dependency-Track Public Java API" (github.com/DependencyTrack/public-api-java). Last release 2018 predates the current v1/v2 REST API; treat as stale.

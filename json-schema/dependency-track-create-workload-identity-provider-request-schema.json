@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/dependency-track/main/json-schema/dependency-track-create-workload-identity-provider-request-schema.json",
+  "title": "create-workload-identity-provider-request",
+  "x-generated": "2026-10-09",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/dependency-track-v2-openapi.yml#/components/schemas/create-workload-identity-provider-request",
+  "required": [
+    "audience",
+    "issuer",
+    "name",
+    "type"
+  ],
+  "type": "object",
+  "properties": {
+    "name": {
+      "$ref": "#/$defs/workload-identity-provider-name"
+    },
+    "type": {
+      "$ref": "#/$defs/workload-identity-provider-type"
+    },
+    "issuer": {
+      "maxLength": 255,
+      "type": "string",
+      "description": "The expected `iss` claim for `OIDC` providers, or the SPIFFE trust domain for `SPIFFE` providers, such as `example.org`."
+    },
+    "audience": {
+      "maxLength": 255,
+      "type": "string",
+      "description": "The value that the token's `aud` claim must contain."
+    },
+    "jwks_url": {
+      "maxLength": 2048,
+      "type": "string",
+      "description": "The URL to fetch the signing keys from. Must be `https`."
+    },
+    "jwks": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "An RFC 7517 JSON Web Key Set holding the issuer's public signing keys."
+    },
+    "session_lifetime_seconds": {
+      "maximum": 86400,
+      "minimum": 60,
+      "type": "integer",
+      "description": "The lifetime of sessions created through this provider, unless a binding sets its own.",
+      "format": "int32",
+      "default": 3600
+    }
+  },
+  "$defs": {
+    "workload-identity-provider-name": {
+      "maxLength": 63,
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
+      "type": "string",
+      "description": "The name of the workload identity provider."
+    },
+    "workload-identity-provider-type": {
+      "type": "string",
+      "description": "The type of issuer the provider trusts.\n\n* `OIDC`: an OpenID Connect issuer. Tokens must carry an `iss` claim equal to the provider's issuer.\n* `SPIFFE`: a SPIFFE trust domain. The `iss` claim is ignored, and `sub` must be a SPIFFE ID of that trust domain.",
+      "enum": [
+        "OIDC",
+        "SPIFFE"
+      ]
+    }
+  }
+}

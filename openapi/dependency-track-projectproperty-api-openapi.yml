@@ -1,0 +1,335 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Project Property API
+  version: 1.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged projectProperty across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api
+tags:
+- name: projectProperty
+paths:
+  /v1/project/{uuid}/property:
+    delete:
+      description: Requires permission PORTFOLIO_MANAGEMENT or PORTFOLIO_MANAGEMENT_DELETE
+      operationId: deleteProperty_1
+      parameters:
+      - description: The UUID of the project to delete a property from
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteProjectPropertyRequest'
+      responses:
+        '204':
+          description: Project property removed successfully
+        '401':
+          description: Unauthorized
+        '403':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Access to the requested project is forbidden
+        '404':
+          description: The project or project property could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Deletes a config property
+      tags:
+      - projectProperty
+    get:
+      description: Requires permission PORTFOLIO_MANAGEMENT or PORTFOLIO_MANAGEMENT_READ
+      operationId: getProperties_1
+      parameters:
+      - description: The UUID of the project to retrieve properties for
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectPropertyResponse'
+          description: A list of all ProjectProperties for the specified project
+        '401':
+          description: Unauthorized
+        '403':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Access to the requested project is forbidden
+        '404':
+          description: The project could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all ProjectProperties for the specified project
+      tags:
+      - projectProperty
+    post:
+      description: Requires permission PORTFOLIO_MANAGEMENT or PORTFOLIO_MANAGEMENT_UPDATE
+      operationId: updateProperty
+      parameters:
+      - description: The UUID of the project to create a property for
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProjectPropertyRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectPropertyResponse'
+          description: The updated project property
+        '401':
+          description: Unauthorized
+        '403':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Access to the requested project is forbidden
+        '404':
+          description: The project could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Updates a project property
+      tags:
+      - projectProperty
+    put:
+      description: Requires permission PORTFOLIO_MANAGEMENT or PORTFOLIO_MANAGEMENT_CREATE
+      operationId: createProperty_1
+      parameters:
+      - description: The UUID of the project to create a property for
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectPropertyRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectPropertyResponse'
+          description: The created project property
+        '401':
+          description: Unauthorized
+        '403':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Access to the requested project is forbidden
+        '404':
+          description: The project could not be found
+        '409':
+          description: A property with the specified project/group/name combination already exists
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Creates a new project property
+      tags:
+      - projectProperty
+    servers:
+    - url: /api
+components:
+  schemas:
+    UpdateProjectPropertyRequest:
+      type: object
+      properties:
+        groupName:
+          type: string
+          description: Group the property belongs to
+          maxLength: 255
+          minLength: 1
+          pattern: \P{Cc}+
+        propertyName:
+          type: string
+          description: Name of the property
+          maxLength: 255
+          minLength: 1
+          pattern: \P{Cc}+
+        propertyValue:
+          type: string
+          description: Value of the property
+          maxLength: 1024
+          minLength: 0
+          pattern: \P{Cc}+
+      required:
+      - groupName
+      - propertyName
+    CreateProjectPropertyRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Description of the property
+          maxLength: 255
+          minLength: 0
+          pattern: \P{Cc}+
+        groupName:
+          type: string
+          description: Group the property belongs to
+          maxLength: 255
+          minLength: 1
+          pattern: \P{Cc}+
+        propertyName:
+          type: string
+          description: Name of the property
+          maxLength: 255
+          minLength: 1
+          pattern: \P{Cc}+
+        propertyType:
+          type: string
+          description: Type of the property
+          enum:
+          - BOOLEAN
+          - INTEGER
+          - NUMBER
+          - STRING
+          - TIMESTAMP
+          - URL
+          - UUID
+        propertyValue:
+          type: string
+          description: Value of the property
+          maxLength: 1024
+          minLength: 0
+          pattern: \P{Cc}+
+      required:
+      - groupName
+      - propertyName
+      - propertyType
+    ProjectPropertyResponse:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Description of the property
+        groupName:
+          type: string
+          description: Group the property belongs to
+        propertyName:
+          type: string
+          description: Name of the property
+        propertyType:
+          type: string
+          description: Type of the property
+          enum:
+          - BOOLEAN
+          - INTEGER
+          - NUMBER
+          - STRING
+          - TIMESTAMP
+          - URL
+          - UUID
+        propertyValue:
+          type: string
+          description: Value of the property
+      required:
+      - groupName
+      - propertyName
+      - propertyType
+    ProblemDetails:
+      type: object
+      description: An RFC 9457 problem object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+          example: Example detail
+        instance:
+          type: string
+          format: uri
+          description: Reference URI that identifies the specific occurrence of the problem
+          example: https://api.example.org/foo/bar/example-instance
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code generated by the origin server for this occurrence of the problem
+          example: 400
+        title:
+          type: string
+          description: Short, human-readable summary of the problem type
+          example: Example title
+        type:
+          type: string
+          format: uri
+          description: A URI reference that identifies the problem type
+          example: https://api.example.org/foo/bar/example-problem
+      required:
+      - detail
+      - status
+      - title
+    DeleteProjectPropertyRequest:
+      type: object
+      properties:
+        groupName:
+          type: string
+          description: Group the property belongs to
+          maxLength: 255
+          minLength: 1
+          pattern: \P{Cc}+
+        propertyName:
+          type: string
+          description: Name of the property
+          maxLength: 255
+          minLength: 1
+          pattern: \P{Cc}+
+      required:
+      - groupName
+      - propertyName
+  securitySchemes:
+    ApiKeyAuth:
+      description: Authentication via API key.
+      in: header
+      name: X-Api-Key
+      type: apiKey
+    BearerAuth:
+      bearerFormat: Opaque
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login` or
+
+        `POST /api/v1/user/oidc/login`.'
+      scheme: bearer
+      type: http
+x-refined-from:
+- dependency-track-openapi-v1.yaml
+- dependency-track-openapi.yml

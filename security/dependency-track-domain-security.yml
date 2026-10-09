@@ -1,0 +1,17 @@
+generated: '2026-10-09'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: dependencytrack.org
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov 12 18:14:41 2026 GMT
+  hsts: true
+  hsts_max_age: 15552000
+domains:
+- domain: dependencytrack.org
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine

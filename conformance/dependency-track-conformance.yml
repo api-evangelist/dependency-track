@@ -1,0 +1,32 @@
+generated: '2026-10-09'
+method: searched
+source: https://docs.dependencytrack.org/2026/09/14/v4.14.4/
+standards:
+- id: cyclonedx
+  conforms: true
+  evidence: 'Contract: POST /v1/bom (UploadBom), GET /v1/bom/cyclonedx/project/{uuid} (exportProjectAsCycloneDx) in openapi/dependency-track-openapi.yml;
+    release notes 4.14.4: "Add support for ingestion of CycloneDX 1.7 BOMs".'
+- id: cyclonedx-vex
+  conforms: true
+  evidence: 'Contract: PUT /v1/vex (uploadVex), GET /v1/vex/cyclonedx/project/{uuid} (exportProjectAsCycloneDx_1) in openapi/dependency-track-openapi.yml.'
+- id: openapi-3
+  conforms: true
+  evidence: '"Every API is fully documented via OpenAPI v3." https://docs.dependencytrack.org/integrations/rest-api/'
+- id: openapi-3.0
+  conforms: true
+  evidence: the document declares 3.0.1
+- id: openapi-3.0
+  conforms: true
+  evidence: the document declares 3.0.3
+- id: oauth2
+  conforms: false
+  evidence: 'securitySchemes: ApiKeyAuth (apiKey), BearerAuth (http), apiKeyAuth (apiKey), bearerAuth (http)'
+- id: rfc9457
+  conforms: true
+  evidence: application/problem+json on 326 response(s), e.g. PUT /v1/acl/mapping 404
+- id: idempotency
+  conforms: false
+  evidence: no idempotency key parameter on mutating operations
+- id: pagination
+  conforms: true
+  evidence: list operations take limit, offset, page_token

@@ -1,23 +1,1842 @@
 aid: dependency-track
+
 name: Dependency-Track
-description: 'Dependency-Track is a company surfaced via the API Evangelist harvest backlog (source: spectral-ruleset-github)
-  and added to the network as a stub for full-pipeline profiling.'
+
+description: Dependency-Track is an OWASP flagship open source Component Analysis platform for Software Bill of Materials (SBOM) analysis. Per
+  its site, over 20,000 organizations use it to inventory components, find vulnerabilities, and enforce policy across the software supply chain.
+  It is self-hosted (distributed as Docker images) and exposes a REST API, documented with OpenAPI/Swagger, on each deployed instance at /api.
+
 url: https://raw.githubusercontent.com/api-evangelist/dependency-track/refs/heads/main/apis.yml
+
 x-type: company
+
 x-source: harvest:spectral-ruleset-github
-x-tier: stub
-x-tier-reason: harvest
+
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-10-09 (modular-v1; was harvest)
+
 specificationVersion: '0.20'
+
 created: '2026-10-09'
+
 modified: '2026-10-09'
+
 tags:
 - Company
-apis: []
+- SBOM
+- Software Supply Chain
+- Vulnerability Management
+- Open Source
+- OWASP
+- Security
+- CycloneDX
+
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+
+image: https://dependencytrack.org/assets/images/social-card-og.png
+
 common:
+- type: AgenticAccess
+  url: agentic-access/dependency-track-agentic-access.yml
+- type: Plans
+  url: plans/dependency-track-plans-pricing.yml
+- type: Spectral
+  url: rules/dependency-track-rules.yml
+- type: Spectral
+  url: rules/dependency-track-dependency-track-spectral-rules.yml
+- type: JSONLD
+  url: json-ld/dependency-track-context.jsonld
+- type: Vocabulary
+  url: vocabulary/dependency-track-vocabulary.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: DataModel
+  url: data-model/dependency-track-data-model.yml
+- type: Conventions
+  url: conventions/dependency-track-conventions.yml
+- type: Deprecation
+  url: lifecycle/dependency-track-lifecycle.yml
+- type: Lifecycle
+  url: lifecycle/dependency-track-lifecycle.yml
+- type: ErrorCatalog
+  url: errors/dependency-track-problem-types.yml
+- type: Conformance
+  url: conformance/dependency-track-conformance.yml
+- type: Overlay
+  url: overlays/dependency-track-v1-overlay.yaml
+- type: SecurityTxt
+  url: well-known/dependency-track-owasp-security.txt
+- type: WellKnown
+  url: well-known/dependency-track-well-known.yml
+- type: Hosts
+  url: hosts/dependency-track-hosts.yml
+- type: Vendors
+  url: vendors/dependency-track-vendors.yml
+- type: SDKs
+  url: packages/dependency-track-packages.yml
+- type: Packages
+  url: packages/dependency-track-packages.yml
+- type: Authentication
+  url: authentication/dependency-track-authentication.yml
+- type: DomainSecurity
+  url: security/dependency-track-domain-security.yml
 - type: Website
   url: https://dependencytrack.org/
+- type: SpectralRules
+  url: https://github.com/DependencyTrack/dependency-track/blob/e3abb0a09bb4dd7a8e926a26eda6c1b6324fd76c/api/src/main/spectral/ruleset.yaml
+- type: Documentation
+  url: https://docs.dependencytrack.org/
+- type: APIReference
+  url: https://docs.dependencytrack.org/integrations/rest-api/
+- type: GettingStarted
+  url: https://docs.dependencytrack.org/getting-started/distributions/
+- type: ChangeLog
+  url: https://docs.dependencytrack.org/changelog/
+- type: Blog
+  url: https://dependencytrack.org/news
+- type: GitHubOrganization
+  url: https://github.com/DependencyTrack
+- type: Support
+  url: https://github.com/DependencyTrack/dependency-track/discussions
+- type: Releases
+  url: https://github.com/DependencyTrack/dependency-track/releases
+- type: Download
+  url: https://dependencytrack.org/download
+- type: Features
+  url: https://dependencytrack.org/features
+- type: ProjectPage
+  url: https://owasp.org/www-project-dependency-track/
+- type: DockerHub
+  url: https://hub.docker.com/u/dependencytrack/
+- type: YouTube
+  url: https://www.youtube.com/@DependencyTrack
+- type: LinkedIn
+  url: https://www.linkedin.com/company/owasp-dependency-track
+
+apis:
+- aid: dependency-track:dependency-track-notifications
+  name: Dependency-Track Notifications
+  description: >-
+    Protocol Buffers (proto3, package org.dependencytrack.notification.v1) message definitions for Dependency-Track
+    notification payloads, published in the DependencyTrack/docs repository. The file defines 24 messages
+    and no RPC services.
+  humanURL: >-
+    https://github.com/DependencyTrack/docs/blob/main/docs/reference/notifications/notification.proto
+  tags:
+  - Notifications
+  properties:
+  - type: Protobuf
+    url: grpc/dependency-track-notification.proto
+  - type: Protobuf
+    name: Protobuf (provider-hosted)
+    url: >-
+      https://raw.githubusercontent.com/DependencyTrack/docs/main/docs/reference/notifications/notification.proto
+- aid: dependency-track:dependency-track-acl-api
+  name: Dependency-Track Acl API
+  description: The acl API from Dependency-Track — 3 operation(s) for acl.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - acl
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-acl-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-analysis-api
+  name: Dependency-Track Analysis API
+  description: The analysis API from Dependency-Track — 1 operation(s) for analysis.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - analysis
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-analysis-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-badge-api
+  name: Dependency-Track Badge API
+  description: The badge API from Dependency-Track — 4 operation(s) for badge.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - badge
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-badge-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-bom-api
+  name: Dependency-Track Bom API
+  description: The bom API from Dependency-Track — 4 operation(s) for bom.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - bom
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-bom-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-calculator-api
+  name: Dependency-Track Calculator API
+  description: The calculator API from Dependency-Track — 2 operation(s) for calculator.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - calculator
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-calculator-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-component-api
+  name: Dependency-Track Component API
+  description: The component API from Dependency-Track — 8 operation(s) for component.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - component
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-component-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-componentproperty-api
+  name: Dependency-Track Component Property API
+  description: The componentProperty API from Dependency-Track — 2 operation(s) for componentproperty.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - componentProperty
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-componentproperty-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-components-api
+  name: Dependency-Track Components API
+  description: Endpoints related to components
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - Components
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-components-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-configproperty-api
+  name: Dependency-Track Config Property API
+  description: The configProperty API from Dependency-Track — 4 operation(s) for configproperty.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - configProperty
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-configproperty-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-cwe-api
+  name: Dependency-Track Cwe API
+  description: The cwe API from Dependency-Track — 2 operation(s) for cwe.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - cwe
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-cwe-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-dependencygraph-api
+  name: Dependency-Track Dependency Graph API
+  description: The dependencyGraph API from Dependency-Track — 2 operation(s) for dependencygraph.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - dependencyGraph
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-dependencygraph-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-event-api
+  name: Dependency-Track Event API
+  description: The event API from Dependency-Track — 1 operation(s) for event.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - event
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-event-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-extensions-api
+  name: Dependency-Track Extensions API
+  description: Endpoints related to extensions
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - Extensions
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-extensions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-finding-api
+  name: Dependency-Track Finding API
+  description: The finding API from Dependency-Track — 5 operation(s) for finding.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - finding
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-finding-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-kev-data-sources-api
+  name: Dependency-Track Kev Data Sources API
+  description: Endpoints related to KEV data sources
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - Kev Data Sources
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-kev-data-sources-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-ldap-api
+  name: Dependency-Track Ldap API
+  description: The ldap API from Dependency-Track — 4 operation(s) for ldap.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - ldap
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-ldap-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-license-api
+  name: Dependency-Track License API
+  description: The license API from Dependency-Track — 3 operation(s) for license.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - license
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-license-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-licensegroup-api
+  name: Dependency-Track License Group API
+  description: The licenseGroup API from Dependency-Track — 3 operation(s) for licensegroup.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - licenseGroup
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-licensegroup-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-metrics-api
+  name: Dependency-Track Metrics API
+  description: The metrics API from Dependency-Track — 13 operation(s) for metrics.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - metrics
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-metrics-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-notification-api
+  name: Dependency-Track Notification API
+  description: The notification API from Dependency-Track — 8 operation(s) for notification.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - notification
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-notification-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-oauth-api
+  name: Dependency-Track OAuth API
+  description: Endpoints related to OAuth 2.0 token issuance
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - OAuth
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-oauth-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-oidc-api
+  name: Dependency-Track Oidc API
+  description: The oidc API from Dependency-Track — 7 operation(s) for oidc.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - oidc
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-oidc-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-permission-api
+  name: Dependency-Track Permission API
+  description: The permission API from Dependency-Track — 5 operation(s) for permission.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - permission
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-permission-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-policy-api
+  name: Dependency-Track Policy API
+  description: The policy API from Dependency-Track — 3 operation(s) for policy.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - policy
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-policy-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-policycondition-api
+  name: Dependency-Track Policy Condition API
+  description: The policyCondition API from Dependency-Track — 3 operation(s) for policycondition.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - policyCondition
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-policycondition-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-project-api
+  name: Dependency-Track Project API
+  description: The project API from Dependency-Track — 14 operation(s) for project.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - project
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-project-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-projectproperty-api
+  name: Dependency-Track Project Property API
+  description: The projectProperty API from Dependency-Track — 1 operation(s) for projectproperty.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - projectProperty
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-projectproperty-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-projects-api
+  name: Dependency-Track Projects API
+  description: Endpoints related to projects
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - Projects
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-projects-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-repository-api
+  name: Dependency-Track Repository API
+  description: The repository API from Dependency-Track — 4 operation(s) for repository.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - repository
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-repository-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-secrets-api
+  name: Dependency-Track Secrets API
+  description: Endpoints related to secrets
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - Secrets
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-secrets-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-service-accounts-api
+  name: Dependency-Track Service Accounts API
+  description: Endpoints related to service accounts
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - Service Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-service-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-service-api
+  name: Dependency-Track Service API
+  description: The service API from Dependency-Track — 3 operation(s) for service.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - service
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-service-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-system-capabilities-api
+  name: Dependency-Track System Capabilities API
+  description: Endpoints exposing the capabilities of the running server
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - System Capabilities
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-system-capabilities-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-tag-api
+  name: Dependency-Track Tag API
+  description: The tag API from Dependency-Track — 7 operation(s) for tag.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - tag
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-tag-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-task-queues-api
+  name: Dependency-Track Task Queues API
+  description: Endpoints related to task queue management
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - Task Queues
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-task-queues-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-team-api
+  name: Dependency-Track Team API
+  description: The team API from Dependency-Track — 7 operation(s) for team.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - team
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-team-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-user-api
+  name: Dependency-Track User API
+  description: The user API from Dependency-Track — 11 operation(s) for user.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - user
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-user-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-version-api
+  name: Dependency-Track Version API
+  description: The version API from Dependency-Track — 1 operation(s) for version.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - version
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-version-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-vex-api
+  name: Dependency-Track Vex API
+  description: The vex API from Dependency-Track — 2 operation(s) for vex.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - vex
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-vex-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-violation-api
+  name: Dependency-Track Violation API
+  description: The violation API from Dependency-Track — 3 operation(s) for violation.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - violation
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-violation-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-violationanalysis-api
+  name: Dependency-Track Violationanalysis API
+  description: The violationanalysis API from Dependency-Track — 1 operation(s) for violationanalysis.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - violationanalysis
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-violationanalysis-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-vuln-data-sources-api
+  name: Dependency-Track Vuln Data Sources API
+  description: Endpoints related to vulnerability data sources
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - Vuln Data Sources
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-vuln-data-sources-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-vuln-policies-api
+  name: Dependency-Track Vuln Policies API
+  description: Endpoints related to vulnerability policies
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - Vuln Policies
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-vuln-policies-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-vulnerability-api
+  name: Dependency-Track Vulnerability API
+  description: The vulnerability API from Dependency-Track — 11 operation(s) for vulnerability.
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - vulnerability
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-vulnerability-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-vulns-api
+  name: Dependency-Track Vulns API
+  description: Endpoints related to vulnerabilities
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - Vulns
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-vulns-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-workflows-api
+  name: Dependency-Track Workflows API
+  description: Endpoints related to workflows
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - Workflows
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-workflows-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+- aid: dependency-track:dependency-track-workload-identity-providers-api
+  name: Dependency-Track Workload Identity Providers API
+  description: Endpoints related to workload identity providers
+  humanURL: https://docs.dependencytrack.org/integrations/rest-api/
+  baseURL: http://{hostname}:{port}/api
+  tags:
+  - Workload Identity Providers
+  properties:
+  - type: OpenAPI
+    url: openapi/dependency-track-workload-identity-providers-api-openapi.yml
+  - type: Documentation
+    url: https://docs.dependencytrack.org/integrations/rest-api/
+  - type: JSONSchema
+    url: json-schema/dependency-track-component-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-vulnerability-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-notification-rule-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-portfolio-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-project-metrics-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-workload-identity-provider-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-clone-project-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-workload-identity-provider-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-oauth-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-create-component-request-schema.json
+  - type: JSONSchema
+    url: json-schema/dependency-track-update-workload-identity-provider-request-schema.json
+x-enrichment:
+  date: '2026-10-09'
+  status: enriched
+  artifacts_added: 52
+  pass: modular-v1
+  engine: identity=anthropic,contract=anthropic,surfaces=anthropic,docs=anthropic,regulatory=anthropic
+x-coverage:
+  state: covered
+  reason: identity-verified
+  detail: 'Enriched 2026-10-09: website and identity verified (verified) from the provider''s own pages; probed URLs below.'
+  evidence:
+  - url: https://dependencytrack.org/
+    status: 200

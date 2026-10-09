@@ -1,0 +1,304 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Policy Condition API
+  version: 1.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged policyCondition across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api
+tags:
+- name: policyCondition
+paths:
+  /v1/policy/condition:
+    post:
+      description: 'Requires permission POLICY_MANAGEMENT
+
+        or POLICY_MANAGEMENT_UPDATE'
+      operationId: updatePolicyCondition
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePolicyConditionRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyConditionResponse'
+          description: The updated policy condition
+        '401':
+          description: Unauthorized
+        '404':
+          description: The UUID of the policy condition could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Updates a policy condition
+      tags:
+      - policyCondition
+    servers:
+    - url: /api
+  /v1/policy/condition/{uuid}:
+    delete:
+      description: 'Requires permission POLICY_MANAGEMENT
+
+        or POLICY_MANAGEMENT_UPDATE'
+      operationId: deletePolicyCondition
+      parameters:
+      - description: The UUID of the policy condition to delete
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Policy condition removed successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: The UUID of the policy condition could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Deletes a policy condition from an existing policy
+      tags:
+      - policyCondition
+    servers:
+    - url: /api
+  /v1/policy/{uuid}/condition:
+    put:
+      description: 'Requires permission POLICY_MANAGEMENT
+
+        or POLICY_MANAGEMENT_UPDATE'
+      operationId: createPolicyCondition
+      parameters:
+      - description: The UUID of the policy
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePolicyConditionRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyConditionResponse'
+          description: The created policy condition
+        '401':
+          description: Unauthorized
+        '404':
+          description: The UUID of the policy could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Creates a new policy condition for an existing policy
+      tags:
+      - policyCondition
+    servers:
+    - url: /api
+components:
+  schemas:
+    PolicyConditionResponse:
+      type: object
+      properties:
+        operator:
+          type: string
+          description: Operator used to compare the subject to the value
+          enum:
+          - IS
+          - IS_NOT
+          - MATCHES
+          - NO_MATCH
+          - NUMERIC_GREATER_THAN
+          - NUMERIC_LESS_THAN
+          - NUMERIC_EQUAL
+          - NUMERIC_NOT_EQUAL
+          - NUMERIC_GREATER_THAN_OR_EQUAL
+          - NUMERIC_LESSER_THAN_OR_EQUAL
+          - CONTAINS_ALL
+          - CONTAINS_ANY
+        subject:
+          type: string
+          description: Subject the condition evaluates
+          enum:
+          - AGE
+          - COORDINATES
+          - CPE
+          - EXPRESSION
+          - LICENSE
+          - LICENSE_GROUP
+          - PACKAGE_URL
+          - SEVERITY
+          - SWID_TAGID
+          - VERSION
+          - COMPONENT_HASH
+          - IS_INTERNAL
+          - CWE
+          - VULNERABILITY_ID
+          - VERSION_DISTANCE
+          - EPSS
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the policy condition
+        value:
+          type: string
+          description: Value the subject is compared to
+        violationType:
+          type: string
+          description: Violation type produced when the condition matches
+          enum:
+          - LICENSE
+          - SECURITY
+          - OPERATIONAL
+      required:
+      - operator
+      - subject
+      - uuid
+      - value
+    CreatePolicyConditionRequest:
+      type: object
+      properties:
+        operator:
+          type: string
+          description: Operator used to compare the subject to the value
+          enum:
+          - IS
+          - IS_NOT
+          - MATCHES
+          - NO_MATCH
+          - NUMERIC_GREATER_THAN
+          - NUMERIC_LESS_THAN
+          - NUMERIC_EQUAL
+          - NUMERIC_NOT_EQUAL
+          - NUMERIC_GREATER_THAN_OR_EQUAL
+          - NUMERIC_LESSER_THAN_OR_EQUAL
+          - CONTAINS_ALL
+          - CONTAINS_ANY
+        subject:
+          type: string
+          description: Subject the condition evaluates
+          enum:
+          - AGE
+          - COORDINATES
+          - CPE
+          - EXPRESSION
+          - LICENSE
+          - LICENSE_GROUP
+          - PACKAGE_URL
+          - SEVERITY
+          - SWID_TAGID
+          - VERSION
+          - COMPONENT_HASH
+          - IS_INTERNAL
+          - CWE
+          - VULNERABILITY_ID
+          - VERSION_DISTANCE
+          - EPSS
+        value:
+          type: string
+          description: Value the subject is compared to
+          minLength: 1
+        violationType:
+          type: string
+          description: Violation type produced when the condition matches. Required for `EXPRESSION` subjects
+          enum:
+          - LICENSE
+          - SECURITY
+          - OPERATIONAL
+      required:
+      - operator
+      - subject
+      - value
+    UpdatePolicyConditionRequest:
+      type: object
+      properties:
+        operator:
+          type: string
+          description: Operator used to compare the subject to the value
+          enum:
+          - IS
+          - IS_NOT
+          - MATCHES
+          - NO_MATCH
+          - NUMERIC_GREATER_THAN
+          - NUMERIC_LESS_THAN
+          - NUMERIC_EQUAL
+          - NUMERIC_NOT_EQUAL
+          - NUMERIC_GREATER_THAN_OR_EQUAL
+          - NUMERIC_LESSER_THAN_OR_EQUAL
+          - CONTAINS_ALL
+          - CONTAINS_ANY
+        subject:
+          type: string
+          description: Subject the condition evaluates
+          enum:
+          - AGE
+          - COORDINATES
+          - CPE
+          - EXPRESSION
+          - LICENSE
+          - LICENSE_GROUP
+          - PACKAGE_URL
+          - SEVERITY
+          - SWID_TAGID
+          - VERSION
+          - COMPONENT_HASH
+          - IS_INTERNAL
+          - CWE
+          - VULNERABILITY_ID
+          - VERSION_DISTANCE
+          - EPSS
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the policy condition to update
+        value:
+          type: string
+          description: Value the subject is compared to
+          minLength: 1
+        violationType:
+          type: string
+          description: Violation type produced when the condition matches. Required for `EXPRESSION` subjects
+          enum:
+          - LICENSE
+          - SECURITY
+          - OPERATIONAL
+      required:
+      - operator
+      - subject
+      - uuid
+      - value
+  securitySchemes:
+    ApiKeyAuth:
+      description: Authentication via API key.
+      in: header
+      name: X-Api-Key
+      type: apiKey
+    BearerAuth:
+      bearerFormat: Opaque
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login` or
+
+        `POST /api/v1/user/oidc/login`.'
+      scheme: bearer
+      type: http
+x-refined-from:
+- dependency-track-openapi-v1.yaml
+- dependency-track-openapi.yml

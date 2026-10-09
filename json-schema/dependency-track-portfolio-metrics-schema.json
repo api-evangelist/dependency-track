@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/dependency-track/main/json-schema/dependency-track-portfolio-metrics-schema.json",
+  "title": "PortfolioMetrics",
+  "x-generated": "2026-10-09",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/dependency-track-openapi.yml#/components/schemas/PortfolioMetrics",
+  "type": "object",
+  "properties": {
+    "components": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "critical": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "findingsAudited": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "findingsTotal": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "findingsUnaudited": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "firstOccurrence": {
+      "type": "integer",
+      "format": "int64",
+      "description": "UNIX epoch timestamp in milliseconds"
+    },
+    "high": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "inheritedRiskScore": {
+      "type": "number",
+      "format": "double"
+    },
+    "kev": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "lastOccurrence": {
+      "type": "integer",
+      "format": "int64",
+      "description": "UNIX epoch timestamp in milliseconds"
+    },
+    "low": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "medium": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "policyViolationsAudited": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "policyViolationsFail": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "policyViolationsInfo": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "policyViolationsLicenseAudited": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "policyViolationsLicenseTotal": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "policyViolationsLicenseUnaudited": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "policyViolationsOperationalAudited": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "policyViolationsOperationalTotal": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "policyViolationsOperationalUnaudited": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "policyViolationsSecurityAudited": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "policyViolationsSecurityTotal": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "policyViolationsSecurityUnaudited": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "policyViolationsTotal": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "policyViolationsUnaudited": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "policyViolationsWarn": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "projects": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "suppressed": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "unassigned": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "vulnerabilities": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "vulnerableComponents": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "vulnerableProjects": {
+      "type": "integer",
+      "format": "int32"
+    }
+  },
+  "required": [
+    "firstOccurrence",
+    "lastOccurrence"
+  ]
+}

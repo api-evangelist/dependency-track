@@ -1,0 +1,429 @@
+generated: '2026-10-09'
+method: derived
+generator: derive-vocabulary.py
+source:
+- openapi/dependency-track-openapi.yml
+- openapi/dependency-track-v2-openapi.yml
+vocabulary:
+  name: Dependency-Track Domain Vocabulary
+  description: 'Terms declared by Dependency-Track''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
+    Derived, not authored.'
+  version: '2026-10-09'
+  terms:
+  - term: Components
+    definition: Endpoints related to components
+    tags:
+    - Resource Group
+    source: openapi/dependency-track-v2-openapi.yml
+  - term: Extensions
+    definition: Endpoints related to extensions
+    tags:
+    - Resource Group
+    source: openapi/dependency-track-v2-openapi.yml
+  - term: Kev Data Sources
+    definition: Endpoints related to KEV data sources
+    tags:
+    - Resource Group
+    source: openapi/dependency-track-v2-openapi.yml
+  - term: OAuth
+    definition: Endpoints related to OAuth 2.0 token issuance
+    tags:
+    - Resource Group
+    source: openapi/dependency-track-v2-openapi.yml
+  - term: Projects
+    definition: Endpoints related to projects
+    tags:
+    - Resource Group
+    source: openapi/dependency-track-v2-openapi.yml
+  - term: Secrets
+    definition: Endpoints related to secrets
+    tags:
+    - Resource Group
+    source: openapi/dependency-track-v2-openapi.yml
+  - term: Service Accounts
+    definition: Endpoints related to service accounts
+    tags:
+    - Resource Group
+    source: openapi/dependency-track-v2-openapi.yml
+  - term: System Capabilities
+    definition: Endpoints exposing the capabilities of the running server
+    tags:
+    - Resource Group
+    source: openapi/dependency-track-v2-openapi.yml
+  - term: Task Queues
+    definition: Endpoints related to task queue management
+    tags:
+    - Resource Group
+    source: openapi/dependency-track-v2-openapi.yml
+  - term: Vuln Data Sources
+    definition: Endpoints related to vulnerability data sources
+    tags:
+    - Resource Group
+    source: openapi/dependency-track-v2-openapi.yml
+  - term: Vuln Policies
+    definition: Endpoints related to vulnerability policies
+    tags:
+    - Resource Group
+    source: openapi/dependency-track-v2-openapi.yml
+  - term: Vulns
+    definition: Endpoints related to vulnerabilities
+    tags:
+    - Resource Group
+    source: openapi/dependency-track-v2-openapi.yml
+  - term: Workflows
+    definition: Endpoints related to workflows
+    tags:
+    - Resource Group
+    source: openapi/dependency-track-v2-openapi.yml
+  - term: Workload Identity Providers
+    definition: Endpoints related to workload identity providers
+    tags:
+    - Resource Group
+    source: openapi/dependency-track-v2-openapi.yml
+  - term: About
+    definition: 'Object declared by the contract with fields: application, framework, timestamp, uuid, version.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/About
+  - term: AclMappingRequest
+    definition: 'Object declared by the contract with fields: project, team.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/AclMappingRequest
+  - term: AffectedComponent
+    definition: 'Object declared by the contract with fields: affectedVersionAttributions, identity, identityType, uuid, version, versionEndExcluding,
+      versionEndIncluding, versionStartExcluding, versionStartIncluding, versionType.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/AffectedComponent
+  - term: AffectedProject
+    definition: 'Object declared by the contract with fields: active, affectedComponentUuids, dependencyGraphAvailable, name, uuid, version.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/AffectedProject
+  - term: AffectedVersionAttribution
+    definition: 'Object declared by the contract with fields: firstSeen, lastSeen, source.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/AffectedVersionAttribution
+  - term: AnalysisRequest
+    definition: 'Object declared by the contract with fields: analysisDetails, analysisJustification, analysisResponse, analysisState, comment,
+      component, isSuppressed, project, suppressed, vulnerability.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/AnalysisRequest
+  - term: AnalysisTrailResponse
+    definition: 'Object declared by the contract with fields: analysisComments, analysisDetails, analysisJustification, analysisResponse, analysisState,
+      cvssV2Score, cvssV2Vector, cvssV3Score, cvssV3Vector, cvssV4Score, cvssV4Vector, isSuppressed. (3 more)'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/AnalysisTrailResponse
+  - term: ApiKey
+    definition: 'Object declared by the contract with fields: comment, created, expiresAt, key, lastUsed, legacy, maskedKey, publicId.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/ApiKey
+  - term: BomSubmitRequest
+    definition: 'Object declared by the contract with fields: autoCreate, bom, isActive, isLatest, parentName, parentUUID, parentVersion, project,
+      projectName, projectTags, projectVersion.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/BomSubmitRequest
+  - term: BomUploadResponse
+    definition: 'Object declared by the contract with fields: projectUuid, token.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/BomUploadResponse
+  - term: CelExpressionError
+    definition: Errors identified during CEL expression compilation
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/CelExpressionError
+  - term: CloneProjectRequest
+    definition: 'Object declared by the contract with fields: includeACL, includeAuditHistory, includeComponents, includeDependencies, includePolicyViolations,
+      includeProperties, includeServices, includeTags, makeCloneLatest, project, version.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/CloneProjectRequest
+  - term: Comment
+    definition: Audit trail of analysis comments
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/Comment
+  - term: Component
+    definition: 'Object declared by the contract with fields: author, authors, blake2b_256, blake2b_384, blake2b_512, blake3, children, classifier,
+      copyright, cpe, dependencyGraph, description. (39 more)'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/Component
+  - term: ComponentOccurrence
+    definition: 'Object declared by the contract with fields: createdAt, id, line, location, offset, symbol.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/ComponentOccurrence
+  - term: ComponentProperty
+    definition: 'Object declared by the contract with fields: description, groupName, propertyName, propertyType, propertyValue, uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/ComponentProperty
+  - term: ComponentPropertyResponse
+    definition: 'Object declared by the contract with fields: description, groupName, propertyName, propertyType, propertyValue, uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/ComponentPropertyResponse
+  - term: ConciseLicenseResponse
+    definition: 'Object declared by the contract with fields: isCustomLicense, isDeprecatedLicenseId, isFsfLibre, isOsiApproved, licenseId, name,
+      uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/ConciseLicenseResponse
+  - term: ConciseProject
+    definition: A concise representation of a project
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/ConciseProject
+  - term: ConciseProjectMetrics
+    definition: A concise representation of a project's metrics
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/ConciseProjectMetrics
+  - term: ConfigPropertyResponse
+    definition: 'Object declared by the contract with fields: description, groupName, propertyName, propertyType, propertyValue.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/ConfigPropertyResponse
+  - term: CreateComponentPropertyRequest
+    definition: 'Object declared by the contract with fields: description, groupName, propertyName, propertyType, propertyValue.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/CreateComponentPropertyRequest
+  - term: CreateLicenseGroupRequest
+    definition: 'Object declared by the contract with fields: name.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/CreateLicenseGroupRequest
+  - term: CreateLicenseRequest
+    definition: 'Object declared by the contract with fields: isDeprecatedLicenseId, isFsfLibre, isOsiApproved, licenseComments, licenseId, licenseText,
+      name, seeAlso, standardLicenseHeader, standardLicenseTemplate.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/CreateLicenseRequest
+  - term: CreateNotificationPublisherRequest
+    definition: 'Object declared by the contract with fields: description, extensionName, name, template, templateMimeType.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/CreateNotificationPublisherRequest
+  - term: CreateNotificationRuleRequest
+    definition: 'Object declared by the contract with fields: level, name, publisher, scope.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/CreateNotificationRuleRequest
+  - term: CreateOidcGroupRequest
+    definition: 'Object declared by the contract with fields: name.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/CreateOidcGroupRequest
+  - term: CreatePolicyConditionRequest
+    definition: 'Object declared by the contract with fields: operator, subject, value, violationType.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/CreatePolicyConditionRequest
+  - term: CreateProjectPropertyRequest
+    definition: 'Object declared by the contract with fields: description, groupName, propertyName, propertyType, propertyValue.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/CreateProjectPropertyRequest
+  - term: CreateRepositoryRequest
+    definition: 'Object declared by the contract with fields: authenticationRequired, enabled, identifier, internal, password, type, url, username.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/CreateRepositoryRequest
+  - term: CreateScheduledNotificationRuleRequest
+    definition: 'Object declared by the contract with fields: level, name, publisher, scope.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/CreateScheduledNotificationRuleRequest
+  - term: CvssScoreResponse
+    definition: 'Object declared by the contract with fields: baseScore, environmentalScore, exploitabilitySubScore, impactSubScore, modifiedImpactSubScore,
+      temporalScore.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/CvssScoreResponse
+  - term: Cwe
+    definition: 'Object declared by the contract with fields: cweId, name.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/Cwe
+  - term: DataClassification
+    definition: 'Object declared by the contract with fields: direction, name.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/DataClassification
+  - term: DeleteNotificationRuleRequest
+    definition: 'Object declared by the contract with fields: uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/DeleteNotificationRuleRequest
+  - term: DeleteProjectPropertyRequest
+    definition: 'Object declared by the contract with fields: groupName, propertyName.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/DeleteProjectPropertyRequest
+  - term: DeleteTeamRequest
+    definition: 'Object declared by the contract with fields: uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/DeleteTeamRequest
+  - term: DeleteUserRequest
+    definition: 'Object declared by the contract with fields: username.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/DeleteUserRequest
+  - term: DependencyGraphResponse
+    definition: 'Object declared by the contract with fields: directDependencies, latestVersion, name, purl, uuid, version.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/DependencyGraphResponse
+  - term: DependencyMetrics
+    definition: 'Object declared by the contract with fields: critical, findingsAudited, findingsTotal, findingsUnaudited, firstOccurrence, high,
+      inheritedRiskScore, kev, lastOccurrence, low, medium, policyViolationsAudited. (17 more)'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/DependencyMetrics
+  - term: Epss
+    definition: 'Object declared by the contract with fields: cve, percentile, score.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/Epss
+  - term: ExternalReference
+    definition: 'Object declared by the contract with fields: comment, type, url.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/ExternalReference
+  - term: Finding
+    definition: 'Object declared by the contract with fields: analysis, attribution, component, matrix, vulnerability.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/Finding
+  - term: Framework
+    definition: 'Object declared by the contract with fields: name, timestamp, uuid, version.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/Framework
+  - term: IdentifiableObject
+    definition: 'Object declared by the contract with fields: uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/IdentifiableObject
+  - term: IsTokenBeingProcessedResponse
+    definition: 'Object declared by the contract with fields: processing, status.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/IsTokenBeingProcessedResponse
+  - term: LdapUser
+    definition: 'Object declared by the contract with fields: dn, email, permissions, teams, username.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/LdapUser
+  - term: License
+    definition: 'Object declared by the contract with fields: isCustomLicense, isDeprecatedLicenseId, isFsfLibre, isOsiApproved, licenseComments,
+      licenseGroups, licenseId, licenseText, name, seeAlso, standardLicenseHeader, standardLicenseTemplate. (1 more)'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/License
+  - term: LicenseGroup
+    definition: 'Object declared by the contract with fields: licenses, name, riskWeight, uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/LicenseGroup
+  - term: LicenseGroupResponse
+    definition: 'Object declared by the contract with fields: licenses, name, riskWeight, uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/LicenseGroupResponse
+  - term: LicenseResponse
+    definition: 'Object declared by the contract with fields: isCustomLicense, isDeprecatedLicenseId, isFsfLibre, isOsiApproved, licenseComments,
+      licenseGroups, licenseId, licenseText, name, seeAlso, standardLicenseHeader, standardLicenseTemplate. (1 more)'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/LicenseResponse
+  - term: ListProjectsResponseItem
+    definition: 'Object declared by the contract with fields: active, authors, classifier, collectionLogic, collectionTag, cpe, description, directDependencies,
+      externalReferences, group, hasChildren, inactiveSince. (17 more)'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/ListProjectsResponseItem
+  - term: ManagedUser
+    definition: 'Object declared by the contract with fields: confirmPassword, email, forcePasswordChange, fullname, lastPasswordChange, newPassword,
+      nonExpiryPassword, permissions, suspended, teams, username.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/ManagedUser
+  - term: MappedLdapGroup
+    definition: 'Object declared by the contract with fields: dn, uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/MappedLdapGroup
+  - term: MappedLdapGroupRequest
+    definition: 'Object declared by the contract with fields: dn, team.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/MappedLdapGroupRequest
+  - term: MappedLdapGroupResponse
+    definition: 'Object declared by the contract with fields: dn, uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/MappedLdapGroupResponse
+  - term: MappedOidcGroup
+    definition: 'Object declared by the contract with fields: group, uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/MappedOidcGroup
+  - term: MappedOidcGroupRequest
+    definition: 'Object declared by the contract with fields: group, team.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/MappedOidcGroupRequest
+  - term: MappedOidcGroupResponse
+    definition: 'Object declared by the contract with fields: group, uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/MappedOidcGroupResponse
+  - term: NotificationPublisher
+    definition: 'Object declared by the contract with fields: defaultPublisher, description, extensionName, name, template, templateMimeType,
+      uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/NotificationPublisher
+  - term: NotificationPublisherResponse
+    definition: 'Object declared by the contract with fields: defaultPublisher, description, extensionName, name, template, templateMimeType,
+      uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/NotificationPublisherResponse
+  - term: NotificationRule
+    definition: 'Object declared by the contract with fields: enabled, filterExpression, logSuccessfulPublish, message, name, notificationLevel,
+      notifyChildren, notifyOn, projects, publisher, publisherConfig, scheduleCron. (8 more)'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/NotificationRule
+  - term: OidcGroup
+    definition: 'Object declared by the contract with fields: name, uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/OidcGroup
+  - term: OidcGroupResponse
+    definition: 'Object declared by the contract with fields: name, uuid.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/OidcGroupResponse
+  - term: OidcUser
+    definition: 'Object declared by the contract with fields: email, permissions, subjectIdentifier, teams, username.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/OidcUser
+  - term: OrganizationalContact
+    definition: 'Object declared by the contract with fields: email, name, phone.'
+    tags:
+    - Object
+    source: openapi/dependency-track-openapi.yml#/components/schemas/OrganizationalContact

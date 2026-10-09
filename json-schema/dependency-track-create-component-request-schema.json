@@ -1,0 +1,222 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/dependency-track/main/json-schema/dependency-track-create-component-request-schema.json",
+  "title": "create-component-request",
+  "x-generated": "2026-10-09",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/dependency-track-v2-openapi.yml#/components/schemas/create-component-request",
+  "required": [
+    "name",
+    "project_uuid"
+  ],
+  "type": "object",
+  "properties": {
+    "project_uuid": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "name": {
+      "maxLength": 255,
+      "type": "string"
+    },
+    "description": {
+      "maxLength": 255,
+      "type": "string"
+    },
+    "group": {
+      "maxLength": 255,
+      "type": "string"
+    },
+    "version": {
+      "maxLength": 255,
+      "type": "string"
+    },
+    "classifier": {
+      "$ref": "#/$defs/classifier"
+    },
+    "filename": {
+      "maxLength": 255,
+      "type": "string"
+    },
+    "extension": {
+      "maxLength": 255,
+      "type": "string"
+    },
+    "hashes": {
+      "$ref": "#/$defs/hashes"
+    },
+    "cpe": {
+      "maxLength": 255,
+      "type": "string"
+    },
+    "publisher": {
+      "maxLength": 255,
+      "type": "string"
+    },
+    "supplier": {
+      "$ref": "#/$defs/organizational-entity"
+    },
+    "authors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/organizational-contact"
+      }
+    },
+    "purl": {
+      "maxLength": 1024,
+      "type": "string"
+    },
+    "swid_tag_id": {
+      "maxLength": 255,
+      "type": "string"
+    },
+    "internal": {
+      "type": "boolean"
+    },
+    "copyright": {
+      "maxLength": 255,
+      "type": "string"
+    },
+    "license": {
+      "maxLength": 255,
+      "type": "string"
+    },
+    "license_expression": {
+      "maxLength": 255,
+      "type": "string"
+    },
+    "license_url": {
+      "maxLength": 255,
+      "type": "string"
+    },
+    "notes": {
+      "maxLength": 255,
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "classifier": {
+      "type": "string",
+      "enum": [
+        "APPLICATION",
+        "FRAMEWORK",
+        "LIBRARY",
+        "CONTAINER",
+        "OPERATING_SYSTEM",
+        "DEVICE",
+        "FIRMWARE",
+        "FILE",
+        "PLATFORM",
+        "DEVICE_DRIVER",
+        "MACHINE_LEARNING_MODEL",
+        "DATA",
+        "CRYPTOGRAPHIC_ASSET"
+      ]
+    },
+    "hashes": {
+      "type": "object",
+      "properties": {
+        "sha1": {
+          "maxLength": 40,
+          "type": "string"
+        },
+        "sha256": {
+          "maxLength": 64,
+          "type": "string"
+        },
+        "sha384": {
+          "maxLength": 96,
+          "type": "string"
+        },
+        "sha512": {
+          "maxLength": 128,
+          "type": "string"
+        },
+        "sha3_256": {
+          "maxLength": 64,
+          "type": "string"
+        },
+        "sha3_384": {
+          "maxLength": 96,
+          "type": "string"
+        },
+        "sha3_512": {
+          "maxLength": 128,
+          "type": "string"
+        },
+        "blake2b_256": {
+          "maxLength": 64,
+          "type": "string"
+        },
+        "blake2b_384": {
+          "maxLength": 96,
+          "type": "string"
+        },
+        "blake2b_512": {
+          "maxLength": 128,
+          "type": "string"
+        },
+        "blake3": {
+          "maxLength": 255,
+          "type": "string"
+        },
+        "streebog_256": {
+          "maxLength": 64,
+          "type": "string"
+        },
+        "streebog_512": {
+          "maxLength": 128,
+          "type": "string"
+        },
+        "md5": {
+          "maxLength": 32,
+          "type": "string"
+        }
+      }
+    },
+    "organizational-contact": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "maxLength": 255,
+          "type": "string",
+          "description": "Name of the organizational contact"
+        },
+        "email": {
+          "maxLength": 255,
+          "type": "string",
+          "description": "Email of the organizational contact"
+        },
+        "phone": {
+          "maxLength": 255,
+          "type": "string",
+          "description": "Phone of the organizational contact"
+        }
+      }
+    },
+    "organizational-entity": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "maxLength": 255,
+          "type": "string",
+          "description": "Name of the organizational entity"
+        },
+        "urls": {
+          "type": "array",
+          "items": {
+            "maxLength": 255,
+            "type": "string"
+          }
+        },
+        "contacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/organizational-contact"
+          }
+        }
+      }
+    }
+  }
+}

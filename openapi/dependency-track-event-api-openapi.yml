@@ -1,0 +1,95 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Event API
+  version: 1.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged event across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api
+tags:
+- name: Event
+paths:
+  /v1/event/token/{uuid}:
+    get:
+      description: 'This endpoint is intended to be used in conjunction with other API calls which return a token for asynchronous tasks.
+
+        The token can then be queried using this endpoint to determine if the task is complete:
+
+
+        A value of true indicates processing is occurring.
+
+
+        A value of false indicates that no processing is occurring for the specified token.
+
+
+        However, a value of false also does not confirm the token is valid,
+
+        only that no processing is associated with the specified token.'
+      operationId: isTokenBeingProcessed_1
+      parameters:
+      - description: The UUID of the token to query
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IsTokenBeingProcessedResponse'
+          description: The processing status of the provided token
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Determines if there are any tasks associated with the token that are being…
+      tags:
+      - Event
+    servers:
+    - url: /api
+components:
+  schemas:
+    IsTokenBeingProcessedResponse:
+      type: object
+      properties:
+        processing:
+          type: boolean
+        status:
+          type:
+          - string
+          - 'null'
+          description: The processing status associated with the token. Null when no processing is associated with the token.
+          enum:
+          - PENDING
+          - RUNNING
+          - COMPLETED
+          - FAILED
+      required:
+      - processing
+  securitySchemes:
+    ApiKeyAuth:
+      description: Authentication via API key.
+      in: header
+      name: X-Api-Key
+      type: apiKey
+    BearerAuth:
+      bearerFormat: Opaque
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login` or
+
+        `POST /api/v1/user/oidc/login`.'
+      scheme: bearer
+      type: http
+x-refined-from:
+- dependency-track-openapi-v1.yaml
+- dependency-track-openapi.yml

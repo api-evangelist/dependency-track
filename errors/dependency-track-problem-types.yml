@@ -1,0 +1,90 @@
+generated: '2026-10-09'
+method: derived
+generator: derive-problem-types.py
+source:
+- openapi/dependency-track-openapi.yml
+- openapi/dependency-track-v2-openapi.yml
+format: rfc9457
+envelope:
+  media_type: application/problem+json
+  schema: problem-details
+coverage:
+  operations: 272
+  statuses_declared: 11
+problems:
+- status: 400
+  title: Bad Request
+  description: Bad Request
+  operations: 56
+  media_types:
+  - application/problem+json
+  - application/json
+  schema: invalid-request-problem-details
+- status: 401
+  title: Unauthorized
+  description: Unauthorized
+  operations: 249
+  media_types:
+  - application/problem+json
+  schema: problem-details
+- status: 403
+  title: Forbidden
+  description: Access to the requested project is forbidden
+  operations: 129
+  media_types:
+  - application/problem+json
+  schema: ProblemDetails
+- status: 404
+  title: Not Found
+  description: Not found
+  operations: 180
+  media_types:
+  - application/problem+json
+  schema: problem-details
+- status: 406
+  title: Not Acceptable
+  description: The vulnId may not be changed
+  operations: 1
+  media_types: []
+  schema: null
+- status: 409
+  title: Conflict
+  description: Forbidden
+  operations: 31
+  media_types:
+  - application/problem+json
+  schema: problem-details
+- status: 412
+  title: Precondition Failed
+  description: Portfolio components or services are affected by this vulnerability. Unable to delete.
+  operations: 1
+  media_types: []
+  schema: null
+- status: 413
+  title: Content Too Large
+  description: The uploaded document is too large
+  operations: 2
+  media_types:
+  - application/problem+json
+  schema: ProblemDetails
+- status: 500
+  title: Internal Server Error
+  description: Unable to delete components of the project
+  operations: 1
+  media_types: []
+  schema: null
+- status: 503
+  title: Service Unavailable
+  description: The grant cannot be processed because a dependency is unavailable, such as the keys to verify a subject
+    token. Retrying later may succeed.
+  operations: 1
+  media_types:
+  - application/problem+json
+  schema: problem-details
+- status: default
+  title: null
+  description: Unexpected error
+  operations: 53
+  media_types:
+  - application/problem+json
+  schema: problem-details

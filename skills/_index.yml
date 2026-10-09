@@ -1,0 +1,42 @@
+generated: '2026-10-09'
+method: generated
+source: Packaged Agent Skills generated from openapi/dependency-track-openapi.yml and openapi/dependency-track-v2-openapi.yml;
+  every operationId verified verbatim. No provider-published API skills found; the DependencyTrack AGENTS.md files are contributor
+  build instructions only.
+skills:
+- file: dependency-track-upload-sbom-and-review-findings.md
+  name: upload-sbom-and-review-findings
+  api: openapi/dependency-track-openapi.yml
+  operations:
+  - getProjectByNameAndVersion
+  - UploadBom
+  - isTokenBeingProcessed_1
+  - getFindingsByProject
+  - getProjectCurrentMetrics
+- file: dependency-track-triage-a-finding.md
+  name: triage-a-finding
+  api: openapi/dependency-track-openapi.yml
+  operations:
+  - getFindingsByProject
+  - retrieveAnalysis
+  - updateAnalysis
+- file: dependency-track-find-projects-affected-by-a-vulnerability.md
+  name: find-projects-affected-by-a-vulnerability
+  api: openapi/dependency-track-openapi.yml
+  operations:
+  - getVulnerabilityByVulnId
+  - getAffectedProject
+- file: dependency-track-export-sbom-and-vex.md
+  name: export-sbom-and-vex
+  api: openapi/dependency-track-openapi.yml
+  operations:
+  - exportProjectAsCycloneDx
+  - exportProjectAsCycloneDx_1
+  - uploadVex
+- file: dependency-track-provision-a-service-account-api-key.md
+  name: provision-a-service-account-api-key
+  api: openapi/dependency-track-v2-openapi.yml
+  operations:
+  - createServiceAccount
+  - createServiceAccountApiKey
+  - listServiceAccountApiKeys

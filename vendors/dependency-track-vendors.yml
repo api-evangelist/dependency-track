@@ -1,0 +1,62 @@
+generated: '2026-10-09'
+method: probed
+source: pre-flight dossier (docs platform, portal detections) + CNAME chains and response headers of the hosts apis.yml names
+registry: all/0-working/vendors.yml
+areas_vocabulary:
+- documentation
+- developer-portal
+- api-gateway
+- cdn
+- hosting
+- sdk-generation
+- api-collections
+- status-page
+- support
+- community
+- identity
+- mcp-hosting
+vendors:
+- vendor: cloudflare
+  name: Cloudflare
+  area: cdn
+  host: dependencytrack.org
+  evidence: header:cf-ray
+  signal: header
+  confidence: high
+  kin_score:
+  - https_enforced
+  - hsts
+- vendor: fastly
+  name: Fastly
+  area: cdn
+  host: docs.dependencytrack.org
+  evidence: header:x-served-by:cache-
+  signal: header
+  confidence: high
+  kin_score: []
+- vendor: github-discussions
+  name: GitHub Discussions
+  area: community
+  host: github.com
+  evidence: https://github.com/DependencyTrack/dependency-track/discussions
+  signal: url:github.com/.*/discussions
+  confidence: high
+  kin_score:
+  - community_present
+reliance:
+  areas_vendor_served:
+  - cdn
+  - community
+  vendor_count: 3
+  areas_observed: 12
+  share_of_observable_areas: 0.167
+  note: areas where a third party was DETECTED serving this provider; an area absent here was either self-run or not observed, and this script
+    cannot tell those apart
+checked:
+- 'docs-platform: custom'
+- dependencytrack.org (Website)
+- docs.dependencytrack.org (Documentation)
+- docs.dependencytrack.org (APIReference)
+- docs.dependencytrack.org (GettingStarted)
+- github.com (Support)
+- '{hostname}:{port} (baseURL)'

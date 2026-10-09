@@ -1,0 +1,966 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Tag API
+  version: 1.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged tag across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api
+tags:
+- name: Tag
+paths:
+  /v1/tag:
+    delete:
+      description: 'A tag can only be deleted if no projects or policies are assigned to it.
+
+
+        Principals with PORTFOLIO_MANAGEMENT permission, and access
+
+        to all assigned projects (if portfolio ACL is enabled), can delete
+
+        a tag with assigned projects.
+
+
+        Principals with POLICY_MANAGEMENT permission can delete tags
+
+        with assigned policies.
+
+
+        Requires permission TAG_MANAGEMENT or TAG_MANAGEMENT_DELETE'
+      operationId: deleteTags
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+              maxItems: 100
+              minItems: 1
+              uniqueItems: true
+        description: Names of the tags to delete
+      responses:
+        '204':
+          description: Tags deleted successfully.
+        '400':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/TagOperationProblemDetails'
+          description: Operation failed
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Deletes one or more tags
+      tags:
+      - Tag
+    get:
+      description: Requires permission VIEW_PORTFOLIO
+      operationId: getAllTags
+      parameters:
+      - description: The page to return. To be used in conjunction with <code>pageSize</code>.
+        in: query
+        name: pageNumber
+        schema:
+          type: string
+          default: '1'
+      - description: Number of elements to return per page. To be used in conjunction with <code>pageNumber</code>.
+        in: query
+        name: pageSize
+        schema:
+          type: string
+          default: '100'
+      - description: Offset to start returning elements from. To be used in conjunction with <code>limit</code>.
+        in: query
+        name: offset
+        schema:
+          type: string
+      - description: Number of elements to return per page. To be used in conjunction with <code>offset</code>.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Name of the resource field to sort on.
+        in: query
+        name: sortName
+        schema:
+          type: string
+      - description: Ordering of items when sorting with <code>sortName</code>.
+        in: query
+        name: sortOrder
+        schema:
+          type: string
+          enum:
+          - asc, desc
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TagListResponseItem'
+          description: A list of all tags
+          headers:
+            X-Total-Count:
+              description: The total number of tags
+              schema:
+                format: integer
+              style: simple
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all tags
+      tags:
+      - Tag
+    put:
+      description: Requires permission TAG_MANAGEMENT
+      operationId: createTags
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+              maxItems: 100
+              minItems: 1
+              uniqueItems: true
+        description: Names of the tags to create
+        required: true
+      responses:
+        '201':
+          description: Tags created successfully.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Creates one or more tags
+      tags:
+      - Tag
+    servers:
+    - url: /api
+  /v1/tag/policy/{uuid}:
+    get:
+      description: Requires permission VIEW_PORTFOLIO
+      operationId: getTagsForPolicy
+      parameters:
+      - description: The UUID of the policy
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TagResponse'
+          description: A list of all tags associated with a given policy
+          headers:
+            X-Total-Count:
+              description: The total number of tags
+              schema:
+                format: integer
+              style: simple
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all tags associated with a given policy
+      tags:
+      - Tag
+    servers:
+    - url: /api
+  /v1/tag/{name}/collectionProject:
+    get:
+      description: Requires permission VIEW_PORTFOLIO
+      operationId: getTaggedCollectionProjects
+      parameters:
+      - description: The page to return. To be used in conjunction with <code>pageSize</code>.
+        in: query
+        name: pageNumber
+        schema:
+          type: string
+          default: '1'
+      - description: Number of elements to return per page. To be used in conjunction with <code>pageNumber</code>.
+        in: query
+        name: pageSize
+        schema:
+          type: string
+          default: '100'
+      - description: Offset to start returning elements from. To be used in conjunction with <code>limit</code>.
+        in: query
+        name: offset
+        schema:
+          type: string
+      - description: Number of elements to return per page. To be used in conjunction with <code>offset</code>.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Name of the resource field to sort on.
+        in: query
+        name: sortName
+        schema:
+          type: string
+      - description: Ordering of items when sorting with <code>sortName</code>.
+        in: query
+        name: sortOrder
+        schema:
+          type: string
+          enum:
+          - asc, desc
+      - description: Name of the tag to get collection projects for
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaggedCollectionProjectListResponseItem'
+          description: A list of all collection projects that use the given tag for their collection logic
+          headers:
+            X-Total-Count:
+              description: The total number of collection projects
+              schema:
+                format: integer
+              style: simple
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all collection projects that use the given tag for their…
+      tags:
+      - Tag
+    servers:
+    - url: /api
+  /v1/tag/{name}/notificationRule:
+    delete:
+      description: Requires permission SYSTEM_CONFIGURATION or SYSTEM_CONFIGURATION_UPDATE
+      operationId: untagNotificationRules
+      parameters:
+      - description: Name of the tag
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                format: uuid
+                maxLength: 100
+                minLength: 1
+              maxItems: 100
+              minItems: 1
+        description: UUIDs of notification rules to untag
+        required: true
+      responses:
+        '204':
+          description: Notification rules untagged successfully.
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: A tag with the provided name does not exist.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Untags one or more notification rules
+      tags:
+      - Tag
+    get:
+      description: Requires permission SYSTEM_CONFIGURATION or SYSTEM_CONFIGURATION_READ
+      operationId: getTaggedNotificationRules
+      parameters:
+      - description: The page to return. To be used in conjunction with <code>pageSize</code>.
+        in: query
+        name: pageNumber
+        schema:
+          type: string
+          default: '1'
+      - description: Number of elements to return per page. To be used in conjunction with <code>pageNumber</code>.
+        in: query
+        name: pageSize
+        schema:
+          type: string
+          default: '100'
+      - description: Offset to start returning elements from. To be used in conjunction with <code>limit</code>.
+        in: query
+        name: offset
+        schema:
+          type: string
+      - description: Number of elements to return per page. To be used in conjunction with <code>offset</code>.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Name of the resource field to sort on.
+        in: query
+        name: sortName
+        schema:
+          type: string
+      - description: Ordering of items when sorting with <code>sortName</code>.
+        in: query
+        name: sortOrder
+        schema:
+          type: string
+          enum:
+          - asc, desc
+      - description: Name of the tag to get notification rules for
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaggedPolicyListResponseItem'
+          description: A list of all notification rules assigned to the given tag
+          headers:
+            X-Total-Count:
+              description: The total number of notification rules
+              schema:
+                format: integer
+              style: simple
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all notification rules assigned to the given tag
+      tags:
+      - Tag
+    post:
+      description: Requires permission SYSTEM_CONFIGURATION or SYSTEM_CONFIGURATION_UPDATE
+      operationId: tagNotificationRules
+      parameters:
+      - description: Name of the tag to assign
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                format: uuid
+                maxLength: 100
+                minLength: 1
+              maxItems: 100
+              minItems: 1
+        description: UUIDs of notification rules to tag
+        required: true
+      responses:
+        '204':
+          description: Notification rules tagged successfully.
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: A tag with the provided name does not exist.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Tags one or more notification rules
+      tags:
+      - Tag
+    servers:
+    - url: /api
+  /v1/tag/{name}/policy:
+    delete:
+      description: Requires permission POLICY_MANAGEMENT or POLICY_MANAGEMENT_UPDATE
+      operationId: untagPolicies
+      parameters:
+      - description: Name of the tag
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                format: uuid
+                maxLength: 100
+                minLength: 1
+              maxItems: 100
+              minItems: 1
+        description: UUIDs of policies to untag
+        required: true
+      responses:
+        '204':
+          description: Policies untagged successfully.
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: A tag with the provided name does not exist.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Untags one or more policies
+      tags:
+      - Tag
+    get:
+      description: Requires permission POLICY_MANAGEMENT or POLICY_MANAGEMENT_READ
+      operationId: getTaggedPolicies
+      parameters:
+      - description: The page to return. To be used in conjunction with <code>pageSize</code>.
+        in: query
+        name: pageNumber
+        schema:
+          type: string
+          default: '1'
+      - description: Number of elements to return per page. To be used in conjunction with <code>pageNumber</code>.
+        in: query
+        name: pageSize
+        schema:
+          type: string
+          default: '100'
+      - description: Offset to start returning elements from. To be used in conjunction with <code>limit</code>.
+        in: query
+        name: offset
+        schema:
+          type: string
+      - description: Number of elements to return per page. To be used in conjunction with <code>offset</code>.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Name of the resource field to sort on.
+        in: query
+        name: sortName
+        schema:
+          type: string
+      - description: Ordering of items when sorting with <code>sortName</code>.
+        in: query
+        name: sortOrder
+        schema:
+          type: string
+          enum:
+          - asc, desc
+      - description: Name of the tag to get policies for.
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaggedPolicyListResponseItem'
+          description: A list of all policies assigned to the given tag
+          headers:
+            X-Total-Count:
+              description: The total number of policies
+              schema:
+                format: integer
+              style: simple
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all policies assigned to the given tag
+      tags:
+      - Tag
+    post:
+      description: Requires permission POLICY_MANAGEMENT or POLICY_MANAGEMENT_UPDATE
+      operationId: tagPolicies
+      parameters:
+      - description: Name of the tag to assign
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                format: uuid
+                maxLength: 100
+                minLength: 1
+              maxItems: 100
+              minItems: 1
+        description: UUIDs of policies to tag
+        required: true
+      responses:
+        '204':
+          description: Policies tagged successfully.
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: A tag with the provided name does not exist.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Tags one or more policies
+      tags:
+      - Tag
+    servers:
+    - url: /api
+  /v1/tag/{name}/project:
+    delete:
+      description: Requires permission PORTFOLIO_MANAGEMENT or PORTFOLIO_MANAGEMENT_UPDATE
+      operationId: untagProjects
+      parameters:
+      - description: Name of the tag
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                format: uuid
+                maxLength: 100
+                minLength: 1
+              maxItems: 100
+              minItems: 1
+        description: UUIDs of projects to untag
+        required: true
+      responses:
+        '204':
+          description: Projects untagged successfully.
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: A tag with the provided name does not exist.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Untags one or more projects
+      tags:
+      - Tag
+    get:
+      description: Requires permission VIEW_PORTFOLIO
+      operationId: getTaggedProjects
+      parameters:
+      - description: The page to return. To be used in conjunction with <code>pageSize</code>.
+        in: query
+        name: pageNumber
+        schema:
+          type: string
+          default: '1'
+      - description: Number of elements to return per page. To be used in conjunction with <code>pageNumber</code>.
+        in: query
+        name: pageSize
+        schema:
+          type: string
+          default: '100'
+      - description: Offset to start returning elements from. To be used in conjunction with <code>limit</code>.
+        in: query
+        name: offset
+        schema:
+          type: string
+      - description: Number of elements to return per page. To be used in conjunction with <code>offset</code>.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Name of the resource field to sort on.
+        in: query
+        name: sortName
+        schema:
+          type: string
+      - description: Ordering of items when sorting with <code>sortName</code>.
+        in: query
+        name: sortOrder
+        schema:
+          type: string
+          enum:
+          - asc, desc
+      - description: Name of the tag to get projects for.
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaggedProjectListResponseItem'
+          description: A list of all projects assigned to the given tag
+          headers:
+            X-Total-Count:
+              description: The total number of projects
+              schema:
+                format: integer
+              style: simple
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all projects assigned to the given tag
+      tags:
+      - Tag
+    post:
+      description: Requires permission PORTFOLIO_MANAGEMENT or PORTFOLIO_MANAGEMENT_UPDATE
+      operationId: tagProjects
+      parameters:
+      - description: Name of the tag to assign
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                format: uuid
+                maxLength: 100
+                minLength: 1
+              maxItems: 100
+              minItems: 1
+        description: UUIDs of projects to tag
+        required: true
+      responses:
+        '204':
+          description: Projects tagged successfully.
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: A tag with the provided name does not exist.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Tags one or more projects
+      tags:
+      - Tag
+    servers:
+    - url: /api
+  /v1/tag/{name}/vulnerability:
+    delete:
+      description: Requires permission VULNERABILITY_MANAGEMENT or VULNERABILITY_MANAGEMENT_UPDATE
+      operationId: untagVulnerabilities
+      parameters:
+      - description: Name of the tag
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                format: uuid
+                maxLength: 100
+                minLength: 1
+              maxItems: 100
+              minItems: 1
+        description: UUIDs of vulnerabilities to untag
+        required: true
+      responses:
+        '204':
+          description: Vulnerabilities untagged successfully.
+        '404':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: A tag with the provided name does not exist.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Untags one or more vulnerabilities
+      tags:
+      - Tag
+    get:
+      description: Requires permission VULNERABILITY_MANAGEMENT or VULNERABILITY_MANAGEMENT_READ
+      operationId: getTaggedVulnerabilities
+      parameters:
+      - description: The page to return. To be used in conjunction with <code>pageSize</code>.
+        in: query
+        name: pageNumber
+        schema:
+          type: string
+          default: '1'
+      - description: Number of elements to return per page. To be used in conjunction with <code>pageNumber</code>.
+        in: query
+        name: pageSize
+        schema:
+          type: string
+          default: '100'
+      - description: Offset to start returning elements from. To be used in conjunction with <code>limit</code>.
+        in: query
+        name: offset
+        schema:
+          type: string
+      - description: Number of elements to return per page. To be used in conjunction with <code>offset</code>.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Name of the resource field to sort on.
+        in: query
+        name: sortName
+        schema:
+          type: string
+      - description: Ordering of items when sorting with <code>sortName</code>.
+        in: query
+        name: sortOrder
+        schema:
+          type: string
+          enum:
+          - asc, desc
+      - description: Name of the tag to get vulnerabilities for.
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaggedVulnerabilityListResponseItem'
+          description: A list of all vulnerabilities assigned to the given tag
+          headers:
+            X-Total-Count:
+              description: The total number of vulnerabilities
+              schema:
+                format: integer
+              style: simple
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all vulnerabilities assigned to the given tag
+      tags:
+      - Tag
+    servers:
+    - url: /api
+components:
+  schemas:
+    TaggedPolicyListResponseItem:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the policy
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the policy
+      required:
+      - name
+      - uuid
+    TaggedProjectListResponseItem:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the project
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the project
+        version:
+          type: string
+          description: Version of the project
+      required:
+      - name
+      - uuid
+    TagOperationProblemDetails:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      - type: object
+        properties:
+          errors:
+            type: object
+            additionalProperties:
+              type: string
+              description: Errors encountered during the operation, grouped by tag name
+            description: Errors encountered during the operation, grouped by tag name
+      required:
+      - detail
+      - status
+      - title
+    TaggedCollectionProjectListResponseItem:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the collection project
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the collection project
+        version:
+          type: string
+          description: Version of the collection project
+      required:
+      - name
+      - uuid
+    TagListResponseItem:
+      type: object
+      properties:
+        collectionProjectCount:
+          type: integer
+          format: int64
+          description: Number of collection projects assigned to this tag
+        name:
+          type: string
+          description: Name of the tag
+        notificationRuleCount:
+          type: integer
+          format: int64
+          description: Number of notification rules assigned to this tag
+        policyCount:
+          type: integer
+          format: int64
+          description: Number of policies assigned to this tag
+        projectCount:
+          type: integer
+          format: int64
+          description: Number of projects assigned to this tag
+        vulnerabilityCount:
+          type: integer
+          format: int64
+          description: Number of vulnerabilities assigned to this tag
+      required:
+      - collectionProjectCount
+      - name
+      - notificationRuleCount
+      - policyCount
+      - projectCount
+      - vulnerabilityCount
+    TagResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the tag
+      required:
+      - name
+    TaggedVulnerabilityListResponseItem:
+      type: object
+      properties:
+        source:
+          type: string
+          description: Source of the vulnerability
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the vulnerability
+        vulnId:
+          type: string
+          description: Vulnerability ID
+      required:
+      - source
+      - uuid
+      - vulnId
+    ProblemDetails:
+      type: object
+      description: An RFC 9457 problem object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+          example: Example detail
+        instance:
+          type: string
+          format: uri
+          description: Reference URI that identifies the specific occurrence of the problem
+          example: https://api.example.org/foo/bar/example-instance
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code generated by the origin server for this occurrence of the problem
+          example: 400
+        title:
+          type: string
+          description: Short, human-readable summary of the problem type
+          example: Example title
+        type:
+          type: string
+          format: uri
+          description: A URI reference that identifies the problem type
+          example: https://api.example.org/foo/bar/example-problem
+      required:
+      - detail
+      - status
+      - title
+  securitySchemes:
+    ApiKeyAuth:
+      description: Authentication via API key.
+      in: header
+      name: X-Api-Key
+      type: apiKey
+    BearerAuth:
+      bearerFormat: Opaque
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login` or
+
+        `POST /api/v1/user/oidc/login`.'
+      scheme: bearer
+      type: http
+x-refined-from:
+- dependency-track-openapi-v1.yaml
+- dependency-track-openapi.yml

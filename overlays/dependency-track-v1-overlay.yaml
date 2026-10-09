@@ -1,0 +1,54 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist agent overlay for OWASP Dependency-Track REST API v1
+  version: 1.0.0
+extends: ../openapi/_original/dependency-track-openapi.yml
+x-generated: '2026-10-09'
+x-method: generated
+x-source: openapi/dependency-track-openapi.yml
+x-rationale: The v1 contract is self-hosted with a relative /api server and documents its PUT-create/POST-update inversion
+  and async BOM token flow only in prose. This overlay adds a templated server, read-only markers and async/semantic hints
+  without mutating the original.
+actions:
+- target: $
+  description: Replace the relative /api server with a templated absolute server so clients and agents can resolve a base
+    URL for a self-hosted instance.
+  update:
+    servers:
+    - url: '{scheme}://{host}/api'
+      description: Operator-run Dependency-Track API server (self-hosted; there is no vendor-hosted instance).
+      variables:
+        scheme:
+          default: https
+          enum:
+          - https
+          - http
+        host:
+          default: localhost:8080
+          description: Host (and port) of your Dependency-Track API server.
+- target: $.paths['/v1/bom'].post
+  description: 'Agent hint: BOM upload is asynchronous; poll the returned token.'
+  update:
+    x-agent-hints:
+      async: true
+      poll_with: isTokenBeingProcessed_1
+      note: Response carries a token; GET /v1/event/token/{uuid} returns processing=true until analysis completes. getBomToken-style
+        /v1/bom/token/{uuid} (isTokenBeingProcessed) is deprecated in the spec.
+- target: $.paths['/v1/bom'].put
+  description: 'Agent hint: base64 BOM upload is asynchronous as well.'
+  update:
+    x-agent-hints:
+      async: true
+      poll_with: isTokenBeingProcessed_1
+- target: $.paths.*.put
+  description: 'Agent hint: in API v1 PUT creates and POST updates (inverse of common REST usage), as stated in info.description.'
+  update:
+    x-agent-hints-method-semantics: PUT = create (v1 convention)
+- target: $.paths.*.get
+  description: Mark read-only operations for agent tool generation.
+  update:
+    x-agent-readonly: true
+- target: $.paths['/version'].get
+  description: GET /version is the only operation without a security requirement in the spec.
+  update:
+    security: []

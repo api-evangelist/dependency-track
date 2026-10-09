@@ -1,0 +1,1491 @@
+{
+  "@context": {
+    "@vocab": "https://dependencytrack.org/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "dependency": "https://dependencytrack.org/schema#",
+    "About": "dependency:About",
+    "application": {
+      "@id": "dependency:application",
+      "@type": "xsd:string"
+    },
+    "framework": {
+      "@id": "dependency:framework",
+      "@type": "@id"
+    },
+    "timestamp": {
+      "@id": "dependency:timestamp",
+      "@type": "xsd:string"
+    },
+    "uuid": {
+      "@id": "dependency:uuid",
+      "@type": "xsd:string"
+    },
+    "version": {
+      "@id": "dependency:version",
+      "@type": "xsd:string"
+    },
+    "AclMappingRequest": "dependency:AclMappingRequest",
+    "project": {
+      "@id": "dependency:project",
+      "@type": "xsd:string"
+    },
+    "team": {
+      "@id": "dependency:team",
+      "@type": "xsd:string"
+    },
+    "AffectedComponent": "dependency:AffectedComponent",
+    "affectedVersionAttributions": {
+      "@id": "dependency:affectedVersionAttributions",
+      "@container": "@list"
+    },
+    "identity": {
+      "@id": "dependency:identity",
+      "@type": "xsd:string"
+    },
+    "identityType": {
+      "@id": "dependency:identityType",
+      "@type": "xsd:string"
+    },
+    "versionEndExcluding": {
+      "@id": "dependency:versionEndExcluding",
+      "@type": "xsd:string"
+    },
+    "versionEndIncluding": {
+      "@id": "dependency:versionEndIncluding",
+      "@type": "xsd:string"
+    },
+    "versionStartExcluding": {
+      "@id": "dependency:versionStartExcluding",
+      "@type": "xsd:string"
+    },
+    "versionStartIncluding": {
+      "@id": "dependency:versionStartIncluding",
+      "@type": "xsd:string"
+    },
+    "versionType": {
+      "@id": "dependency:versionType",
+      "@type": "xsd:string"
+    },
+    "AffectedProject": "dependency:AffectedProject",
+    "active": {
+      "@id": "dependency:active",
+      "@type": "xsd:boolean"
+    },
+    "affectedComponentUuids": {
+      "@id": "dependency:affectedComponentUuids",
+      "@container": "@list"
+    },
+    "dependencyGraphAvailable": {
+      "@id": "dependency:dependencyGraphAvailable",
+      "@type": "xsd:boolean"
+    },
+    "name": {
+      "@id": "dependency:name",
+      "@type": "xsd:string"
+    },
+    "AffectedVersionAttribution": "dependency:AffectedVersionAttribution",
+    "firstSeen": {
+      "@id": "dependency:firstSeen",
+      "@type": "xsd:integer"
+    },
+    "lastSeen": {
+      "@id": "dependency:lastSeen",
+      "@type": "xsd:integer"
+    },
+    "source": {
+      "@id": "dependency:source",
+      "@type": "xsd:string"
+    },
+    "AnalysisRequest": "dependency:AnalysisRequest",
+    "analysisDetails": {
+      "@id": "dependency:analysisDetails",
+      "@type": "xsd:string"
+    },
+    "analysisJustification": {
+      "@id": "dependency:analysisJustification",
+      "@type": "xsd:string"
+    },
+    "analysisResponse": {
+      "@id": "dependency:analysisResponse",
+      "@type": "xsd:string"
+    },
+    "analysisState": {
+      "@id": "dependency:analysisState",
+      "@type": "xsd:string"
+    },
+    "comment": {
+      "@id": "dependency:comment",
+      "@type": "xsd:string"
+    },
+    "component": {
+      "@id": "dependency:component",
+      "@type": "xsd:string"
+    },
+    "isSuppressed": {
+      "@id": "dependency:isSuppressed",
+      "@type": "xsd:boolean"
+    },
+    "suppressed": {
+      "@id": "dependency:suppressed",
+      "@type": "xsd:boolean"
+    },
+    "vulnerability": {
+      "@id": "dependency:vulnerability",
+      "@type": "xsd:string"
+    },
+    "AnalysisTrailResponse": "dependency:AnalysisTrailResponse",
+    "analysisComments": {
+      "@id": "dependency:analysisComments",
+      "@container": "@list"
+    },
+    "cvssV2Score": {
+      "@id": "dependency:cvssV2Score",
+      "@type": "xsd:decimal"
+    },
+    "cvssV2Vector": {
+      "@id": "dependency:cvssV2Vector",
+      "@type": "xsd:string"
+    },
+    "cvssV3Score": {
+      "@id": "dependency:cvssV3Score",
+      "@type": "xsd:decimal"
+    },
+    "cvssV3Vector": {
+      "@id": "dependency:cvssV3Vector",
+      "@type": "xsd:string"
+    },
+    "cvssV4Score": {
+      "@id": "dependency:cvssV4Score",
+      "@type": "xsd:decimal"
+    },
+    "cvssV4Vector": {
+      "@id": "dependency:cvssV4Vector",
+      "@type": "xsd:string"
+    },
+    "owaspScore": {
+      "@id": "dependency:owaspScore",
+      "@type": "xsd:decimal"
+    },
+    "owaspVector": {
+      "@id": "dependency:owaspVector",
+      "@type": "xsd:string"
+    },
+    "severity": {
+      "@id": "dependency:severity",
+      "@type": "xsd:string"
+    },
+    "ApiKey": "dependency:ApiKey",
+    "created": {
+      "@id": "dependency:created",
+      "@type": "xsd:integer"
+    },
+    "expiresAt": {
+      "@id": "dependency:expiresAt",
+      "@type": "xsd:integer"
+    },
+    "key": {
+      "@id": "dependency:key",
+      "@type": "xsd:string"
+    },
+    "lastUsed": {
+      "@id": "dependency:lastUsed",
+      "@type": "xsd:integer"
+    },
+    "legacy": {
+      "@id": "dependency:legacy",
+      "@type": "xsd:boolean"
+    },
+    "maskedKey": {
+      "@id": "dependency:maskedKey",
+      "@type": "xsd:string"
+    },
+    "publicId": {
+      "@id": "dependency:publicId",
+      "@type": "xsd:string"
+    },
+    "BomSubmitRequest": "dependency:BomSubmitRequest",
+    "autoCreate": {
+      "@id": "dependency:autoCreate",
+      "@type": "xsd:boolean"
+    },
+    "bom": {
+      "@id": "dependency:bom",
+      "@type": "xsd:string"
+    },
+    "isActive": {
+      "@id": "dependency:isActive",
+      "@type": "xsd:boolean"
+    },
+    "isLatest": {
+      "@id": "dependency:isLatest",
+      "@type": "xsd:boolean"
+    },
+    "parentName": {
+      "@id": "dependency:parentName",
+      "@type": "xsd:string"
+    },
+    "parentUUID": {
+      "@id": "dependency:parentUUID",
+      "@type": "xsd:string"
+    },
+    "parentVersion": {
+      "@id": "dependency:parentVersion",
+      "@type": "xsd:string"
+    },
+    "projectName": {
+      "@id": "dependency:projectName",
+      "@type": "xsd:string"
+    },
+    "projectTags": {
+      "@id": "dependency:projectTags",
+      "@container": "@list"
+    },
+    "projectVersion": {
+      "@id": "dependency:projectVersion",
+      "@type": "xsd:string"
+    },
+    "BomUploadResponse": "dependency:BomUploadResponse",
+    "projectUuid": {
+      "@id": "dependency:projectUuid",
+      "@type": "xsd:string"
+    },
+    "token": {
+      "@id": "dependency:token",
+      "@type": "xsd:string"
+    },
+    "CelExpressionError": "dependency:CelExpressionError",
+    "column": {
+      "@id": "dependency:column",
+      "@type": "xsd:integer"
+    },
+    "line": {
+      "@id": "dependency:line",
+      "@type": "xsd:integer"
+    },
+    "message": {
+      "@id": "dependency:message",
+      "@type": "xsd:string"
+    },
+    "CloneProjectRequest": "dependency:CloneProjectRequest",
+    "includeACL": {
+      "@id": "dependency:includeACL",
+      "@type": "xsd:boolean"
+    },
+    "includeAuditHistory": {
+      "@id": "dependency:includeAuditHistory",
+      "@type": "xsd:boolean"
+    },
+    "includeComponents": {
+      "@id": "dependency:includeComponents",
+      "@type": "xsd:boolean"
+    },
+    "includeDependencies": {
+      "@id": "dependency:includeDependencies",
+      "@type": "xsd:boolean"
+    },
+    "includePolicyViolations": {
+      "@id": "dependency:includePolicyViolations",
+      "@type": "xsd:boolean"
+    },
+    "includeProperties": {
+      "@id": "dependency:includeProperties",
+      "@type": "xsd:boolean"
+    },
+    "includeServices": {
+      "@id": "dependency:includeServices",
+      "@type": "xsd:boolean"
+    },
+    "includeTags": {
+      "@id": "dependency:includeTags",
+      "@type": "xsd:boolean"
+    },
+    "makeCloneLatest": {
+      "@id": "dependency:makeCloneLatest",
+      "@type": "xsd:boolean"
+    },
+    "Comment": "dependency:Comment",
+    "commenter": {
+      "@id": "dependency:commenter",
+      "@type": "xsd:string"
+    },
+    "Component": "dependency:Component",
+    "author": {
+      "@id": "dependency:author",
+      "@type": "xsd:string"
+    },
+    "authors": {
+      "@id": "dependency:authors",
+      "@container": "@list"
+    },
+    "blake2b_256": {
+      "@id": "dependency:blake2b_256",
+      "@type": "xsd:string"
+    },
+    "blake2b_384": {
+      "@id": "dependency:blake2b_384",
+      "@type": "xsd:string"
+    },
+    "blake2b_512": {
+      "@id": "dependency:blake2b_512",
+      "@type": "xsd:string"
+    },
+    "blake3": {
+      "@id": "dependency:blake3",
+      "@type": "xsd:string"
+    },
+    "children": {
+      "@id": "dependency:children",
+      "@container": "@list"
+    },
+    "classifier": {
+      "@id": "dependency:classifier",
+      "@type": "xsd:string"
+    },
+    "copyright": {
+      "@id": "dependency:copyright",
+      "@type": "xsd:string"
+    },
+    "cpe": {
+      "@id": "dependency:cpe",
+      "@type": "xsd:string"
+    },
+    "dependencyGraph": {
+      "@id": "dependency:dependencyGraph",
+      "@container": "@list"
+    },
+    "description": {
+      "@id": "dependency:description",
+      "@type": "xsd:string"
+    },
+    "directDependencies": {
+      "@id": "dependency:directDependencies",
+      "@type": "xsd:string"
+    },
+    "expandDependencyGraph": {
+      "@id": "dependency:expandDependencyGraph",
+      "@type": "xsd:boolean"
+    },
+    "extension": {
+      "@id": "dependency:extension",
+      "@type": "xsd:string"
+    },
+    "externalReferences": {
+      "@id": "dependency:externalReferences",
+      "@container": "@list"
+    },
+    "filename": {
+      "@id": "dependency:filename",
+      "@type": "xsd:string"
+    },
+    "group": {
+      "@id": "dependency:group",
+      "@type": "xsd:string"
+    },
+    "isInternal": {
+      "@id": "dependency:isInternal",
+      "@type": "xsd:boolean"
+    },
+    "lastInheritedRiskScore": {
+      "@id": "dependency:lastInheritedRiskScore",
+      "@type": "xsd:decimal"
+    },
+    "license": {
+      "@id": "dependency:license",
+      "@type": "xsd:string"
+    },
+    "licenseExpression": {
+      "@id": "dependency:licenseExpression",
+      "@type": "xsd:string"
+    },
+    "licenseUrl": {
+      "@id": "dependency:licenseUrl",
+      "@type": "xsd:string"
+    },
+    "md5": {
+      "@id": "dependency:md5",
+      "@type": "xsd:string"
+    },
+    "metrics": {
+      "@id": "dependency:metrics",
+      "@type": "@id"
+    },
+    "notes": {
+      "@id": "dependency:notes",
+      "@type": "xsd:string"
+    },
+    "occurrenceCount": {
+      "@id": "dependency:occurrenceCount",
+      "@type": "xsd:integer"
+    },
+    "parent": {
+      "@id": "dependency:parent",
+      "@type": "@id"
+    },
+    "properties": {
+      "@id": "dependency:properties",
+      "@container": "@list"
+    },
+    "publisher": {
+      "@id": "dependency:publisher",
+      "@type": "xsd:string"
+    },
+    "purl": {
+      "@id": "dependency:purl",
+      "@type": "xsd:string"
+    },
+    "purlCoordinates": {
+      "@id": "dependency:purlCoordinates",
+      "@type": "xsd:string"
+    },
+    "repositoryMeta": {
+      "@id": "dependency:repositoryMeta",
+      "@type": "@id"
+    },
+    "resolvedLicense": {
+      "@id": "dependency:resolvedLicense",
+      "@type": "@id"
+    },
+    "scope": {
+      "@id": "dependency:scope",
+      "@type": "xsd:string"
+    },
+    "sha1": {
+      "@id": "dependency:sha1",
+      "@type": "xsd:string"
+    },
+    "sha256": {
+      "@id": "dependency:sha256",
+      "@type": "xsd:string"
+    },
+    "sha384": {
+      "@id": "dependency:sha384",
+      "@type": "xsd:string"
+    },
+    "sha3_256": {
+      "@id": "dependency:sha3_256",
+      "@type": "xsd:string"
+    },
+    "sha3_384": {
+      "@id": "dependency:sha3_384",
+      "@type": "xsd:string"
+    },
+    "sha3_512": {
+      "@id": "dependency:sha3_512",
+      "@type": "xsd:string"
+    },
+    "sha512": {
+      "@id": "dependency:sha512",
+      "@type": "xsd:string"
+    },
+    "streebog_256": {
+      "@id": "dependency:streebog_256",
+      "@type": "xsd:string"
+    },
+    "streebog_512": {
+      "@id": "dependency:streebog_512",
+      "@type": "xsd:string"
+    },
+    "supplier": {
+      "@id": "dependency:supplier",
+      "@type": "@id"
+    },
+    "swidTagId": {
+      "@id": "dependency:swidTagId",
+      "@type": "xsd:string"
+    },
+    "vulnerabilities": {
+      "@id": "dependency:vulnerabilities",
+      "@container": "@list"
+    },
+    "ComponentOccurrence": "dependency:ComponentOccurrence",
+    "createdAt": {
+      "@id": "dependency:createdAt",
+      "@type": "xsd:integer"
+    },
+    "id": {
+      "@id": "dependency:id",
+      "@type": "xsd:string"
+    },
+    "location": {
+      "@id": "dependency:location",
+      "@type": "xsd:string"
+    },
+    "offset": {
+      "@id": "dependency:offset",
+      "@type": "xsd:integer"
+    },
+    "symbol": {
+      "@id": "dependency:symbol",
+      "@type": "xsd:string"
+    },
+    "ComponentProperty": "dependency:ComponentProperty",
+    "groupName": {
+      "@id": "dependency:groupName",
+      "@type": "xsd:string"
+    },
+    "propertyName": {
+      "@id": "dependency:propertyName",
+      "@type": "xsd:string"
+    },
+    "propertyType": {
+      "@id": "dependency:propertyType",
+      "@type": "xsd:string"
+    },
+    "propertyValue": {
+      "@id": "dependency:propertyValue",
+      "@type": "xsd:string"
+    },
+    "ComponentPropertyResponse": "dependency:ComponentPropertyResponse",
+    "ConciseLicenseResponse": "dependency:ConciseLicenseResponse",
+    "isCustomLicense": {
+      "@id": "dependency:isCustomLicense",
+      "@type": "xsd:boolean"
+    },
+    "isDeprecatedLicenseId": {
+      "@id": "dependency:isDeprecatedLicenseId",
+      "@type": "xsd:boolean"
+    },
+    "isFsfLibre": {
+      "@id": "dependency:isFsfLibre",
+      "@type": "xsd:boolean"
+    },
+    "isOsiApproved": {
+      "@id": "dependency:isOsiApproved",
+      "@type": "xsd:boolean"
+    },
+    "licenseId": {
+      "@id": "dependency:licenseId",
+      "@type": "xsd:string"
+    },
+    "ConciseProject": "dependency:ConciseProject",
+    "collectionLogic": {
+      "@id": "dependency:collectionLogic",
+      "@type": "xsd:string"
+    },
+    "hasChildren": {
+      "@id": "dependency:hasChildren",
+      "@type": "xsd:boolean"
+    },
+    "lastBomImport": {
+      "@id": "dependency:lastBomImport",
+      "@type": "xsd:integer"
+    },
+    "lastBomImportFormat": {
+      "@id": "dependency:lastBomImportFormat",
+      "@type": "xsd:string"
+    },
+    "lastRiskScore": {
+      "@id": "dependency:lastRiskScore",
+      "@type": "xsd:decimal"
+    },
+    "tags": {
+      "@id": "dependency:tags",
+      "@container": "@list"
+    },
+    "teams": {
+      "@id": "dependency:teams",
+      "@container": "@list"
+    },
+    "ConciseProjectMetrics": "dependency:ConciseProjectMetrics",
+    "components": {
+      "@id": "dependency:components",
+      "@type": "xsd:integer"
+    },
+    "critical": {
+      "@id": "dependency:critical",
+      "@type": "xsd:integer"
+    },
+    "high": {
+      "@id": "dependency:high",
+      "@type": "xsd:integer"
+    },
+    "inheritedRiskScore": {
+      "@id": "dependency:inheritedRiskScore",
+      "@type": "xsd:decimal"
+    },
+    "kev": {
+      "@id": "dependency:kev",
+      "@type": "xsd:integer"
+    },
+    "low": {
+      "@id": "dependency:low",
+      "@type": "xsd:integer"
+    },
+    "medium": {
+      "@id": "dependency:medium",
+      "@type": "xsd:integer"
+    },
+    "policyViolationsFail": {
+      "@id": "dependency:policyViolationsFail",
+      "@type": "xsd:integer"
+    },
+    "policyViolationsInfo": {
+      "@id": "dependency:policyViolationsInfo",
+      "@type": "xsd:integer"
+    },
+    "policyViolationsLicenseTotal": {
+      "@id": "dependency:policyViolationsLicenseTotal",
+      "@type": "xsd:integer"
+    },
+    "policyViolationsOperationalTotal": {
+      "@id": "dependency:policyViolationsOperationalTotal",
+      "@type": "xsd:integer"
+    },
+    "policyViolationsSecurityTotal": {
+      "@id": "dependency:policyViolationsSecurityTotal",
+      "@type": "xsd:integer"
+    },
+    "policyViolationsTotal": {
+      "@id": "dependency:policyViolationsTotal",
+      "@type": "xsd:integer"
+    },
+    "policyViolationsWarn": {
+      "@id": "dependency:policyViolationsWarn",
+      "@type": "xsd:integer"
+    },
+    "unassigned": {
+      "@id": "dependency:unassigned",
+      "@type": "xsd:integer"
+    },
+    "ConfigPropertyResponse": "dependency:ConfigPropertyResponse",
+    "CreateComponentPropertyRequest": "dependency:CreateComponentPropertyRequest",
+    "CreateLicenseGroupRequest": "dependency:CreateLicenseGroupRequest",
+    "CreateLicenseRequest": "dependency:CreateLicenseRequest",
+    "licenseComments": {
+      "@id": "dependency:licenseComments",
+      "@type": "xsd:string"
+    },
+    "licenseText": {
+      "@id": "dependency:licenseText",
+      "@type": "xsd:string"
+    },
+    "seeAlso": {
+      "@id": "dependency:seeAlso",
+      "@container": "@list"
+    },
+    "standardLicenseHeader": {
+      "@id": "dependency:standardLicenseHeader",
+      "@type": "xsd:string"
+    },
+    "standardLicenseTemplate": {
+      "@id": "dependency:standardLicenseTemplate",
+      "@type": "xsd:string"
+    },
+    "CreateNotificationPublisherRequest": "dependency:CreateNotificationPublisherRequest",
+    "extensionName": {
+      "@id": "dependency:extensionName",
+      "@type": "xsd:string"
+    },
+    "template": {
+      "@id": "dependency:template",
+      "@type": "xsd:string"
+    },
+    "templateMimeType": {
+      "@id": "dependency:templateMimeType",
+      "@type": "xsd:string"
+    },
+    "CreateNotificationRuleRequest": "dependency:CreateNotificationRuleRequest",
+    "level": {
+      "@id": "dependency:level",
+      "@type": "xsd:string"
+    },
+    "CreateOidcGroupRequest": "dependency:CreateOidcGroupRequest",
+    "CreatePolicyConditionRequest": "dependency:CreatePolicyConditionRequest",
+    "operator": {
+      "@id": "dependency:operator",
+      "@type": "xsd:string"
+    },
+    "subject": {
+      "@id": "dependency:subject",
+      "@type": "xsd:string"
+    },
+    "value": {
+      "@id": "dependency:value",
+      "@type": "xsd:string"
+    },
+    "violationType": {
+      "@id": "dependency:violationType",
+      "@type": "xsd:string"
+    },
+    "CreateProjectPropertyRequest": "dependency:CreateProjectPropertyRequest",
+    "CreateRepositoryRequest": "dependency:CreateRepositoryRequest",
+    "authenticationRequired": {
+      "@id": "dependency:authenticationRequired",
+      "@type": "xsd:boolean"
+    },
+    "enabled": {
+      "@id": "dependency:enabled",
+      "@type": "xsd:boolean"
+    },
+    "identifier": {
+      "@id": "dependency:identifier",
+      "@type": "xsd:string"
+    },
+    "internal": {
+      "@id": "dependency:internal",
+      "@type": "xsd:boolean"
+    },
+    "password": {
+      "@id": "dependency:password",
+      "@type": "xsd:string"
+    },
+    "type": {
+      "@id": "dependency:type",
+      "@type": "xsd:string"
+    },
+    "url": {
+      "@id": "dependency:url",
+      "@type": "xsd:string"
+    },
+    "username": {
+      "@id": "dependency:username",
+      "@type": "xsd:string"
+    },
+    "CreateScheduledNotificationRuleRequest": "dependency:CreateScheduledNotificationRuleRequest",
+    "CvssScoreResponse": "dependency:CvssScoreResponse",
+    "baseScore": {
+      "@id": "dependency:baseScore",
+      "@type": "xsd:decimal"
+    },
+    "environmentalScore": {
+      "@id": "dependency:environmentalScore",
+      "@type": "xsd:decimal"
+    },
+    "exploitabilitySubScore": {
+      "@id": "dependency:exploitabilitySubScore",
+      "@type": "xsd:decimal"
+    },
+    "impactSubScore": {
+      "@id": "dependency:impactSubScore",
+      "@type": "xsd:decimal"
+    },
+    "modifiedImpactSubScore": {
+      "@id": "dependency:modifiedImpactSubScore",
+      "@type": "xsd:decimal"
+    },
+    "temporalScore": {
+      "@id": "dependency:temporalScore",
+      "@type": "xsd:decimal"
+    },
+    "Cwe": "dependency:Cwe",
+    "cweId": {
+      "@id": "dependency:cweId",
+      "@type": "xsd:integer"
+    },
+    "DataClassification": "dependency:DataClassification",
+    "direction": {
+      "@id": "dependency:direction",
+      "@type": "xsd:string"
+    },
+    "DeleteNotificationRuleRequest": "dependency:DeleteNotificationRuleRequest",
+    "DeleteProjectPropertyRequest": "dependency:DeleteProjectPropertyRequest",
+    "DeleteTeamRequest": "dependency:DeleteTeamRequest",
+    "DeleteUserRequest": "dependency:DeleteUserRequest",
+    "DependencyGraphResponse": "dependency:DependencyGraphResponse",
+    "latestVersion": {
+      "@id": "dependency:latestVersion",
+      "@type": "xsd:string"
+    },
+    "DependencyMetrics": "dependency:DependencyMetrics",
+    "findingsAudited": {
+      "@id": "dependency:findingsAudited",
+      "@type": "xsd:integer"
+    },
+    "findingsTotal": {
+      "@id": "dependency:findingsTotal",
+      "@type": "xsd:integer"
+    },
+    "findingsUnaudited": {
+      "@id": "dependency:findingsUnaudited",
+      "@type": "xsd:integer"
+    },
+    "firstOccurrence": {
+      "@id": "dependency:firstOccurrence",
+      "@type": "xsd:integer"
+    },
+    "lastOccurrence": {
+      "@id": "dependency:lastOccurrence",
+      "@type": "xsd:integer"
+    },
+    "policyViolationsAudited": {
+      "@id": "dependency:policyViolationsAudited",
+      "@type": "xsd:integer"
+    },
+    "policyViolationsLicenseAudited": {
+      "@id": "dependency:policyViolationsLicenseAudited",
+      "@type": "xsd:integer"
+    },
+    "policyViolationsLicenseUnaudited": {
+      "@id": "dependency:policyViolationsLicenseUnaudited",
+      "@type": "xsd:integer"
+    },
+    "policyViolationsOperationalAudited": {
+      "@id": "dependency:policyViolationsOperationalAudited",
+      "@type": "xsd:integer"
+    },
+    "policyViolationsOperationalUnaudited": {
+      "@id": "dependency:policyViolationsOperationalUnaudited",
+      "@type": "xsd:integer"
+    },
+    "policyViolationsSecurityAudited": {
+      "@id": "dependency:policyViolationsSecurityAudited",
+      "@type": "xsd:integer"
+    },
+    "policyViolationsSecurityUnaudited": {
+      "@id": "dependency:policyViolationsSecurityUnaudited",
+      "@type": "xsd:integer"
+    },
+    "policyViolationsUnaudited": {
+      "@id": "dependency:policyViolationsUnaudited",
+      "@type": "xsd:integer"
+    },
+    "Epss": "dependency:Epss",
+    "cve": {
+      "@id": "dependency:cve",
+      "@type": "xsd:string"
+    },
+    "percentile": {
+      "@id": "dependency:percentile",
+      "@type": "xsd:decimal"
+    },
+    "score": {
+      "@id": "dependency:score",
+      "@type": "xsd:decimal"
+    },
+    "ExternalReference": "dependency:ExternalReference",
+    "Finding": "dependency:Finding",
+    "analysis": {
+      "@id": "dependency:analysis"
+    },
+    "attribution": {
+      "@id": "dependency:attribution"
+    },
+    "matrix": {
+      "@id": "dependency:matrix",
+      "@type": "xsd:string"
+    },
+    "Framework": "dependency:Framework",
+    "IdentifiableObject": "dependency:IdentifiableObject",
+    "IsTokenBeingProcessedResponse": "dependency:IsTokenBeingProcessedResponse",
+    "processing": {
+      "@id": "dependency:processing",
+      "@type": "xsd:boolean"
+    },
+    "status": {
+      "@id": "dependency:status",
+      "@type": "xsd:string"
+    },
+    "LdapUser": "dependency:LdapUser",
+    "dn": {
+      "@id": "dependency:dn",
+      "@type": "xsd:string"
+    },
+    "email": {
+      "@id": "dependency:email",
+      "@type": "xsd:string"
+    },
+    "permissions": {
+      "@id": "dependency:permissions",
+      "@container": "@list"
+    },
+    "License": "dependency:License",
+    "licenseGroups": {
+      "@id": "dependency:licenseGroups",
+      "@container": "@list"
+    },
+    "LicenseGroup": "dependency:LicenseGroup",
+    "licenses": {
+      "@id": "dependency:licenses",
+      "@container": "@list"
+    },
+    "riskWeight": {
+      "@id": "dependency:riskWeight",
+      "@type": "xsd:integer"
+    },
+    "LicenseGroupResponse": "dependency:LicenseGroupResponse",
+    "LicenseResponse": "dependency:LicenseResponse",
+    "ListProjectsResponseItem": "dependency:ListProjectsResponseItem",
+    "collectionTag": {
+      "@id": "dependency:collectionTag",
+      "@type": "@id"
+    },
+    "inactiveSince": {
+      "@id": "dependency:inactiveSince",
+      "@type": "xsd:integer"
+    },
+    "lastVulnerabilityAnalysis": {
+      "@id": "dependency:lastVulnerabilityAnalysis",
+      "@type": "xsd:integer"
+    },
+    "manufacturer": {
+      "@id": "dependency:manufacturer",
+      "@type": "@id"
+    },
+    "metadata": {
+      "@id": "dependency:metadata",
+      "@type": "@id"
+    },
+    "ManagedUser": "dependency:ManagedUser",
+    "confirmPassword": {
+      "@id": "dependency:confirmPassword",
+      "@type": "xsd:string"
+    },
+    "forcePasswordChange": {
+      "@id": "dependency:forcePasswordChange",
+      "@type": "xsd:boolean"
+    },
+    "fullname": {
+      "@id": "dependency:fullname",
+      "@type": "xsd:string"
+    },
+    "lastPasswordChange": {
+      "@id": "dependency:lastPasswordChange",
+      "@type": "xsd:integer"
+    },
+    "newPassword": {
+      "@id": "dependency:newPassword",
+      "@type": "xsd:string"
+    },
+    "nonExpiryPassword": {
+      "@id": "dependency:nonExpiryPassword",
+      "@type": "xsd:boolean"
+    },
+    "suspended": {
+      "@id": "dependency:suspended",
+      "@type": "xsd:boolean"
+    },
+    "MappedLdapGroup": "dependency:MappedLdapGroup",
+    "MappedLdapGroupRequest": "dependency:MappedLdapGroupRequest",
+    "MappedLdapGroupResponse": "dependency:MappedLdapGroupResponse",
+    "MappedOidcGroup": "dependency:MappedOidcGroup",
+    "MappedOidcGroupRequest": "dependency:MappedOidcGroupRequest",
+    "MappedOidcGroupResponse": "dependency:MappedOidcGroupResponse",
+    "NotificationPublisher": "dependency:NotificationPublisher",
+    "defaultPublisher": {
+      "@id": "dependency:defaultPublisher",
+      "@type": "xsd:boolean"
+    },
+    "NotificationPublisherResponse": "dependency:NotificationPublisherResponse",
+    "NotificationRule": "dependency:NotificationRule",
+    "filterExpression": {
+      "@id": "dependency:filterExpression",
+      "@type": "xsd:string"
+    },
+    "logSuccessfulPublish": {
+      "@id": "dependency:logSuccessfulPublish",
+      "@type": "xsd:boolean"
+    },
+    "notificationLevel": {
+      "@id": "dependency:notificationLevel",
+      "@type": "xsd:string"
+    },
+    "notifyChildren": {
+      "@id": "dependency:notifyChildren",
+      "@type": "xsd:boolean"
+    },
+    "notifyOn": {
+      "@id": "dependency:notifyOn",
+      "@container": "@list"
+    },
+    "projects": {
+      "@id": "dependency:projects",
+      "@container": "@list"
+    },
+    "publisherConfig": {
+      "@id": "dependency:publisherConfig",
+      "@type": "xsd:string"
+    },
+    "scheduleCron": {
+      "@id": "dependency:scheduleCron",
+      "@type": "xsd:string"
+    },
+    "scheduleLastTriggeredAt": {
+      "@id": "dependency:scheduleLastTriggeredAt",
+      "@type": "xsd:integer"
+    },
+    "scheduleNextTriggerAt": {
+      "@id": "dependency:scheduleNextTriggerAt",
+      "@type": "xsd:integer"
+    },
+    "scheduleSkipUnchanged": {
+      "@id": "dependency:scheduleSkipUnchanged",
+      "@type": "xsd:boolean"
+    },
+    "triggerType": {
+      "@id": "dependency:triggerType",
+      "@type": "xsd:string"
+    },
+    "OidcGroup": "dependency:OidcGroup",
+    "OidcGroupResponse": "dependency:OidcGroupResponse",
+    "OidcUser": "dependency:OidcUser",
+    "subjectIdentifier": {
+      "@id": "dependency:subjectIdentifier",
+      "@type": "xsd:string"
+    },
+    "OrganizationalContact": "dependency:OrganizationalContact",
+    "phone": {
+      "@id": "dependency:phone",
+      "@type": "xsd:string"
+    },
+    "OrganizationalEntity": "dependency:OrganizationalEntity",
+    "contacts": {
+      "@id": "dependency:contacts",
+      "@container": "@list"
+    },
+    "urls": {
+      "@id": "dependency:urls",
+      "@container": "@list"
+    },
+    "Parent": "dependency:Parent",
+    "Permission": "dependency:Permission",
+    "ldapUsers": {
+      "@id": "dependency:ldapUsers",
+      "@container": "@list"
+    },
+    "managedUsers": {
+      "@id": "dependency:managedUsers",
+      "@container": "@list"
+    },
+    "oidcUsers": {
+      "@id": "dependency:oidcUsers",
+      "@container": "@list"
+    },
+    "Policy": "dependency:Policy",
+    "global": {
+      "@id": "dependency:global",
+      "@type": "xsd:boolean"
+    },
+    "includeChildren": {
+      "@id": "dependency:includeChildren",
+      "@type": "xsd:boolean"
+    },
+    "invertTagMatch": {
+      "@id": "dependency:invertTagMatch",
+      "@type": "xsd:boolean"
+    },
+    "onlyLatestProjectVersion": {
+      "@id": "dependency:onlyLatestProjectVersion",
+      "@type": "xsd:boolean"
+    },
+    "policyConditions": {
+      "@id": "dependency:policyConditions",
+      "@container": "@list"
+    },
+    "violationState": {
+      "@id": "dependency:violationState",
+      "@type": "xsd:string"
+    },
+    "PolicyCondition": "dependency:PolicyCondition",
+    "policy": {
+      "@id": "dependency:policy",
+      "@type": "@id"
+    },
+    "PolicyConditionResponse": "dependency:PolicyConditionResponse",
+    "PolicyViolation": "dependency:PolicyViolation",
+    "policyCondition": {
+      "@id": "dependency:policyCondition",
+      "@type": "@id"
+    },
+    "text": {
+      "@id": "dependency:text",
+      "@type": "xsd:string"
+    },
+    "PortfolioMetrics": "dependency:PortfolioMetrics",
+    "vulnerableComponents": {
+      "@id": "dependency:vulnerableComponents",
+      "@type": "xsd:integer"
+    },
+    "vulnerableProjects": {
+      "@id": "dependency:vulnerableProjects",
+      "@type": "xsd:integer"
+    },
+    "ProblemDetails": "dependency:ProblemDetails",
+    "detail": {
+      "@id": "dependency:detail",
+      "@type": "xsd:string"
+    },
+    "instance": {
+      "@id": "dependency:instance",
+      "@type": "@id"
+    },
+    "title": {
+      "@id": "dependency:title",
+      "@type": "xsd:string"
+    },
+    "Project": "dependency:Project",
+    "accessTeams": {
+      "@id": "dependency:accessTeams",
+      "@container": "@list"
+    },
+    "bomRef": {
+      "@id": "dependency:bomRef",
+      "@type": "xsd:string"
+    },
+    "versions": {
+      "@id": "dependency:versions",
+      "@container": "@list"
+    },
+    "ProjectMetadata": "dependency:ProjectMetadata",
+    "tools": {
+      "@id": "dependency:tools",
+      "@type": "@id"
+    },
+    "ProjectMetrics": "dependency:ProjectMetrics",
+    "ProjectPropertyResponse": "dependency:ProjectPropertyResponse",
+    "ProjectVersion": "dependency:ProjectVersion",
+    "Publisher": "dependency:Publisher",
+    "RepositoryMetaComponent": "dependency:RepositoryMetaComponent",
+    "lastCheck": {
+      "@id": "dependency:lastCheck",
+      "@type": "xsd:integer"
+    },
+    "latestVersionPublishedAt": {
+      "@id": "dependency:latestVersionPublishedAt",
+      "@type": "xsd:integer"
+    },
+    "namespace": {
+      "@id": "dependency:namespace",
+      "@type": "xsd:string"
+    },
+    "repositoryType": {
+      "@id": "dependency:repositoryType",
+      "@type": "xsd:string"
+    },
+    "RepositoryResponse": "dependency:RepositoryResponse",
+    "resolutionOrder": {
+      "@id": "dependency:resolutionOrder",
+      "@type": "xsd:integer"
+    },
+    "Score": "dependency:Score",
+    "businessImpact": {
+      "@id": "dependency:businessImpact",
+      "@type": "xsd:string"
+    },
+    "businessImpactScore": {
+      "@id": "dependency:businessImpactScore",
+      "@type": "xsd:decimal"
+    },
+    "likelihood": {
+      "@id": "dependency:likelihood",
+      "@type": "xsd:string"
+    },
+    "likelihoodScore": {
+      "@id": "dependency:likelihoodScore",
+      "@type": "xsd:decimal"
+    },
+    "technicalImpact": {
+      "@id": "dependency:technicalImpact",
+      "@type": "xsd:string"
+    },
+    "technicalImpactScore": {
+      "@id": "dependency:technicalImpactScore",
+      "@type": "xsd:decimal"
+    },
+    "ServiceAccount": "dependency:ServiceAccount",
+    "ServiceComponent": "dependency:ServiceComponent",
+    "authenticated": {
+      "@id": "dependency:authenticated",
+      "@type": "xsd:boolean"
+    },
+    "crossesTrustBoundary": {
+      "@id": "dependency:crossesTrustBoundary",
+      "@type": "xsd:boolean"
+    },
+    "data": {
+      "@id": "dependency:data",
+      "@container": "@list"
+    },
+    "endpoints": {
+      "@id": "dependency:endpoints",
+      "@container": "@list"
+    },
+    "provider": {
+      "@id": "dependency:provider",
+      "@type": "@id"
+    },
+    "Tag": "dependency:Tag",
+    "TagListResponseItem": "dependency:TagListResponseItem",
+    "collectionProjectCount": {
+      "@id": "dependency:collectionProjectCount",
+      "@type": "xsd:integer"
+    },
+    "notificationRuleCount": {
+      "@id": "dependency:notificationRuleCount",
+      "@type": "xsd:integer"
+    },
+    "policyCount": {
+      "@id": "dependency:policyCount",
+      "@type": "xsd:integer"
+    },
+    "projectCount": {
+      "@id": "dependency:projectCount",
+      "@type": "xsd:integer"
+    },
+    "vulnerabilityCount": {
+      "@id": "dependency:vulnerabilityCount",
+      "@type": "xsd:integer"
+    },
+    "TagResponse": "dependency:TagResponse",
+    "TaggedCollectionProjectListResponseItem": "dependency:TaggedCollectionProjectListResponseItem",
+    "TaggedPolicyListResponseItem": "dependency:TaggedPolicyListResponseItem",
+    "TaggedProjectListResponseItem": "dependency:TaggedProjectListResponseItem",
+    "TaggedVulnerabilityListResponseItem": "dependency:TaggedVulnerabilityListResponseItem",
+    "vulnId": {
+      "@id": "dependency:vulnId",
+      "@type": "xsd:string"
+    },
+    "Team": "dependency:Team",
+    "apiKeys": {
+      "@id": "dependency:apiKeys",
+      "@container": "@list"
+    },
+    "mappedLdapGroups": {
+      "@id": "dependency:mappedLdapGroups",
+      "@container": "@list"
+    },
+    "mappedOidcGroups": {
+      "@id": "dependency:mappedOidcGroups",
+      "@container": "@list"
+    },
+    "serviceAccounts": {
+      "@id": "dependency:serviceAccounts",
+      "@container": "@list"
+    },
+    "TeamAlreadyExistsProblemDetails": "dependency:TeamAlreadyExistsProblemDetails",
+    "teamName": {
+      "@id": "dependency:teamName",
+      "@type": "xsd:string"
+    },
+    "teamUuid": {
+      "@id": "dependency:teamUuid",
+      "@type": "xsd:string"
+    },
+    "TeamPermissionsSetRequest": "dependency:TeamPermissionsSetRequest",
+    "TeamSelfResponse": "dependency:TeamSelfResponse",
+    "TeamsSetRequest": "dependency:TeamsSetRequest",
+    "Tools": "dependency:Tools",
+    "services": {
+      "@id": "dependency:services",
+      "@container": "@list"
+    },
+    "UpdateConfigPropertyRequest": "dependency:UpdateConfigPropertyRequest",
+    "UpdateLicenseGroupRequest": "dependency:UpdateLicenseGroupRequest",
+    "UpdateNotificationPublisherRequest": "dependency:UpdateNotificationPublisherRequest",
+    "UpdateNotificationRuleRequest": "dependency:UpdateNotificationRuleRequest",
+    "UpdateOidcGroupRequest": "dependency:UpdateOidcGroupRequest",
+    "UpdatePolicyConditionRequest": "dependency:UpdatePolicyConditionRequest",
+    "UpdateProjectPropertyRequest": "dependency:UpdateProjectPropertyRequest",
+    "UpdateRepositoryRequest": "dependency:UpdateRepositoryRequest",
+    "User": "dependency:User",
+    "UserPermissionsSetRequest": "dependency:UserPermissionsSetRequest",
+    "VexSubmitRequest": "dependency:VexSubmitRequest",
+    "vex": {
+      "@id": "dependency:vex",
+      "@type": "xsd:string"
+    },
+    "ViolationAnalysis": "dependency:ViolationAnalysis",
+    "violationAnalysisState": {
+      "@id": "dependency:violationAnalysisState",
+      "@type": "xsd:string"
+    },
+    "ViolationAnalysisComment": "dependency:ViolationAnalysisComment",
+    "ViolationAnalysisRequest": "dependency:ViolationAnalysisRequest",
+    "policyViolation": {
+      "@id": "dependency:policyViolation",
+      "@type": "xsd:string"
+    },
+    "ViolationAnalysisResponse": "dependency:ViolationAnalysisResponse",
+    "VisibleTeams": "dependency:VisibleTeams",
+    "Vulnerability": "dependency:Vulnerability",
+    "affectedActiveProjectCount": {
+      "@id": "dependency:affectedActiveProjectCount",
+      "@type": "xsd:integer"
+    },
+    "affectedComponents": {
+      "@id": "dependency:affectedComponents",
+      "@container": "@list"
+    },
+    "affectedInactiveProjectCount": {
+      "@id": "dependency:affectedInactiveProjectCount",
+      "@type": "xsd:integer"
+    },
+    "affectedProjectCount": {
+      "@id": "dependency:affectedProjectCount",
+      "@type": "xsd:integer"
+    },
+    "aliases": {
+      "@id": "dependency:aliases",
+      "@container": "@list"
+    },
+    "credits": {
+      "@id": "dependency:credits",
+      "@type": "xsd:string"
+    },
+    "cvssV2BaseScore": {
+      "@id": "dependency:cvssV2BaseScore",
+      "@type": "xsd:decimal"
+    },
+    "cvssV2ExploitabilitySubScore": {
+      "@id": "dependency:cvssV2ExploitabilitySubScore",
+      "@type": "xsd:decimal"
+    },
+    "cvssV2ImpactSubScore": {
+      "@id": "dependency:cvssV2ImpactSubScore",
+      "@type": "xsd:decimal"
+    },
+    "cvssV3BaseScore": {
+      "@id": "dependency:cvssV3BaseScore",
+      "@type": "xsd:decimal"
+    },
+    "cvssV3ExploitabilitySubScore": {
+      "@id": "dependency:cvssV3ExploitabilitySubScore",
+      "@type": "xsd:decimal"
+    },
+    "cvssV3ImpactSubScore": {
+      "@id": "dependency:cvssV3ImpactSubScore",
+      "@type": "xsd:decimal"
+    },
+    "cwes": {
+      "@id": "dependency:cwes",
+      "@container": "@list"
+    },
+    "epss": {
+      "@id": "dependency:epss",
+      "@type": "@id"
+    },
+    "epssPercentile": {
+      "@id": "dependency:epssPercentile",
+      "@type": "xsd:decimal"
+    },
+    "epssScore": {
+      "@id": "dependency:epssScore",
+      "@type": "xsd:decimal"
+    },
+    "friendlyVulnId": {
+      "@id": "dependency:friendlyVulnId",
+      "@type": "xsd:string"
+    },
+    "isKev": {
+      "@id": "dependency:isKev",
+      "@type": "xsd:boolean"
+    },
+    "owaspRRBusinessImpactScore": {
+      "@id": "dependency:owaspRRBusinessImpactScore",
+      "@type": "xsd:decimal"
+    },
+    "owaspRRLikelihoodScore": {
+      "@id": "dependency:owaspRRLikelihoodScore",
+      "@type": "xsd:decimal"
+    },
+    "owaspRRTechnicalImpactScore": {
+      "@id": "dependency:owaspRRTechnicalImpactScore",
+      "@type": "xsd:decimal"
+    },
+    "owaspRRVector": {
+      "@id": "dependency:owaspRRVector",
+      "@type": "xsd:string"
+    },
+    "patchedVersions": {
+      "@id": "dependency:patchedVersions",
+      "@type": "xsd:string"
+    },
+    "published": {
+      "@id": "dependency:published",
+      "@type": "xsd:dateTime"
+    },
+    "recommendation": {
+      "@id": "dependency:recommendation",
+      "@type": "xsd:string"
+    },
+    "references": {
+      "@id": "dependency:references",
+      "@type": "xsd:string"
+    },
+    "rejected": {
+      "@id": "dependency:rejected",
+      "@type": "xsd:dateTime"
+    },
+    "serviceComponents": {
+      "@id": "dependency:serviceComponents",
+      "@container": "@list"
+    },
+    "subTitle": {
+      "@id": "dependency:subTitle",
+      "@type": "xsd:string"
+    },
+    "updated": {
+      "@id": "dependency:updated",
+      "@type": "xsd:dateTime"
+    },
+    "vulnerableVersions": {
+      "@id": "dependency:vulnerableVersions",
+      "@type": "xsd:string"
+    },
+    "VulnerabilityAlias": "dependency:VulnerabilityAlias",
+    "cveId": {
+      "@id": "dependency:cveId",
+      "@type": "xsd:string"
+    },
+    "cxId": {
+      "@id": "dependency:cxId",
+      "@type": "xsd:string"
+    },
+    "ghsaId": {
+      "@id": "dependency:ghsaId",
+      "@type": "xsd:string"
+    },
+    "gsdId": {
+      "@id": "dependency:gsdId",
+      "@type": "xsd:string"
+    },
+    "internalId": {
+      "@id": "dependency:internalId",
+      "@type": "xsd:string"
+    },
+    "osvId": {
+      "@id": "dependency:osvId",
+      "@type": "xsd:string"
+    },
+    "snykId": {
+      "@id": "dependency:snykId",
+      "@type": "xsd:string"
+    },
+    "sonatypeId": {
+      "@id": "dependency:sonatypeId",
+      "@type": "xsd:string"
+    },
+    "vulnDbId": {
+      "@id": "dependency:vulnDbId",
+      "@type": "xsd:string"
+    },
+    "VulnerabilityMetrics": "dependency:VulnerabilityMetrics",
+    "count": {
+      "@id": "dependency:count",
+      "@type": "xsd:integer"
+    },
+    "measuredAt": {
+      "@id": "dependency:measuredAt",
+      "@type": "xsd:integer"
+    },
+    "month": {
+      "@id": "dependency:month",
+      "@type": "xsd:integer"
+    },
+    "year": {
+      "@id": "dependency:year",
+      "@type": "xsd:integer"
+    },
+    "project-state": "dependency:project-state",
+    "sort-direction": "dependency:sort-direction"
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Dependency-Track API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Dependency-Track's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-09) from openapi/dependency-track-openapi.yml, openapi/dependency-track-v2-openapi.yml.",
+  "dcterms:created": "2026-10-09",
+  "dcterms:source": [
+    "openapi/dependency-track-openapi.yml",
+    "openapi/dependency-track-v2-openapi.yml"
+  ]
+}

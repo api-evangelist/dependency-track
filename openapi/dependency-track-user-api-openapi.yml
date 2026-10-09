@@ -1,0 +1,938 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track User API
+  version: 1.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged user across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api
+tags:
+- name: User
+paths:
+  /v1/user/forceChangePassword:
+    post:
+      description: Upon a successful login, a bearer token will be returned in the response body.
+      operationId: forceChangePassword
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                confirmPassword:
+                  type: string
+                newPassword:
+                  type: string
+                password:
+                  type: string
+                username:
+                  type: string
+      responses:
+        '200':
+          description: Password changed successfully
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Asserts login credentials and upon successful authentication, verifies…
+      tags:
+      - User
+    servers:
+    - url: /api
+  /v1/user/ldap:
+    delete:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_DELETE
+      operationId: deleteLdapUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteUserRequest'
+      responses:
+        '204':
+          description: LDAP user removed successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: The user could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Deletes a user
+      tags:
+      - User
+    get:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_READ
+      operationId: getLdapUsers
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LdapUser'
+          description: A list of all LDAP users
+          headers:
+            X-Total-Count:
+              description: The total number of LDAP users
+              schema:
+                format: integer
+              style: simple
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all LDAP users
+      tags:
+      - User
+    put:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_CREATE
+      operationId: createLdapUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LdapUser'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LdapUser'
+          description: The created LDAP user
+        '400':
+          description: Username cannot be null or blank.
+        '401':
+          description: Unauthorized
+        '409':
+          description: A user with the same username already exists. Cannot create new user
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Creates a new user that references an existing LDAP object
+      tags:
+      - User
+    servers:
+    - url: /api
+  /v1/user/login:
+    post:
+      description: Upon a successful login, a bearer token will be returned in the response body.
+      operationId: validateCredentials
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                username:
+                  type: string
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: A bearer token to be used for authenticating with the REST API
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Assert login credentials
+      tags:
+      - User
+    servers:
+    - url: /api
+  /v1/user/logout:
+    post:
+      description: Invalidates the current session. No-op when authenticated via API key.
+      operationId: logout
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Session invalidated
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Invalidates the current session
+      tags:
+      - User
+    servers:
+    - url: /api
+  /v1/user/managed:
+    delete:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_DELETE
+      operationId: deleteManagedUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteUserRequest'
+      responses:
+        '204':
+          description: User removed successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: The user could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Deletes a user
+      tags:
+      - User
+    get:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_READ
+      operationId: getManagedUsers
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ManagedUser'
+          description: A list of all managed users
+          headers:
+            X-Total-Count:
+              description: The total number of managed users
+              schema:
+                format: integer
+              style: simple
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all managed users
+      tags:
+      - User
+    post:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_UPDATE
+      operationId: updateManagedUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagedUser'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagedUser'
+          description: The updated user
+        '400':
+          description: Missing required field
+        '401':
+          description: Unauthorized
+        '404':
+          description: The user could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Updates a managed user
+      tags:
+      - User
+    put:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_CREATE
+      operationId: createManagedUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagedUser'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagedUser'
+          description: The created user
+        '400':
+          description: Missing required field
+        '401':
+          description: Unauthorized
+        '409':
+          description: A user with the same username already exists. Cannot create new user
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Creates a new user
+      tags:
+      - User
+    servers:
+    - url: /api
+  /v1/user/membership:
+    put:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_UPDATE
+      operationId: setUserTeams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamsSetRequest'
+        description: Username and list of UUIDs to assign to user
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: The updated user
+        '304':
+          description: The user is already a member of the specified team(s)
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: The user or team(s) could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Sets specified teams to a user
+      tags:
+      - User
+    servers:
+    - url: /api
+  /v1/user/oidc:
+    delete:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_DELETE
+      operationId: deleteOidcUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteUserRequest'
+      responses:
+        '204':
+          description: OIDC user removed successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: The user could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Deletes an OpenID Connect user
+      tags:
+      - User
+    get:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_READ
+      operationId: getOidcUsers
+      responses:
+        '200':
+          description: A list of all OIDC users
+          headers:
+            X-Total-Count:
+              description: The total number of OIDC users
+              schema:
+                format: integer
+              style: simple
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all OIDC users
+      tags:
+      - User
+    put:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_CREATE
+      operationId: createOidcUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OidcUser'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OidcUser'
+          description: The created OIDC user
+        '400':
+          description: Username cannot be null or blank.
+        '401':
+          description: Unauthorized
+        '409':
+          description: A user with the same username already exists. Cannot create new user
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Creates a new user that references an existing OpenID Connect user
+      tags:
+      - User
+    servers:
+    - url: /api
+  /v1/user/oidc/login:
+    post:
+      description: Upon a successful login, a bearer token will be returned in the response body.
+      operationId: validateOidcAccessToken
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                idToken:
+                  type: string
+                  description: An OAuth2 access token
+              required:
+              - idToken
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: A bearer token to be used for authenticating with the REST API
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Login with OpenID Connect
+      tags:
+      - User
+    servers:
+    - url: /api
+  /v1/user/self:
+    get:
+      operationId: getSelf_1
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Information about the current logged in user
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns information about the current logged in user
+      tags:
+      - User
+    post:
+      operationId: updateSelf
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagedUser'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagedUser'
+          description: The updated user
+        '400':
+          description: An invalid payload was submitted or the user is not a managed user.
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Updates information about the current logged in user
+      tags:
+      - User
+    servers:
+    - url: /api
+  /v1/user/self/permissions:
+    get:
+      description: Returns all permissions the authenticated user has, including those inherited from teams.
+      operationId: getSelfPermissions
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+          description: A list of effective permission names
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns the effective permissions of the authenticated user
+      tags:
+      - User
+    servers:
+    - url: /api
+  /v1/user/{username}/membership:
+    delete:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_DELETE
+      operationId: removeTeamFromUser
+      parameters:
+      - description: A valid username
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdentifiableObject'
+        description: The UUID of the team to un-associate username from
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: The updated user
+        '304':
+          description: The user was not a member of the specified team
+        '401':
+          description: Unauthorized
+        '404':
+          description: The user or team could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Removes the username from the specified team
+      tags:
+      - User
+    post:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_UPDATE
+      operationId: addTeamToUser
+      parameters:
+      - description: A valid username
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdentifiableObject'
+        description: The UUID of the team to associate username with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: The updated user
+        '304':
+          description: The user is already a member of the specified team
+        '401':
+          description: Unauthorized
+        '404':
+          description: The user or team could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Adds the username to the specified team
+      tags:
+      - User
+    servers:
+    - url: /api
+components:
+  schemas:
+    ManagedUser:
+      type: object
+      properties:
+        confirmPassword:
+          type: string
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        forcePasswordChange:
+          type: boolean
+        fullname:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        lastPasswordChange:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        newPassword:
+          type: string
+        nonExpiryPassword:
+          type: boolean
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        suspended:
+          type: boolean
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - lastPasswordChange
+      - username
+    OidcUser:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        subjectIdentifier:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - username
+    MappedOidcGroup:
+      type: object
+      properties:
+        group:
+          $ref: '#/components/schemas/OidcGroup'
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - uuid
+    IdentifiableObject:
+      type: object
+      properties:
+        uuid:
+          type: string
+    DeleteUserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username of the user to delete
+          minLength: 1
+      required:
+      - username
+    ServiceAccount:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        suspended:
+          type: boolean
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - username
+    OidcGroup:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - name
+      - uuid
+    MappedLdapGroup:
+      type: object
+      properties:
+        dn:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - dn
+      - uuid
+    Permission:
+      type: object
+      properties:
+        description:
+          type: string
+        ldapUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/LdapUser'
+        managedUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagedUser'
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[a-zA-Z_0-9]*$
+        oidcUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OidcUser'
+      required:
+      - name
+    Team:
+      type: object
+      properties:
+        apiKeys:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiKey'
+        ldapUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/LdapUser'
+        managedUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagedUser'
+        mappedLdapGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/MappedLdapGroup'
+        mappedOidcGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/MappedOidcGroup'
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        oidcUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OidcUser'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        serviceAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceAccount'
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - name
+      - uuid
+    LdapUser:
+      type: object
+      properties:
+        dn:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - username
+    TeamsSetRequest:
+      type: object
+      properties:
+        teams:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        username:
+          type: string
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+      required:
+      - teams
+      - username
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - username
+    ApiKey:
+      type: object
+      properties:
+        comment:
+          type: string
+          maxLength: 255
+          minLength: 0
+        created:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        expiresAt:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        key:
+          type: string
+        lastUsed:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        legacy:
+          type: boolean
+        maskedKey:
+          type: string
+        publicId:
+          type: string
+          maxLength: 8
+          minLength: 5
+    ProblemDetails:
+      type: object
+      description: An RFC 9457 problem object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+          example: Example detail
+        instance:
+          type: string
+          format: uri
+          description: Reference URI that identifies the specific occurrence of the problem
+          example: https://api.example.org/foo/bar/example-instance
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code generated by the origin server for this occurrence of the problem
+          example: 400
+        title:
+          type: string
+          description: Short, human-readable summary of the problem type
+          example: Example title
+        type:
+          type: string
+          format: uri
+          description: A URI reference that identifies the problem type
+          example: https://api.example.org/foo/bar/example-problem
+      required:
+      - detail
+      - status
+      - title
+  securitySchemes:
+    ApiKeyAuth:
+      description: Authentication via API key.
+      in: header
+      name: X-Api-Key
+      type: apiKey
+    BearerAuth:
+      bearerFormat: Opaque
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login` or
+
+        `POST /api/v1/user/oidc/login`.'
+      scheme: bearer
+      type: http
+x-refined-from:
+- dependency-track-openapi-v1.yaml
+- dependency-track-openapi.yml

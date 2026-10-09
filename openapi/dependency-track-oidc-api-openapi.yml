@@ -1,0 +1,599 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Oidc API
+  version: 1.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged oidc across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api
+tags:
+- name: OIDC
+paths:
+  /v1/oidc/available:
+    get:
+      operationId: isAvailable
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                type: boolean
+          description: Whether OpenID Connect is available
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Indicates if OpenID Connect is available for this application
+      tags:
+      - OIDC
+    servers:
+    - url: /api
+  /v1/oidc/group:
+    get:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_READ
+      operationId: retrieveGroups
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OidcGroupResponse'
+          description: A list of all groups
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of all groups
+      tags:
+      - OIDC
+    post:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_UPDATE
+      operationId: updateGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOidcGroupRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OidcGroupResponse'
+          description: The updated group
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Updates group
+      tags:
+      - OIDC
+    put:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_CREATE
+      operationId: createGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOidcGroupRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OidcGroupResponse'
+          description: The created group
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Creates group
+      tags:
+      - OIDC
+    servers:
+    - url: /api
+  /v1/oidc/group/{groupUuid}/team/{teamUuid}/mapping:
+    delete:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_DELETE
+      operationId: deleteMapping_2
+      parameters:
+      - description: The UUID of the group to delete a mapping for
+        in: path
+        name: groupUuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - description: The UUID of the team to delete a mapping for
+        in: path
+        name: teamUuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Mapping removed successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: The UUID of the mapping could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Deletes a mapping
+      tags:
+      - OIDC
+    servers:
+    - url: /api
+  /v1/oidc/group/{uuid}:
+    delete:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_DELETE
+      operationId: deleteGroup
+      parameters:
+      - description: The UUID of the group to delete
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Group removed successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: The group could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Deletes a group
+      tags:
+      - OIDC
+    servers:
+    - url: /api
+  /v1/oidc/group/{uuid}/team:
+    get:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_READ
+      operationId: retrieveTeamsMappedToGroup
+      parameters:
+      - description: The UUID of the mapping to retrieve the team for
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Team'
+          description: A list of teams associated with the specified group
+        '401':
+          description: Unauthorized
+        '404':
+          description: The UUID of the mapping could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns a list of teams associated with the specified group
+      tags:
+      - OIDC
+    servers:
+    - url: /api
+  /v1/oidc/mapping:
+    put:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_CREATE
+      operationId: addMapping_2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MappedOidcGroupRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MappedOidcGroupResponse'
+          description: The created mapping
+        '401':
+          description: Unauthorized
+        '404':
+          description: The UUID of the team or group could not be found
+        '409':
+          description: A mapping with the same team and group name already exists
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Adds a mapping
+      tags:
+      - OIDC
+    servers:
+    - url: /api
+  /v1/oidc/mapping/{uuid}:
+    delete:
+      description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_DELETE
+      operationId: deleteMappingByUuid
+      parameters:
+      - description: The UUID of the mapping to delete
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Mapping removed successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: The UUID of the mapping could not be found
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Deletes a mapping
+      tags:
+      - OIDC
+    servers:
+    - url: /api
+components:
+  schemas:
+    ManagedUser:
+      type: object
+      properties:
+        confirmPassword:
+          type: string
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        forcePasswordChange:
+          type: boolean
+        fullname:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        lastPasswordChange:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        newPassword:
+          type: string
+        nonExpiryPassword:
+          type: boolean
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        suspended:
+          type: boolean
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - lastPasswordChange
+      - username
+    CreateOidcGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the group to create
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - name
+    MappedOidcGroup:
+      type: object
+      properties:
+        group:
+          $ref: '#/components/schemas/OidcGroup'
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - uuid
+    MappedOidcGroupRequest:
+      type: object
+      properties:
+        group:
+          type: string
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+        team:
+          type: string
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      required:
+      - group
+      - team
+    OidcGroupResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the group
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the group
+      required:
+      - name
+      - uuid
+    MappedOidcGroupResponse:
+      type: object
+      properties:
+        group:
+          $ref: '#/components/schemas/OidcGroupResponse'
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the mapping
+      required:
+      - group
+      - uuid
+    ServiceAccount:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        suspended:
+          type: boolean
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - username
+    OidcGroup:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - name
+      - uuid
+    UpdateOidcGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: New name of the group
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the group to update
+      required:
+      - name
+      - uuid
+    MappedLdapGroup:
+      type: object
+      properties:
+        dn:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - dn
+      - uuid
+    Permission:
+      type: object
+      properties:
+        description:
+          type: string
+        ldapUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/LdapUser'
+        managedUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagedUser'
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[a-zA-Z_0-9]*$
+        oidcUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OidcUser'
+      required:
+      - name
+    LdapUser:
+      type: object
+      properties:
+        dn:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - username
+    Team:
+      type: object
+      properties:
+        apiKeys:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiKey'
+        ldapUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/LdapUser'
+        managedUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagedUser'
+        mappedLdapGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/MappedLdapGroup'
+        mappedOidcGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/MappedOidcGroup'
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        oidcUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OidcUser'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        serviceAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceAccount'
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - name
+      - uuid
+    OidcUser:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        subjectIdentifier:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - username
+    ApiKey:
+      type: object
+      properties:
+        comment:
+          type: string
+          maxLength: 255
+          minLength: 0
+        created:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        expiresAt:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        key:
+          type: string
+        lastUsed:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        legacy:
+          type: boolean
+        maskedKey:
+          type: string
+        publicId:
+          type: string
+          maxLength: 8
+          minLength: 5
+  securitySchemes:
+    ApiKeyAuth:
+      description: Authentication via API key.
+      in: header
+      name: X-Api-Key
+      type: apiKey
+    BearerAuth:
+      bearerFormat: Opaque
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login` or
+
+        `POST /api/v1/user/oidc/login`.'
+      scheme: bearer
+      type: http
+x-refined-from:
+- dependency-track-openapi-v1.yaml
+- dependency-track-openapi.yml

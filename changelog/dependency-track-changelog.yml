@@ -1,0 +1,52 @@
+generated: '2026-10-09'
+method: searched
+source: https://docs.dependencytrack.org/changelog/
+scheme: semver
+current_version: 4.14.5
+note: Release notes on docs.dependencytrack.org cover the 4.x line. The project homepage (dependencytrack.org) also advertises "New in 5.0", and Docker Hub carries frontend 5.x tags, but no 5.x release notes are in this docs index.
+entries:
+- version: 4.14.5
+  date: '2026-10-05'
+  breaking: false
+  url: https://docs.dependencytrack.org/2026/10/05/v4.14.5/
+  highlights:
+  - Fix OS package scanning for Trivy analyzer
+  - Fix NuGet package names being treated as case-sensitive for vulnerability matching
+  - Fix PyPI package names not being PEP 503-normalized for vulnerability matching
+- version: 4.14.4
+  date: '2026-09-14'
+  breaking: false
+  url: https://docs.dependencytrack.org/2026/09/14/v4.14.4/
+  highlights:
+  - Add support for ingestion of CycloneDX 1.7 BOMs
+  - Use modern CycloneDX tools metadata in BOM exports
+  - Fix HTTP 500 when deleting vulnerabilities that are referenced by analyses
+- version: 4.14.3
+  date: '2026-07-20'
+  breaking: false
+  url: https://docs.dependencytrack.org/2026/07/20/v4.14.3/
+  highlights:
+  - Improve VEX import performance
+  - Reject parent objects with null UUID when creating, updating or patching projects
+- version: 4.14.2
+  date: '2026-05-07'
+  breaking: false
+  url: https://docs.dependencytrack.org/2026/05/07/v4.14.2/
+  highlights:
+  - Improve performance of vuln data source mirroring
+  - Add project filters to component identity search
+- version: 4.14.1
+  date: '2026-04-03'
+  breaking: false
+  url: https://docs.dependencytrack.org/2026/04/03/v4.14.1/
+  highlights:
+  - Add support for NuGet and Composer versioning schemes
+  - Support Sonatype Guide tokens for OSS Index analyzer
+- version: 4.14.0
+  date: '2026-03-09'
+  breaking: false
+  url: https://docs.dependencytrack.org/2026/03/09/v4.14.0/
+  highlights:
+  - Ecosystem-aware version matching
+  - Distro-aware vulnerability matching using the PURL distro qualifier
+  - 'Upgrade note: NVD and GitHub Advisories mirror watermarks reset, triggering a full re-mirror'

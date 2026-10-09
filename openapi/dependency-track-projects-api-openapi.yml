@@ -1,0 +1,672 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Projects API
+  version: 2.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+    email: dependencytrack@owasp.org
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged Projects across 2 of this provider''s published API definitions: dependency-track-openapi-v2.yaml, dependency-track-v2-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api/v2
+security:
+- apiKeyAuth: []
+- bearerAuth: []
+tags:
+- name: Projects
+  description: Endpoints related to projects
+paths:
+  /projects/{uuid}/clone:
+    post:
+      tags:
+      - Projects
+      summary: Clones a given project
+      description: Requires permission `PORTFOLIO_MANAGEMENT` or `PORTFOLIO_MANAGEMENT_CREATE`
+      operationId: cloneProject
+      parameters:
+      - name: uuid
+        in: path
+        description: The UUID of the project to clone
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/clone-project-request'
+      responses:
+        '201':
+          description: Project cloned
+          headers:
+            Location:
+              description: URL of the cloned project
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/clone-project-response'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        '404':
+          $ref: '#/components/responses/generic-not-found-error'
+        '409':
+          $ref: '#/components/responses/generic-conflict-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+  /projects/{uuid}/components:
+    get:
+      tags:
+      - Projects
+      summary: Retrieves a list of all components for a given project
+      description: 'Requires permission `VIEW_PORTFOLIO`
+
+
+        ### Sortable fields
+
+
+        Sorting is supported for the following fields:
+
+
+        * `name`
+
+        * `group`
+
+        * `last_inherited_risk_score`
+
+        * `package_artifact_metadata.published_at`
+
+
+        Components without resolved artifact metadata, or whose upstream registry did not
+
+        report a publication date, are placed at the end of the result for both sort
+
+        directions when sorting by `package_artifact_metadata.published_at`.
+
+
+        ### Expandable fields
+
+
+        The following fields can be included via `expand`:
+
+
+        * `metrics`
+
+        * `package_metadata`
+
+        * `package_artifact_metadata`
+
+        * `occurrence_count`'
+      operationId: listProjectComponents
+      parameters:
+      - name: uuid
+        in: path
+        description: The UUID of the project to retrieve components for
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: only_outdated
+        in: query
+        description: Optionally exclude recent components so only outdated components are returned
+        schema:
+          type: boolean
+      - name: only_direct
+        in: query
+        description: Optionally exclude transitive dependencies so only direct dependencies are returned
+        schema:
+          type: boolean
+      - name: q
+        in: query
+        description: Optional free-text search term. Matches components whose `group` or `name` contains the given value (case-insensitive).
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Optional fields to include in each component response item. Unknown values are silently ignored.
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: limit
+        in: query
+        description: Maximum number of items to retrieve from the collection
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 100
+      - name: page_token
+        in: query
+        description: Opaque token pointing to a specific position in a collection
+        schema:
+          type: string
+      - name: sort_direction
+        in: query
+        schema:
+          $ref: '#/components/schemas/sort-direction'
+      - name: sort_by
+        in: query
+        description: Field to sort by. Refer to the operation description for information about which fields are sortable.
+        schema:
+          maxLength: 255
+          minLength: 1
+          type: string
+      responses:
+        '200':
+          description: A list of all components for a given project
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-project-components-response'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/invalid-sort-field-problem-details'
+                - $ref: '#/components/schemas/problem-details'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        '404':
+          $ref: '#/components/responses/generic-not-found-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+components:
+  schemas:
+    paginated-response:
+      required:
+      - total
+      type: object
+      properties:
+        next_page_token:
+          type: string
+          description: Token to retrieve the next page. Absent when no more items exist.
+        total:
+          $ref: '#/components/schemas/total-count'
+      x-parent: true
+    invalid-sort-field-problem-details:
+      required:
+      - invalid_field
+      type: object
+      properties:
+        invalid_field:
+          type: string
+          description: Name of the field for which sorting is not supported.
+        supported_fields:
+          type: array
+          description: 'Names of fields for which sorting is supported.
+
+            When empty, sorting is explicitly *not* supported.
+
+            When absent, sorting may be supported, but no definitive guarantees exist.
+
+            Consult the operation''s description.'
+          items:
+            type: string
+      allOf:
+      - $ref: '#/components/schemas/problem-details'
+    timestamp:
+      type: integer
+      description: Epoch timestamp in milliseconds since January 1, 1970 UTC.
+      format: int64
+      example: 1752209050377
+    clone-project-include:
+      type: string
+      enum:
+      - ACL
+      - COMPONENTS
+      - FINDINGS
+      - FINDINGS_AUDIT_HISTORY
+      - POLICY_VIOLATIONS
+      - POLICY_VIOLATIONS_AUDIT_HISTORY
+      - PROPERTIES
+      - SERVICES
+      - TAGS
+    clone-project-request:
+      required:
+      - version
+      type: object
+      properties:
+        version:
+          minLength: 1
+          type: string
+          description: Version of the cloned project.
+        version_is_latest:
+          type: boolean
+          description: Whether to mark the cloned project version as latest. If another version is already marked as latest, it will be atomically un-unmarked as part of the cloning operation.
+          default: false
+        includes:
+          uniqueItems: true
+          type: array
+          description: "List of items to include in the clone:\n\n  * `ACL`: Include portfolio ACL definitions.\n  * `COMPONENTS`: Include components.\n  * `FINDINGS`: Include findings.\n      * Has no effect unless `COMPONENTS` is also included.\n  * `FINDINGS_AUDIT_HISTORY`: Include audit history of findings.\n      * Has no effect unless `FINDINGS` is also included.\n  * `POLICY_VIOLATIONS`: Include policy violations.\n      * Has no effect unless `COMPONENTS` is also included.\n  * `POLICY_VIOLATIONS_AUDIT_HISTORY`: Include audit history of policy violations.\n      * Has no effect unless `POLICY_VIOLATIONS` is also included.\n  * `PROPERTIES`: Include project properties.\n  * `SERVICES`: Include services.\n  * `TAGS`: Include project tags."
+          items:
+            $ref: '#/components/schemas/clone-project-include'
+          default: []
+    package-artifact-metadata:
+      type: object
+      properties:
+        hashes:
+          $ref: '#/components/schemas/hashes'
+        published_at:
+          description: When this artifact was published to the repository.
+          allOf:
+          - $ref: '#/components/schemas/timestamp'
+        resolved_from:
+          type:
+          - string
+          - 'null'
+          description: Identifier of the repository from which artifact metadata was fetched.
+        resolved_at:
+          description: When artifact metadata was last resolved from the upstream repository.
+          allOf:
+          - $ref: '#/components/schemas/timestamp'
+      description: 'Artifact-level metadata for the component''s exact version from configured package repositories. Only present when the component has a PURL with a version, the PURL type is supported by at least one configured repository, and artifact metadata has been successfully resolved from an upstream repository. Metadata resolution is asynchronous and runs in the background after a component is created or updated. This field may be absent for recently created components until resolution completes.
+
+        '
+    clone-project-response:
+      required:
+      - uuid
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: UUID of the cloned project.
+          format: uuid
+    sort-direction:
+      type: string
+      enum:
+      - ASC
+      - DESC
+    package-metadata:
+      required:
+      - resolved_at
+      type: object
+      properties:
+        latest_version:
+          type:
+          - string
+          - 'null'
+          description: 'Latest known version in the configured registries. Null when the resolver ran but returned no version.
+
+            '
+        latest_version_published_at:
+          description: 'When the latest version was published. May be null even when latest_version is non-null, as some registries do not report publication dates.
+
+            '
+          allOf:
+          - $ref: '#/components/schemas/timestamp'
+        resolved_at:
+          description: When package metadata was last resolved from the upstream repository.
+          allOf:
+          - $ref: '#/components/schemas/timestamp'
+      description: 'Latest version information from configured package registries. Only present when the component has a PURL with a type supported by at least one configured repository, and metadata has been successfully resolved from an upstream repository. Metadata resolution is asynchronous and runs in the background after a component is created or updated. This field may be absent for recently created components until resolution completes.
+
+        '
+    total-count-type:
+      type: string
+      enum:
+      - AT_LEAST
+      - EXACT
+    dependency-metrics:
+      type: object
+      properties:
+        critical:
+          type: integer
+          format: int32
+        high:
+          type: integer
+          format: int32
+        medium:
+          type: integer
+          format: int32
+        low:
+          type: integer
+          format: int32
+        unassigned:
+          type: integer
+          format: int32
+        kev:
+          type: integer
+          format: int32
+        vulnerabilities:
+          type: integer
+          format: int32
+        suppressed:
+          type: integer
+          format: int32
+        inherited_risk_score:
+          type: number
+          format: double
+        findings_total:
+          type: integer
+          format: int32
+        findings_audited:
+          type: integer
+          format: int32
+        findings_unaudited:
+          type: integer
+          format: int32
+        policy_violations_fail:
+          type: integer
+          format: int32
+        policy_violations_warn:
+          type: integer
+          format: int32
+        policy_violations_info:
+          type: integer
+          format: int32
+        policy_violations_total:
+          type: integer
+          format: int32
+        policy_violations_audited:
+          type: integer
+          format: int32
+        policy_violations_unaudited:
+          type: integer
+          format: int32
+        policy_violations_security_total:
+          type: integer
+          format: int32
+        policy_violations_security_audited:
+          type: integer
+          format: int32
+        policy_violations_security_unaudited:
+          type: integer
+          format: int32
+        policy_violations_license_total:
+          type: integer
+          format: int32
+        policy_violations_license_audited:
+          type: integer
+          format: int32
+        policy_violations_license_unaudited:
+          type: integer
+          format: int32
+        policy_violations_operational_total:
+          type: integer
+          format: int32
+        policy_violations_operational_audited:
+          type: integer
+          format: int32
+        policy_violations_operational_unaudited:
+          type: integer
+          format: int32
+    problem-details:
+      required:
+      - detail
+      - title
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+          format: uri-reference
+          default: about:blank
+        status:
+          maximum: 599
+          minimum: 400
+          type: integer
+          description: HTTP status code generated by the origin server for this occurrence of the problem
+          format: int32
+          example: 500
+        title:
+          maxLength: 255
+          type: string
+          description: Short, human-readable summary of the problem type
+        detail:
+          maxLength: 1024
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          description: Reference URI that identifies the specific occurrence of the problem
+          format: uri-reference
+      description: An RFC 9457 problem object.
+      externalDocs:
+        url: https://www.rfc-editor.org/rfc/rfc9457.html
+      x-parent: true
+    hashes:
+      type: object
+      properties:
+        sha1:
+          maxLength: 40
+          type: string
+        sha256:
+          maxLength: 64
+          type: string
+        sha384:
+          maxLength: 96
+          type: string
+        sha512:
+          maxLength: 128
+          type: string
+        sha3_256:
+          maxLength: 64
+          type: string
+        sha3_384:
+          maxLength: 96
+          type: string
+        sha3_512:
+          maxLength: 128
+          type: string
+        blake2b_256:
+          maxLength: 64
+          type: string
+        blake2b_384:
+          maxLength: 96
+          type: string
+        blake2b_512:
+          maxLength: 128
+          type: string
+        blake3:
+          maxLength: 255
+          type: string
+        streebog_256:
+          maxLength: 64
+          type: string
+        streebog_512:
+          maxLength: 128
+          type: string
+        md5:
+          maxLength: 32
+          type: string
+    scope:
+      type: string
+      enum:
+      - REQUIRED
+      - OPTIONAL
+      - EXCLUDED
+    license:
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          type: string
+        license_id:
+          maxLength: 255
+          type: string
+        uuid:
+          type: string
+          format: uuid
+        osi_approved:
+          type: boolean
+        fsf_libre:
+          type: boolean
+        custom_license:
+          type: boolean
+    list-project-components-response:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/list-project-components-response-item'
+      allOf:
+      - $ref: '#/components/schemas/paginated-response'
+    total-count:
+      required:
+      - count
+      - type
+      type: object
+      properties:
+        count:
+          minimum: 0
+          type: integer
+          description: The total number of records across all pages. Might be an exact count, or a lower bound. Refer to the `type` field for the applicable semantics.
+          format: int64
+        type:
+          $ref: '#/components/schemas/total-count-type'
+    list-project-components-response-item:
+      required:
+      - name
+      - uuid
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          type: string
+        version:
+          maxLength: 255
+          type: string
+        group:
+          maxLength: 255
+          type: string
+        classifier:
+          maxLength: 255
+          type: string
+        hashes:
+          $ref: '#/components/schemas/hashes'
+        cpe:
+          maxLength: 255
+          type: string
+        purl:
+          maxLength: 1024
+          type: string
+        swid_tag_id:
+          maxLength: 255
+          type: string
+        internal:
+          type: boolean
+        copyright:
+          maxLength: 255
+          type: string
+        license:
+          maxLength: 255
+          type: string
+        license_expression:
+          maxLength: 255
+          type: string
+        license_url:
+          maxLength: 255
+          type: string
+        resolved_license:
+          $ref: '#/components/schemas/license'
+        occurrence_count:
+          minimum: 0
+          type: integer
+          format: int64
+        scope:
+          $ref: '#/components/schemas/scope'
+        last_inherited_risk_score:
+          type: number
+          format: double
+        uuid:
+          type: string
+          format: uuid
+        metrics:
+          $ref: '#/components/schemas/dependency-metrics'
+        package_metadata:
+          $ref: '#/components/schemas/package-metadata'
+        package_artifact_metadata:
+          $ref: '#/components/schemas/package-artifact-metadata'
+  responses:
+    generic-error:
+      description: Unexpected error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+    generic-forbidden-error:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 403
+            title: Forbidden
+            detail: Not permitted to access the requested resource.
+    generic-conflict-error:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 409
+            title: Conflict
+            detail: The resource already exists.
+    generic-not-found-error:
+      description: Not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 404
+            title: Not Found
+            detail: The requested resource could not be found.
+    generic-unauthorized-error:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 401
+            title: Unauthorized
+            detail: Not authorized to access the requested resource.
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Authentication via API key.
+      name: X-Api-Key
+      in: header
+    bearerAuth:
+      type: http
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login`,
+
+        `POST /api/v1/user/oidc/login`, or `POST /api/v2/oauth/token`.'
+      scheme: bearer
+      bearerFormat: Opaque
+x-refined-from:
+- dependency-track-openapi-v2.yaml
+- dependency-track-v2-openapi.yml

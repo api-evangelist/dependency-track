@@ -1,0 +1,839 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Components API
+  version: 2.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+    email: dependencytrack@owasp.org
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged Components across 2 of this provider''s published API definitions: dependency-track-openapi-v2.yaml, dependency-track-v2-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api/v2
+security:
+- apiKeyAuth: []
+- bearerAuth: []
+tags:
+- name: Components
+  description: Endpoints related to components
+paths:
+  /components:
+    get:
+      tags:
+      - Components
+      summary: List all components
+      description: 'Retrieves a list of all components matching the provided filter criteria.
+
+
+        Text filters are case-insensitive.
+
+
+        ### Sortable fields
+
+
+        Sorting is supported for the following fields:
+
+
+        * `name`
+
+        * `group`
+
+        * `last_inherited_risk_score`
+
+
+        ### Expandable fields
+
+
+        The following fields can be included via `expand`:
+
+
+        * `metrics`
+
+        * `package_metadata`
+
+        * `package_artifact_metadata`
+
+
+        Requires permission `VIEW_PORTFOLIO`'
+      operationId: listComponents
+      parameters:
+      - name: group_contains
+        in: query
+        description: Filter by group (substring match)
+        schema:
+          type: string
+      - name: name_contains
+        in: query
+        description: Filter by name (substring match)
+        schema:
+          type: string
+      - name: version_contains
+        in: query
+        description: Filter by version (substring match)
+        schema:
+          type: string
+      - name: purl_prefix
+        in: query
+        description: 'Filter by PURL (prefix match).
+
+
+          Must be a valid PURL, with at least `pkg:<ecosystem>/<name>` populated.'
+        schema:
+          type: string
+      - name: cpe
+        in: query
+        description: 'Filter by CPE (exact match).
+
+
+          Must be a valid CPE.'
+        schema:
+          type: string
+      - name: swid_tag_id_contains
+        in: query
+        description: Filter by SWID Tag ID (substring match)
+        schema:
+          type: string
+      - name: hash_type
+        in: query
+        description: The hash type to filter by
+        schema:
+          type: string
+          enum:
+          - MD5
+          - SHA1
+          - SHA_256
+          - SHA_384
+          - SHA_512
+          - SHA3_256
+          - SHA3_384
+          - SHA3_512
+          - BLAKE2B_256
+          - BLAKE2B_384
+          - BLAKE2B_512
+          - BLAKE3
+          - STREEBOG_256
+          - STREEBOG_512
+      - name: hash
+        in: query
+        description: 'Filter by hash value (exact match).
+
+
+          Requires `hash_type` to be set.'
+        schema:
+          type: string
+      - name: package_artifact_published_since
+        in: query
+        description: 'Filter by package artifact publish date (inclusive lower bound).
+
+
+          Note that components without resolved package artifact metadata,
+
+          or whose upstream repository did not report a publication date,
+
+          are excluded whenever `package_artifact_published_since` or
+
+          `package_artifact_published_before` is set.'
+        schema:
+          $ref: '#/components/schemas/timestamp'
+      - name: package_artifact_published_before
+        in: query
+        description: Filter by package artifact publish date (exclusive upper bound).
+        schema:
+          $ref: '#/components/schemas/timestamp'
+      - name: project_state
+        in: query
+        description: 'Filter by the state of the project that the component belongs to.
+
+
+          Omit to include components from projects in any state.'
+        schema:
+          $ref: '#/components/schemas/project-state'
+      - name: project_latest_version
+        in: query
+        description: 'Filter by whether the project the component belongs to is flagged as the latest version.
+
+
+          When `true`, only components from latest-version projects are returned.
+
+          When `false`, only components from non-latest projects are returned.
+
+          Omit to include components regardless of the flag.'
+        schema:
+          type: boolean
+      - name: expand
+        in: query
+        description: Optional fields to include in each component response item. Unknown values are silently ignored.
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: limit
+        in: query
+        description: Maximum number of items to retrieve from the collection
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 100
+      - name: page_token
+        in: query
+        description: Opaque token pointing to a specific position in a collection
+        schema:
+          type: string
+      - name: sort_direction
+        in: query
+        schema:
+          $ref: '#/components/schemas/sort-direction'
+      - name: sort_by
+        in: query
+        description: Field to sort by. Refer to the operation description for information about which fields are sortable.
+        schema:
+          maxLength: 255
+          minLength: 1
+          type: string
+      responses:
+        '200':
+          description: A list of components matching the provided filters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-components-response'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/invalid-sort-field-problem-details'
+                - $ref: '#/components/schemas/problem-details'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    post:
+      tags:
+      - Components
+      summary: Creates a new component for the project
+      description: Requires permission `PORTFOLIO_MANAGEMENT` or `PORTFOLIO_MANAGEMENT_UPDATE`
+      operationId: createComponent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-component-request'
+        required: true
+      responses:
+        '201':
+          description: Component Created
+          headers:
+            Location:
+              description: URL of the created component
+              schema:
+                type: string
+                format: uri
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/invalid-request-problem-details'
+                - $ref: '#/components/schemas/problem-details'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        '409':
+          $ref: '#/components/responses/generic-conflict-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+components:
+  schemas:
+    paginated-response:
+      required:
+      - total
+      type: object
+      properties:
+        next_page_token:
+          type: string
+          description: Token to retrieve the next page. Absent when no more items exist.
+        total:
+          $ref: '#/components/schemas/total-count'
+      x-parent: true
+    invalid-sort-field-problem-details:
+      required:
+      - invalid_field
+      type: object
+      properties:
+        invalid_field:
+          type: string
+          description: Name of the field for which sorting is not supported.
+        supported_fields:
+          type: array
+          description: 'Names of fields for which sorting is supported.
+
+            When empty, sorting is explicitly *not* supported.
+
+            When absent, sorting may be supported, but no definitive guarantees exist.
+
+            Consult the operation''s description.'
+          items:
+            type: string
+      allOf:
+      - $ref: '#/components/schemas/problem-details'
+    constraint-violation-error:
+      required:
+      - message
+      type: object
+      properties:
+        path:
+          type: string
+          description: Path to the invalid field in the request
+        value:
+          type: string
+          description: The invalid value
+        message:
+          type: string
+          description: Message explaining the error
+    project-state:
+      type: string
+      enum:
+      - ACTIVE
+      - INACTIVE
+    create-component-request:
+      required:
+      - name
+      - project_uuid
+      type: object
+      properties:
+        project_uuid:
+          type: string
+          format: uuid
+        name:
+          maxLength: 255
+          type: string
+        description:
+          maxLength: 255
+          type: string
+        group:
+          maxLength: 255
+          type: string
+        version:
+          maxLength: 255
+          type: string
+        classifier:
+          $ref: '#/components/schemas/classifier'
+        filename:
+          maxLength: 255
+          type: string
+        extension:
+          maxLength: 255
+          type: string
+        hashes:
+          $ref: '#/components/schemas/hashes'
+        cpe:
+          maxLength: 255
+          type: string
+        publisher:
+          maxLength: 255
+          type: string
+        supplier:
+          $ref: '#/components/schemas/organizational-entity'
+        authors:
+          type: array
+          items:
+            $ref: '#/components/schemas/organizational-contact'
+        purl:
+          maxLength: 1024
+          type: string
+        swid_tag_id:
+          maxLength: 255
+          type: string
+        internal:
+          type: boolean
+        copyright:
+          maxLength: 255
+          type: string
+        license:
+          maxLength: 255
+          type: string
+        license_expression:
+          maxLength: 255
+          type: string
+        license_url:
+          maxLength: 255
+          type: string
+        notes:
+          maxLength: 255
+          type: string
+    classifier:
+      type: string
+      enum:
+      - APPLICATION
+      - FRAMEWORK
+      - LIBRARY
+      - CONTAINER
+      - OPERATING_SYSTEM
+      - DEVICE
+      - FIRMWARE
+      - FILE
+      - PLATFORM
+      - DEVICE_DRIVER
+      - MACHINE_LEARNING_MODEL
+      - DATA
+      - CRYPTOGRAPHIC_ASSET
+    timestamp:
+      type: integer
+      description: Epoch timestamp in milliseconds since January 1, 1970 UTC.
+      format: int64
+      example: 1752209050377
+    organizational-contact:
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          type: string
+          description: Name of the organizational contact
+        email:
+          maxLength: 255
+          type: string
+          description: Email of the organizational contact
+        phone:
+          maxLength: 255
+          type: string
+          description: Phone of the organizational contact
+    component-project:
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          type: string
+        version:
+          maxLength: 255
+          type: string
+        uuid:
+          type: string
+          format: uuid
+    package-artifact-metadata:
+      type: object
+      properties:
+        hashes:
+          $ref: '#/components/schemas/hashes'
+        published_at:
+          description: When this artifact was published to the repository.
+          allOf:
+          - $ref: '#/components/schemas/timestamp'
+        resolved_from:
+          type:
+          - string
+          - 'null'
+          description: Identifier of the repository from which artifact metadata was fetched.
+        resolved_at:
+          description: When artifact metadata was last resolved from the upstream repository.
+          allOf:
+          - $ref: '#/components/schemas/timestamp'
+      description: 'Artifact-level metadata for the component''s exact version from configured package repositories. Only present when the component has a PURL with a version, the PURL type is supported by at least one configured repository, and artifact metadata has been successfully resolved from an upstream repository. Metadata resolution is asynchronous and runs in the background after a component is created or updated. This field may be absent for recently created components until resolution completes.
+
+        '
+    sort-direction:
+      type: string
+      enum:
+      - ASC
+      - DESC
+    invalid-request-problem-details:
+      required:
+      - errors
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/constraint-violation-error'
+      allOf:
+      - $ref: '#/components/schemas/problem-details'
+    list-components-response:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/list-components-response-item'
+      allOf:
+      - $ref: '#/components/schemas/paginated-response'
+    package-metadata:
+      required:
+      - resolved_at
+      type: object
+      properties:
+        latest_version:
+          type:
+          - string
+          - 'null'
+          description: 'Latest known version in the configured registries. Null when the resolver ran but returned no version.
+
+            '
+        latest_version_published_at:
+          description: 'When the latest version was published. May be null even when latest_version is non-null, as some registries do not report publication dates.
+
+            '
+          allOf:
+          - $ref: '#/components/schemas/timestamp'
+        resolved_at:
+          description: When package metadata was last resolved from the upstream repository.
+          allOf:
+          - $ref: '#/components/schemas/timestamp'
+      description: 'Latest version information from configured package registries. Only present when the component has a PURL with a type supported by at least one configured repository, and metadata has been successfully resolved from an upstream repository. Metadata resolution is asynchronous and runs in the background after a component is created or updated. This field may be absent for recently created components until resolution completes.
+
+        '
+    total-count-type:
+      type: string
+      enum:
+      - AT_LEAST
+      - EXACT
+    dependency-metrics:
+      type: object
+      properties:
+        critical:
+          type: integer
+          format: int32
+        high:
+          type: integer
+          format: int32
+        medium:
+          type: integer
+          format: int32
+        low:
+          type: integer
+          format: int32
+        unassigned:
+          type: integer
+          format: int32
+        kev:
+          type: integer
+          format: int32
+        vulnerabilities:
+          type: integer
+          format: int32
+        suppressed:
+          type: integer
+          format: int32
+        inherited_risk_score:
+          type: number
+          format: double
+        findings_total:
+          type: integer
+          format: int32
+        findings_audited:
+          type: integer
+          format: int32
+        findings_unaudited:
+          type: integer
+          format: int32
+        policy_violations_fail:
+          type: integer
+          format: int32
+        policy_violations_warn:
+          type: integer
+          format: int32
+        policy_violations_info:
+          type: integer
+          format: int32
+        policy_violations_total:
+          type: integer
+          format: int32
+        policy_violations_audited:
+          type: integer
+          format: int32
+        policy_violations_unaudited:
+          type: integer
+          format: int32
+        policy_violations_security_total:
+          type: integer
+          format: int32
+        policy_violations_security_audited:
+          type: integer
+          format: int32
+        policy_violations_security_unaudited:
+          type: integer
+          format: int32
+        policy_violations_license_total:
+          type: integer
+          format: int32
+        policy_violations_license_audited:
+          type: integer
+          format: int32
+        policy_violations_license_unaudited:
+          type: integer
+          format: int32
+        policy_violations_operational_total:
+          type: integer
+          format: int32
+        policy_violations_operational_audited:
+          type: integer
+          format: int32
+        policy_violations_operational_unaudited:
+          type: integer
+          format: int32
+    list-components-response-item:
+      required:
+      - name
+      - uuid
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          type: string
+        version:
+          maxLength: 255
+          type: string
+        group:
+          maxLength: 255
+          type: string
+        classifier:
+          maxLength: 255
+          type: string
+        scope:
+          $ref: '#/components/schemas/scope'
+        hashes:
+          $ref: '#/components/schemas/hashes'
+        cpe:
+          maxLength: 255
+          type: string
+        purl:
+          maxLength: 1024
+          type: string
+        swid_tag_id:
+          maxLength: 255
+          type: string
+        internal:
+          type: boolean
+        copyright:
+          maxLength: 255
+          type: string
+        license:
+          maxLength: 255
+          type: string
+        license_expression:
+          maxLength: 255
+          type: string
+        license_url:
+          maxLength: 255
+          type: string
+        resolved_license:
+          $ref: '#/components/schemas/license'
+        last_inherited_risk_score:
+          type: number
+          format: double
+        uuid:
+          type: string
+          format: uuid
+        project:
+          $ref: '#/components/schemas/component-project'
+        metrics:
+          $ref: '#/components/schemas/dependency-metrics'
+        package_metadata:
+          $ref: '#/components/schemas/package-metadata'
+        package_artifact_metadata:
+          $ref: '#/components/schemas/package-artifact-metadata'
+    problem-details:
+      required:
+      - detail
+      - title
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+          format: uri-reference
+          default: about:blank
+        status:
+          maximum: 599
+          minimum: 400
+          type: integer
+          description: HTTP status code generated by the origin server for this occurrence of the problem
+          format: int32
+          example: 500
+        title:
+          maxLength: 255
+          type: string
+          description: Short, human-readable summary of the problem type
+        detail:
+          maxLength: 1024
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          description: Reference URI that identifies the specific occurrence of the problem
+          format: uri-reference
+      description: An RFC 9457 problem object.
+      externalDocs:
+        url: https://www.rfc-editor.org/rfc/rfc9457.html
+      x-parent: true
+    hashes:
+      type: object
+      properties:
+        sha1:
+          maxLength: 40
+          type: string
+        sha256:
+          maxLength: 64
+          type: string
+        sha384:
+          maxLength: 96
+          type: string
+        sha512:
+          maxLength: 128
+          type: string
+        sha3_256:
+          maxLength: 64
+          type: string
+        sha3_384:
+          maxLength: 96
+          type: string
+        sha3_512:
+          maxLength: 128
+          type: string
+        blake2b_256:
+          maxLength: 64
+          type: string
+        blake2b_384:
+          maxLength: 96
+          type: string
+        blake2b_512:
+          maxLength: 128
+          type: string
+        blake3:
+          maxLength: 255
+          type: string
+        streebog_256:
+          maxLength: 64
+          type: string
+        streebog_512:
+          maxLength: 128
+          type: string
+        md5:
+          maxLength: 32
+          type: string
+    scope:
+      type: string
+      enum:
+      - REQUIRED
+      - OPTIONAL
+      - EXCLUDED
+    license:
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          type: string
+        license_id:
+          maxLength: 255
+          type: string
+        uuid:
+          type: string
+          format: uuid
+        osi_approved:
+          type: boolean
+        fsf_libre:
+          type: boolean
+        custom_license:
+          type: boolean
+    organizational-entity:
+      type: object
+      properties:
+        name:
+          maxLength: 255
+          type: string
+          description: Name of the organizational entity
+        urls:
+          type: array
+          items:
+            maxLength: 255
+            type: string
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/organizational-contact'
+    total-count:
+      required:
+      - count
+      - type
+      type: object
+      properties:
+        count:
+          minimum: 0
+          type: integer
+          description: The total number of records across all pages. Might be an exact count, or a lower bound. Refer to the `type` field for the applicable semantics.
+          format: int64
+        type:
+          $ref: '#/components/schemas/total-count-type'
+  responses:
+    generic-error:
+      description: Unexpected error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+    generic-forbidden-error:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 403
+            title: Forbidden
+            detail: Not permitted to access the requested resource.
+    generic-conflict-error:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 409
+            title: Conflict
+            detail: The resource already exists.
+    generic-unauthorized-error:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 401
+            title: Unauthorized
+            detail: Not authorized to access the requested resource.
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Authentication via API key.
+      name: X-Api-Key
+      in: header
+    bearerAuth:
+      type: http
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login`,
+
+        `POST /api/v1/user/oidc/login`, or `POST /api/v2/oauth/token`.'
+      scheme: bearer
+      bearerFormat: Opaque
+x-refined-from:
+- dependency-track-openapi-v2.yaml
+- dependency-track-v2-openapi.yml

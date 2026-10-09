@@ -1,0 +1,143 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Calculator API
+  version: 1.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged calculator across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api
+tags:
+- name: calculator
+paths:
+  /v1/calculator/cvss:
+    get:
+      operationId: getCvssScores
+      parameters:
+      - description: A valid CVSSv2, CVSSv3 or CVSSv4 vector
+        in: query
+        name: vector
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CvssScoreResponse'
+          description: The calculated scores
+        '400':
+          description: An invalid CVSS vector was submitted
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns the CVSS base score, impact sub-score and exploitability sub-score
+      tags:
+      - calculator
+    servers:
+    - url: /api
+  /v1/calculator/owasp:
+    get:
+      operationId: getOwaspRRScores
+      parameters:
+      - description: A valid OWASP Risk Rating vector
+        in: query
+        name: vector
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Score'
+          description: The calculated scores
+        '401':
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Returns the OWASP Risk Rating likelihood score, technical impact score and…
+      tags:
+      - calculator
+    servers:
+    - url: /api
+components:
+  schemas:
+    Score:
+      type: object
+      properties:
+        businessImpact:
+          type: string
+          enum:
+          - HIGH
+          - MEDIUM
+          - LOW
+        businessImpactScore:
+          type: number
+          format: double
+        likelihood:
+          type: string
+          enum:
+          - HIGH
+          - MEDIUM
+          - LOW
+        likelihoodScore:
+          type: number
+          format: double
+        technicalImpact:
+          type: string
+          enum:
+          - HIGH
+          - MEDIUM
+          - LOW
+        technicalImpactScore:
+          type: number
+          format: double
+    CvssScoreResponse:
+      type: object
+      properties:
+        baseScore:
+          type: number
+          format: double
+        environmentalScore:
+          type: number
+          format: double
+        exploitabilitySubScore:
+          type: number
+          format: double
+        impactSubScore:
+          type: number
+          format: double
+        modifiedImpactSubScore:
+          type: number
+          format: double
+        temporalScore:
+          type: number
+          format: double
+  securitySchemes:
+    ApiKeyAuth:
+      description: Authentication via API key.
+      in: header
+      name: X-Api-Key
+      type: apiKey
+    BearerAuth:
+      bearerFormat: Opaque
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login` or
+
+        `POST /api/v1/user/oidc/login`.'
+      scheme: bearer
+      type: http
+x-refined-from:
+- dependency-track-openapi-v1.yaml
+- dependency-track-openapi.yml

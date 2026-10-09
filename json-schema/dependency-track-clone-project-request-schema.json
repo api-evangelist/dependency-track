@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/dependency-track/main/json-schema/dependency-track-clone-project-request-schema.json",
+  "title": "clone-project-request",
+  "x-generated": "2026-10-09",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/dependency-track-v2-openapi.yml#/components/schemas/clone-project-request",
+  "required": [
+    "version"
+  ],
+  "type": "object",
+  "properties": {
+    "version": {
+      "minLength": 1,
+      "type": "string",
+      "description": "Version of the cloned project."
+    },
+    "version_is_latest": {
+      "type": "boolean",
+      "description": "Whether to mark the cloned project version as latest. If another version is already marked as latest, it will be atomically un-unmarked as part of the cloning operation.",
+      "default": false
+    },
+    "includes": {
+      "uniqueItems": true,
+      "type": "array",
+      "description": "List of items to include in the clone:\n\n  * `ACL`: Include portfolio ACL definitions.\n  * `COMPONENTS`: Include components.\n  * `FINDINGS`: Include findings.\n      * Has no effect unless `COMPONENTS` is also included.\n  * `FINDINGS_AUDIT_HISTORY`: Include audit history of findings.\n      * Has no effect unless `FINDINGS` is also included.\n  * `POLICY_VIOLATIONS`: Include policy violations.\n      * Has no effect unless `COMPONENTS` is also included.\n  * `POLICY_VIOLATIONS_AUDIT_HISTORY`: Include audit history of policy violations.\n      * Has no effect unless `POLICY_VIOLATIONS` is also included.\n  * `PROPERTIES`: Include project properties.\n  * `SERVICES`: Include services.\n  * `TAGS`: Include project tags.",
+      "items": {
+        "$ref": "#/$defs/clone-project-include"
+      },
+      "default": []
+    }
+  },
+  "$defs": {
+    "clone-project-include": {
+      "type": "string",
+      "enum": [
+        "ACL",
+        "COMPONENTS",
+        "FINDINGS",
+        "FINDINGS_AUDIT_HISTORY",
+        "POLICY_VIOLATIONS",
+        "POLICY_VIOLATIONS_AUDIT_HISTORY",
+        "PROPERTIES",
+        "SERVICES",
+        "TAGS"
+      ]
+    }
+  }
+}

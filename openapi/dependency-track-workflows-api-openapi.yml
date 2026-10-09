@@ -1,0 +1,587 @@
+openapi: 3.2.0
+info:
+  title: Dependency Track Workflows API
+  version: 2.0.0
+  contact:
+    name: The Dependency-Track Authors
+    url: https://github.com/DependencyTrack/dependency-track
+    email: dependencytrack@owasp.org
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged Workflows across 2 of this provider''s published API definitions: dependency-track-openapi-v2.yaml, dependency-track-v2-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /api/v2
+security:
+- apiKeyAuth: []
+- bearerAuth: []
+tags:
+- name: Workflows
+  description: Endpoints related to workflows
+paths:
+  /internal/workflow-instances/{id}:
+    get:
+      tags:
+      - Workflows
+      summary: Get a workflow instance
+      description: 'Returns run metadata of a given workflow instance.
+
+
+        Multiple runs can share an instance ID, but only a single run can exist
+
+        in non-terminal state at any given time. Thus, this operation only
+
+        returns metadata if a run in non-terminal state exists.
+
+
+        To list all runs for an instance ID, including terminated ones,
+
+        use the `/internal/workflow-runs` endpoint and filter by `workflow_instance_id`.
+
+
+        Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_READ` permission.'
+      operationId: getWorkflowInstance
+      parameters:
+      - name: id
+        in: path
+        description: ID of the workflow instance
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Workflow run metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/workflow-run-metadata'
+        '400':
+          $ref: '#/components/responses/invalid-request-error'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        '404':
+          $ref: '#/components/responses/generic-not-found-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+  /internal/workflow-runs:
+    get:
+      tags:
+      - Workflows
+      summary: List all workflow runs
+      description: 'Returns a paginated list of workflow runs.
+
+
+        ### Sortable fields
+
+
+        Sorting is supported for the for the following fields:
+
+
+        * `id`
+
+        * `created_at`
+
+        * `completed_at`
+
+
+        Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_READ` permission.'
+      operationId: listWorkflowRuns
+      parameters:
+      - name: workflow_name
+        in: query
+        description: Name of the workflow to filter by. Must be an exact match.
+        schema:
+          type: string
+      - name: workflow_version
+        in: query
+        description: Version of the workflow to filter by. Must be an exact match.
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      - name: workflow_instance_id
+        in: query
+        description: Workflow instance ID to filter by. Must be an exact match.
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: Status to filter by
+        schema:
+          $ref: '#/components/schemas/workflow-run-status'
+      - name: label
+        in: query
+        description: 'Filter by label in `key=value` form. Repeat to require multiple labels.
+
+          A run matches only if it carries every supplied label.
+
+          On duplicate keys the last occurrence wins.'
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            pattern: ^[^=]+=.*$
+            type: string
+      - name: created_since
+        in: query
+        description: Filter runs created on or after this timestamp.
+        schema:
+          $ref: '#/components/schemas/timestamp'
+      - name: created_before
+        in: query
+        description: Filter runs created before this timestamp.
+        schema:
+          $ref: '#/components/schemas/timestamp'
+      - name: completed_since
+        in: query
+        description: Filter runs completed on or after this timestamp.
+        schema:
+          $ref: '#/components/schemas/timestamp'
+      - name: completed_before
+        in: query
+        description: Filter runs completed before this timestamp.
+        schema:
+          $ref: '#/components/schemas/timestamp'
+      - name: limit
+        in: query
+        description: Maximum number of items to retrieve from the collection
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 100
+      - name: page_token
+        in: query
+        description: Opaque token pointing to a specific position in a collection
+        schema:
+          type: string
+      - name: sort_direction
+        in: query
+        schema:
+          $ref: '#/components/schemas/sort-direction'
+      - name: sort_by
+        in: query
+        description: Field to sort by. Refer to the operation description for information about which fields are sortable.
+        schema:
+          maxLength: 255
+          minLength: 1
+          type: string
+      responses:
+        '200':
+          description: Paginated list of workflow runs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-workflow-runs-response'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/invalid-request-problem-details'
+                - $ref: '#/components/schemas/invalid-sort-field-problem-details'
+                - $ref: '#/components/schemas/problem-details'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+  /internal/workflow-runs/{id}:
+    get:
+      tags:
+      - Workflows
+      summary: Get a workflow run
+      description: 'Returns metadata of a given workflow run.
+
+
+        Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_READ` permission.'
+      operationId: getWorkflowRun
+      parameters:
+      - name: id
+        in: path
+        description: ID of the workflow run
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Workflow run metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/workflow-run-metadata'
+        '400':
+          $ref: '#/components/responses/invalid-request-error'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        '404':
+          $ref: '#/components/responses/generic-not-found-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+  /internal/workflow-runs/{id}/events:
+    get:
+      tags:
+      - Workflows
+      summary: List all events of a workflow run
+      description: 'Returns a paginated list of workflow run events, sorted by sequence number.
+
+
+        Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_READ` permission.'
+      operationId: listWorkflowRunEvents
+      parameters:
+      - name: id
+        in: path
+        description: ID of the workflow run
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: from_sequence_number
+        in: query
+        description: 'Sequence number of the last seen event.
+
+          May be used to continuously poll for new events.
+
+          Can not be used together with `page_token`.'
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: Maximum number of items to retrieve from the collection
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 100
+      - name: page_token
+        in: query
+        description: Opaque token pointing to a specific position in a collection
+        schema:
+          type: string
+      - name: sort_direction
+        in: query
+        schema:
+          $ref: '#/components/schemas/sort-direction'
+      responses:
+        '200':
+          description: Paginated list of workflow run events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list-workflow-run-events-response'
+        '400':
+          $ref: '#/components/responses/invalid-request-error'
+        '401':
+          $ref: '#/components/responses/generic-unauthorized-error'
+        '403':
+          $ref: '#/components/responses/generic-forbidden-error'
+        default:
+          $ref: '#/components/responses/generic-error'
+    servers:
+    - url: /api/v2
+components:
+  schemas:
+    paginated-response:
+      required:
+      - total
+      type: object
+      properties:
+        next_page_token:
+          type: string
+          description: Token to retrieve the next page. Absent when no more items exist.
+        total:
+          $ref: '#/components/schemas/total-count'
+      x-parent: true
+    invalid-sort-field-problem-details:
+      required:
+      - invalid_field
+      type: object
+      properties:
+        invalid_field:
+          type: string
+          description: Name of the field for which sorting is not supported.
+        supported_fields:
+          type: array
+          description: 'Names of fields for which sorting is supported.
+
+            When empty, sorting is explicitly *not* supported.
+
+            When absent, sorting may be supported, but no definitive guarantees exist.
+
+            Consult the operation''s description.'
+          items:
+            type: string
+      allOf:
+      - $ref: '#/components/schemas/problem-details'
+    constraint-violation-error:
+      required:
+      - message
+      type: object
+      properties:
+        path:
+          type: string
+          description: Path to the invalid field in the request
+        value:
+          type: string
+          description: The invalid value
+        message:
+          type: string
+          description: Message explaining the error
+    timestamp:
+      type: integer
+      description: Epoch timestamp in milliseconds since January 1, 1970 UTC.
+      format: int64
+      example: 1752209050377
+    sort-direction:
+      type: string
+      enum:
+      - ASC
+      - DESC
+    invalid-request-problem-details:
+      required:
+      - errors
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/constraint-violation-error'
+      allOf:
+      - $ref: '#/components/schemas/problem-details'
+    total-count-type:
+      type: string
+      enum:
+      - AT_LEAST
+      - EXACT
+    list-workflow-run-events-response:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/list-workflow-run-events-response-item'
+      allOf:
+      - $ref: '#/components/schemas/paginated-response'
+    workflow-run-status:
+      type: string
+      enum:
+      - CREATED
+      - RUNNING
+      - SUSPENDED
+      - FAILED
+      - COMPLETED
+      - CANCELLED
+    problem-details:
+      required:
+      - detail
+      - title
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+          format: uri-reference
+          default: about:blank
+        status:
+          maximum: 599
+          minimum: 400
+          type: integer
+          description: HTTP status code generated by the origin server for this occurrence of the problem
+          format: int32
+          example: 500
+        title:
+          maxLength: 255
+          type: string
+          description: Short, human-readable summary of the problem type
+        detail:
+          maxLength: 1024
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          description: Reference URI that identifies the specific occurrence of the problem
+          format: uri-reference
+      description: An RFC 9457 problem object.
+      externalDocs:
+        url: https://www.rfc-editor.org/rfc/rfc9457.html
+      x-parent: true
+    list-workflow-runs-response:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/workflow-run-metadata'
+      allOf:
+      - $ref: '#/components/schemas/paginated-response'
+    total-count:
+      required:
+      - count
+      - type
+      type: object
+      properties:
+        count:
+          minimum: 0
+          type: integer
+          description: The total number of records across all pages. Might be an exact count, or a lower bound. Refer to the `type` field for the applicable semantics.
+          format: int64
+        type:
+          $ref: '#/components/schemas/total-count-type'
+    workflow-run-metadata:
+      required:
+      - created_at
+      - id
+      - priority
+      - status
+      - task_queue_name
+      - workflow_name
+      - workflow_version
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        parent_id:
+          type: string
+          format: uuid
+        workflow_name:
+          type: string
+        workflow_version:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+        workflow_instance_id:
+          type: string
+        task_queue_name:
+          type: string
+        status:
+          $ref: '#/components/schemas/workflow-run-status'
+        priority:
+          maximum: 100
+          minimum: 0
+          type: integer
+          format: int32
+        concurrency_key:
+          type: string
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        created_at:
+          $ref: '#/components/schemas/timestamp'
+        updated_at:
+          $ref: '#/components/schemas/timestamp'
+        started_at:
+          $ref: '#/components/schemas/timestamp'
+        completed_at:
+          $ref: '#/components/schemas/timestamp'
+    list-workflow-run-events-response-item:
+      required:
+      - event
+      - sequence_number
+      type: object
+      properties:
+        sequence_number:
+          type: integer
+          format: int32
+        event:
+          type: object
+          additionalProperties: true
+  responses:
+    invalid-request-error:
+      description: Bad request
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/invalid-request-problem-details'
+          example:
+            type: about:blank
+            status: 400
+            title: Bad Request
+            detail: The request could not be processed because it failed validation.
+            errors:
+            - path: foo.bar
+              value: baz
+              message: Must be a number
+    generic-error:
+      description: Unexpected error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+    generic-forbidden-error:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 403
+            title: Forbidden
+            detail: Not permitted to access the requested resource.
+    generic-not-found-error:
+      description: Not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 404
+            title: Not Found
+            detail: The requested resource could not be found.
+    generic-unauthorized-error:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 401
+            title: Unauthorized
+            detail: Not authorized to access the requested resource.
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Authentication via API key.
+      name: X-Api-Key
+      in: header
+    bearerAuth:
+      type: http
+      description: 'Authentication via opaque server-issued session token.
+
+        Tokens are obtained from `POST /api/v1/user/login`,
+
+        `POST /api/v1/user/oidc/login`, or `POST /api/v2/oauth/token`.'
+      scheme: bearer
+      bearerFormat: Opaque
+x-refined-from:
+- dependency-track-openapi-v2.yaml
+- dependency-track-v2-openapi.yml

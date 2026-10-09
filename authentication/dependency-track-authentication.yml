@@ -1,0 +1,76 @@
+generated: '2026-10-09'
+method: searched
+source: https://docs.dependencytrack.org/integrations/rest-api/
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: ApiKeyAuth
+  type: apiKey
+  in: header
+  parameter: X-Api-Key
+  description: Authentication via API key.
+  sources:
+  - openapi/dependency-track-openapi.yml
+  - openapi/dependency-track-v2-openapi.yml
+- name: BearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: Opaque
+  description: 'Authentication via opaque server-issued session token.
+
+    Tokens are obtained from `POST /api/v1/user/login` or
+
+    `POST /api/v1/user/oidc/login`.'
+  sources:
+  - openapi/dependency-track-openapi.yml
+  - openapi/dependency-track-v2-openapi.yml
+docs: https://docs.dependencytrack.org/integrations/rest-api/
+docs_pages:
+- https://docs.dependencytrack.org/integrations/rest-api/
+- https://docs.dependencytrack.org/administration/users-and-permissions/
+- https://docs.dependencytrack.org/getting-started/openidconnect-configuration/
+derived_from:
+- openapi/dependency-track-openapi.yml
+- openapi/dependency-track-v2-openapi.yml
+key_management: API keys belong to teams; creating a team does not create a key; a
+  team may have multiple keys; since 4.13 keys are stored hashed and shown only once
+  at creation.
+permissions_source: https://docs.dependencytrack.org/administration/users-and-permissions/
+permissions:
+- name: ACCESS_MANAGEMENT
+  description: Manage users, permissions, teams, ACLs, LDAP
+- name: BOM_UPLOAD
+  description: Upload BOMs
+- name: POLICY_MANAGEMENT
+  description: Manage policies, services, license groups
+- name: POLICY_VIOLATION_ANALYSIS
+  description: VEX analysis, modify violation analysis
+- name: PORTFOLIO_MANAGEMENT
+  description: Modify projects, metrics, policies
+- name: PROJECT_CREATION_UPLOAD
+  description: Auto-create a project when uploading a BOM
+- name: SYSTEM_CONFIGURATION
+  description: Read and modify configuration properties, repositories, integrations,
+    licenses, notifications
+- name: TAG_MANAGEMENT
+  description: Modify tags
+- name: VIEW_BADGES
+  description: Read badges
+- name: VIEW_POLICY_VIOLATION
+  description: Read policy violations
+- name: VIEW_PORTFOLIO
+  description: Read projects, services, tags, vulnerabilities, BOMs, Dependency Graph,
+    metrics; use Search
+- name: VIEW_VULNERABILITY
+  description: Read analysis decisions and findings
+- name: VULNERABILITY_ANALYSIS
+  description: Record analysis decision
+- name: VULNERABILITY_MANAGEMENT
+  description: Modify vulnerabilities
+user_login_note: Interactive users authenticate via local accounts, LDAP or OpenID
+  Connect; bearer tokens come from POST /api/v1/user/login or /api/v1/user/oidc/login
+  (v2 also lists POST /api/v2/oauth/token).

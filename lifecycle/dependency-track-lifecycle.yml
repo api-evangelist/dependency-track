@@ -1,0 +1,29 @@
+generated: '2026-10-09'
+method: searched
+source: https://docs.dependencytrack.org/changelog/
+versioning:
+  scheme: semver product releases (4.x on docs.dependencytrack.org); API versioned by URL path
+  api_versions:
+  - version: v1
+    base_path: /api/v1
+    contract: openapi/dependency-track-openapi.yml
+  - version: v2
+    base_path: /api/v2
+    contract: openapi/dependency-track-v2-openapi.yml
+  docs: https://docs.dependencytrack.org/integrations/rest-api/
+deprecation:
+  policy: null
+  note: No published API deprecation policy, support window or Sunset/Deprecation header usage was found in the docs.
+  deprecated_operations:
+  - isTokenBeingProcessed
+  - getComponentByHash
+  - getComponentByIdentity
+  - cloneProject
+  - getVulnerabilitiesByProject
+  deprecated_operations_source: "openapi/dependency-track-openapi.yml (deprecated: true)"
+  deprecated_distributions:
+  - name: Bundled
+    statement: This variant is supported but deprecated and will be discontinued in a future release.
+    source: https://docs.dependencytrack.org/getting-started/distributions/
+status_page: null
+status_page_note: Self-hosted software; there is no hosted service and no status page.
