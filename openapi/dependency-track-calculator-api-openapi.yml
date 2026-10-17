@@ -1,14 +1,21 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Calculator API
-  version: 1.0.0
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
+  description: 'REST API of OWASP Dependency-Track
+
+
+    > **Note:** This API version is in maintenance mode and will be
+
+    > superseded by v2, available under `/api/v2`, which follows a
+
+    > spec-first approach.'
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged calculator across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+  title: OWASP Dependency-Track Calculator API
+  version: 1.0.0
 servers:
 - url: /api
 tags:
@@ -41,8 +48,6 @@ paths:
       summary: Returns the CVSS base score, impact sub-score and exploitability sub-score
       tags:
       - calculator
-    servers:
-    - url: /api
   /v1/calculator/owasp:
     get:
       operationId: getOwaspRRScores
@@ -68,8 +73,6 @@ paths:
       summary: Returns the OWASP Risk Rating likelihood score, technical impact score and…
       tags:
       - calculator
-    servers:
-    - url: /api
 components:
   schemas:
     Score:
@@ -138,6 +141,3 @@ components:
         `POST /api/v1/user/oidc/login`.'
       scheme: bearer
       type: http
-x-refined-from:
-- dependency-track-openapi-v1.yaml
-- dependency-track-openapi.yml

@@ -1,14 +1,21 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Dependency Graph API
-  version: 1.0.0
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
+  description: 'REST API of OWASP Dependency-Track
+
+
+    > **Note:** This API version is in maintenance mode and will be
+
+    > superseded by v2, available under `/api/v2`, which follows a
+
+    > spec-first approach.'
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged dependencyGraph across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+  title: OWASP Dependency-Track Dependency Graph API
+  version: 1.0.0
 servers:
 - url: /api
 tags:
@@ -51,8 +58,6 @@ paths:
       summary: Returns a list of specific components and services from component UUID
       tags:
       - dependencyGraph
-    servers:
-    - url: /api
   /v1/dependencyGraph/project/{uuid}/directDependencies:
     get:
       description: Requires permission VIEW_PORTFOLIO
@@ -90,26 +95,8 @@ paths:
       summary: Returns a list of specific components and services from project UUID
       tags:
       - dependencyGraph
-    servers:
-    - url: /api
 components:
   schemas:
-    DependencyGraphResponse:
-      type: object
-      properties:
-        directDependencies:
-          type: string
-        latestVersion:
-          type: string
-        name:
-          type: string
-        purl:
-          type: string
-        uuid:
-          type: string
-          format: uuid
-        version:
-          type: string
     ProblemDetails:
       type: object
       description: An RFC 9457 problem object
@@ -141,6 +128,22 @@ components:
       - detail
       - status
       - title
+    DependencyGraphResponse:
+      type: object
+      properties:
+        directDependencies:
+          type: string
+        latestVersion:
+          type: string
+        name:
+          type: string
+        purl:
+          type: string
+        uuid:
+          type: string
+          format: uuid
+        version:
+          type: string
   securitySchemes:
     ApiKeyAuth:
       description: Authentication via API key.
@@ -156,6 +159,3 @@ components:
         `POST /api/v1/user/oidc/login`.'
       scheme: bearer
       type: http
-x-refined-from:
-- dependency-track-openapi-v1.yaml
-- dependency-track-openapi.yml

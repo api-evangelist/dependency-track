@@ -1,14 +1,21 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Policy Condition API
-  version: 1.0.0
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
+  description: 'REST API of OWASP Dependency-Track
+
+
+    > **Note:** This API version is in maintenance mode and will be
+
+    > superseded by v2, available under `/api/v2`, which follows a
+
+    > spec-first approach.'
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged policyCondition across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+  title: OWASP Dependency-Track Policy Condition API
+  version: 1.0.0
 servers:
 - url: /api
 tags:
@@ -42,8 +49,6 @@ paths:
       summary: Updates a policy condition
       tags:
       - policyCondition
-    servers:
-    - url: /api
   /v1/policy/condition/{uuid}:
     delete:
       description: 'Requires permission POLICY_MANAGEMENT
@@ -71,8 +76,6 @@ paths:
       summary: Deletes a policy condition from an existing policy
       tags:
       - policyCondition
-    servers:
-    - url: /api
   /v1/policy/{uuid}/condition:
     put:
       description: 'Requires permission POLICY_MANAGEMENT
@@ -109,10 +112,67 @@ paths:
       summary: Creates a new policy condition for an existing policy
       tags:
       - policyCondition
-    servers:
-    - url: /api
 components:
   schemas:
+    UpdatePolicyConditionRequest:
+      type: object
+      properties:
+        operator:
+          type: string
+          description: Operator used to compare the subject to the value
+          enum:
+          - IS
+          - IS_NOT
+          - MATCHES
+          - NO_MATCH
+          - NUMERIC_GREATER_THAN
+          - NUMERIC_LESS_THAN
+          - NUMERIC_EQUAL
+          - NUMERIC_NOT_EQUAL
+          - NUMERIC_GREATER_THAN_OR_EQUAL
+          - NUMERIC_LESSER_THAN_OR_EQUAL
+          - CONTAINS_ALL
+          - CONTAINS_ANY
+        subject:
+          type: string
+          description: Subject the condition evaluates
+          enum:
+          - AGE
+          - COORDINATES
+          - CPE
+          - EXPRESSION
+          - LICENSE
+          - LICENSE_GROUP
+          - PACKAGE_URL
+          - SEVERITY
+          - SWID_TAGID
+          - VERSION
+          - COMPONENT_HASH
+          - IS_INTERNAL
+          - CWE
+          - VULNERABILITY_ID
+          - VERSION_DISTANCE
+          - EPSS
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the policy condition to update
+        value:
+          type: string
+          description: Value the subject is compared to
+          minLength: 1
+        violationType:
+          type: string
+          description: Violation type produced when the condition matches. Required for `EXPRESSION` subjects
+          enum:
+          - LICENSE
+          - SECURITY
+          - OPERATIONAL
+      required:
+      - operator
+      - subject
+      - uuid
+      - value
     PolicyConditionResponse:
       type: object
       properties:
@@ -225,65 +285,6 @@ components:
       - operator
       - subject
       - value
-    UpdatePolicyConditionRequest:
-      type: object
-      properties:
-        operator:
-          type: string
-          description: Operator used to compare the subject to the value
-          enum:
-          - IS
-          - IS_NOT
-          - MATCHES
-          - NO_MATCH
-          - NUMERIC_GREATER_THAN
-          - NUMERIC_LESS_THAN
-          - NUMERIC_EQUAL
-          - NUMERIC_NOT_EQUAL
-          - NUMERIC_GREATER_THAN_OR_EQUAL
-          - NUMERIC_LESSER_THAN_OR_EQUAL
-          - CONTAINS_ALL
-          - CONTAINS_ANY
-        subject:
-          type: string
-          description: Subject the condition evaluates
-          enum:
-          - AGE
-          - COORDINATES
-          - CPE
-          - EXPRESSION
-          - LICENSE
-          - LICENSE_GROUP
-          - PACKAGE_URL
-          - SEVERITY
-          - SWID_TAGID
-          - VERSION
-          - COMPONENT_HASH
-          - IS_INTERNAL
-          - CWE
-          - VULNERABILITY_ID
-          - VERSION_DISTANCE
-          - EPSS
-        uuid:
-          type: string
-          format: uuid
-          description: UUID of the policy condition to update
-        value:
-          type: string
-          description: Value the subject is compared to
-          minLength: 1
-        violationType:
-          type: string
-          description: Violation type produced when the condition matches. Required for `EXPRESSION` subjects
-          enum:
-          - LICENSE
-          - SECURITY
-          - OPERATIONAL
-      required:
-      - operator
-      - subject
-      - uuid
-      - value
   securitySchemes:
     ApiKeyAuth:
       description: Authentication via API key.
@@ -299,6 +300,3 @@ components:
         `POST /api/v1/user/oidc/login`.'
       scheme: bearer
       type: http
-x-refined-from:
-- dependency-track-openapi-v1.yaml
-- dependency-track-openapi.yml

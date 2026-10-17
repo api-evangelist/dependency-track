@@ -1,7 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Workflows API
-  version: 2.0.0
+  title: OWASP Dependency-Track Workflows API
+  description: '# REST API of OWASP Dependency-Track
+
+
+    ## Pagination
+
+
+    This API implements token-based pagination.'
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
@@ -9,7 +15,7 @@ info:
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged Workflows across 2 of this provider''s published API definitions: dependency-track-openapi-v2.yaml, dependency-track-v2-openapi.yml. Each path carries the servers of the definition it was published in.'
+  version: 2.0.0
 servers:
 - url: /api/v2
 security:
@@ -65,8 +71,6 @@ paths:
           $ref: '#/components/responses/generic-not-found-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
   /internal/workflow-runs:
     get:
       tags:
@@ -195,8 +199,6 @@ paths:
           $ref: '#/components/responses/generic-forbidden-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
   /internal/workflow-runs/{id}:
     get:
       tags:
@@ -232,8 +234,6 @@ paths:
           $ref: '#/components/responses/generic-not-found-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
   /internal/workflow-runs/{id}/events:
     get:
       tags:
@@ -296,21 +296,52 @@ paths:
           $ref: '#/components/responses/generic-forbidden-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
 components:
   schemas:
-    paginated-response:
+    list-workflow-run-events-response-item:
       required:
-      - total
+      - event
+      - sequence_number
       type: object
       properties:
-        next_page_token:
-          type: string
-          description: Token to retrieve the next page. Absent when no more items exist.
-        total:
-          $ref: '#/components/schemas/total-count'
-      x-parent: true
+        sequence_number:
+          type: integer
+          format: int32
+        event:
+          type: object
+          additionalProperties: true
+    timestamp:
+      type: integer
+      description: Epoch timestamp in milliseconds since January 1, 1970 UTC.
+      format: int64
+      example: 1752209050377
+    sort-direction:
+      type: string
+      enum:
+      - ASC
+      - DESC
+    list-workflow-runs-response:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/workflow-run-metadata'
+      allOf:
+      - $ref: '#/components/schemas/paginated-response'
+    list-workflow-run-events-response:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/list-workflow-run-events-response-item'
+      allOf:
+      - $ref: '#/components/schemas/paginated-response'
     invalid-sort-field-problem-details:
       required:
       - invalid_field
@@ -332,30 +363,6 @@ components:
             type: string
       allOf:
       - $ref: '#/components/schemas/problem-details'
-    constraint-violation-error:
-      required:
-      - message
-      type: object
-      properties:
-        path:
-          type: string
-          description: Path to the invalid field in the request
-        value:
-          type: string
-          description: The invalid value
-        message:
-          type: string
-          description: Message explaining the error
-    timestamp:
-      type: integer
-      description: Epoch timestamp in milliseconds since January 1, 1970 UTC.
-      format: int64
-      example: 1752209050377
-    sort-direction:
-      type: string
-      enum:
-      - ASC
-      - DESC
     invalid-request-problem-details:
       required:
       - errors
@@ -367,31 +374,6 @@ components:
             $ref: '#/components/schemas/constraint-violation-error'
       allOf:
       - $ref: '#/components/schemas/problem-details'
-    total-count-type:
-      type: string
-      enum:
-      - AT_LEAST
-      - EXACT
-    list-workflow-run-events-response:
-      required:
-      - items
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/list-workflow-run-events-response-item'
-      allOf:
-      - $ref: '#/components/schemas/paginated-response'
-    workflow-run-status:
-      type: string
-      enum:
-      - CREATED
-      - RUNNING
-      - SUSPENDED
-      - FAILED
-      - COMPLETED
-      - CANCELLED
     problem-details:
       required:
       - detail
@@ -427,17 +409,6 @@ components:
       externalDocs:
         url: https://www.rfc-editor.org/rfc/rfc9457.html
       x-parent: true
-    list-workflow-runs-response:
-      required:
-      - items
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/workflow-run-metadata'
-      allOf:
-      - $ref: '#/components/schemas/paginated-response'
     total-count:
       required:
       - count
@@ -451,6 +422,20 @@ components:
           format: int64
         type:
           $ref: '#/components/schemas/total-count-type'
+    total-count-type:
+      type: string
+      enum:
+      - AT_LEAST
+      - EXACT
+    workflow-run-status:
+      type: string
+      enum:
+      - CREATED
+      - RUNNING
+      - SUSPENDED
+      - FAILED
+      - COMPLETED
+      - CANCELLED
     workflow-run-metadata:
       required:
       - created_at
@@ -500,19 +485,71 @@ components:
           $ref: '#/components/schemas/timestamp'
         completed_at:
           $ref: '#/components/schemas/timestamp'
-    list-workflow-run-events-response-item:
+    constraint-violation-error:
       required:
-      - event
-      - sequence_number
+      - message
       type: object
       properties:
-        sequence_number:
-          type: integer
-          format: int32
-        event:
-          type: object
-          additionalProperties: true
+        path:
+          type: string
+          description: Path to the invalid field in the request
+        value:
+          type: string
+          description: The invalid value
+        message:
+          type: string
+          description: Message explaining the error
+    paginated-response:
+      required:
+      - total
+      type: object
+      properties:
+        next_page_token:
+          type: string
+          description: Token to retrieve the next page. Absent when no more items exist.
+        total:
+          $ref: '#/components/schemas/total-count'
+      x-parent: true
   responses:
+    generic-unauthorized-error:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 401
+            title: Unauthorized
+            detail: Not authorized to access the requested resource.
+    generic-forbidden-error:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 403
+            title: Forbidden
+            detail: Not permitted to access the requested resource.
+    generic-error:
+      description: Unexpected error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+    generic-not-found-error:
+      description: Not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 404
+            title: Not Found
+            detail: The requested resource could not be found.
     invalid-request-error:
       description: Bad request
       content:
@@ -528,45 +565,6 @@ components:
             - path: foo.bar
               value: baz
               message: Must be a number
-    generic-error:
-      description: Unexpected error
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-    generic-forbidden-error:
-      description: Forbidden
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-          example:
-            type: about:blank
-            status: 403
-            title: Forbidden
-            detail: Not permitted to access the requested resource.
-    generic-not-found-error:
-      description: Not found
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-          example:
-            type: about:blank
-            status: 404
-            title: Not Found
-            detail: The requested resource could not be found.
-    generic-unauthorized-error:
-      description: Unauthorized
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-          example:
-            type: about:blank
-            status: 401
-            title: Unauthorized
-            detail: Not authorized to access the requested resource.
   securitySchemes:
     apiKeyAuth:
       type: apiKey
@@ -582,6 +580,3 @@ components:
         `POST /api/v1/user/oidc/login`, or `POST /api/v2/oauth/token`.'
       scheme: bearer
       bearerFormat: Opaque
-x-refined-from:
-- dependency-track-openapi-v2.yaml
-- dependency-track-v2-openapi.yml

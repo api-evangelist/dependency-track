@@ -1,14 +1,21 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Policy API
-  version: 1.0.0
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
+  description: 'REST API of OWASP Dependency-Track
+
+
+    > **Note:** This API version is in maintenance mode and will be
+
+    > superseded by v2, available under `/api/v2`, which follows a
+
+    > spec-first approach.'
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged policy across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+  title: OWASP Dependency-Track Policy API
+  version: 1.0.0
 servers:
 - url: /api
 tags:
@@ -126,8 +133,6 @@ paths:
       summary: Creates a new policy
       tags:
       - Policy
-    servers:
-    - url: /api
   /v1/policy/{policyUuid}/project/{projectUuid}:
     delete:
       description: Requires permission POLICY_MANAGEMENT or POLICY_MANAGEMENT_DELETE
@@ -215,8 +220,6 @@ paths:
       summary: Adds a project to a policy
       tags:
       - Policy
-    servers:
-    - url: /api
   /v1/policy/{uuid}:
     delete:
       description: Requires permission POLICY_MANAGEMENT or POLICY_MANAGEMENT_DELETE
@@ -270,371 +273,8 @@ paths:
       summary: Returns a specific policy
       tags:
       - Policy
-    servers:
-    - url: /api
 components:
   schemas:
-    AffectedComponent:
-      type: object
-      properties:
-        affectedVersionAttributions:
-          type: array
-          items:
-            $ref: '#/components/schemas/AffectedVersionAttribution'
-        identity:
-          type: string
-        identityType:
-          type: string
-          enum:
-          - CPE
-          - PURL
-        uuid:
-          type: string
-          format: uuid
-        version:
-          type: string
-        versionEndExcluding:
-          type: string
-        versionEndIncluding:
-          type: string
-        versionStartExcluding:
-          type: string
-        versionStartIncluding:
-          type: string
-        versionType:
-          type: string
-          enum:
-          - EXACT
-          - RANGE
-    DataClassification:
-      type: object
-      properties:
-        direction:
-          type: string
-          enum:
-          - INBOUND
-          - OUTBOUND
-          - BI_DIRECTIONAL
-          - UNKNOWN
-        name:
-          type: string
-    Cwe:
-      type: object
-      properties:
-        cweId:
-          type: integer
-          format: int32
-        name:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-    Tools:
-      type: object
-      properties:
-        components:
-          type: array
-          items:
-            $ref: '#/components/schemas/Component'
-        services:
-          type: array
-          items:
-            $ref: '#/components/schemas/ServiceComponent'
-    Vulnerability:
-      type: object
-      properties:
-        affectedActiveProjectCount:
-          type: integer
-          format: int32
-        affectedComponents:
-          type: array
-          items:
-            $ref: '#/components/schemas/AffectedComponent'
-        affectedInactiveProjectCount:
-          type: integer
-          format: int32
-        affectedProjectCount:
-          type: integer
-          format: int32
-        aliases:
-          type: array
-          items:
-            $ref: '#/components/schemas/VulnerabilityAlias'
-        components:
-          type: array
-          items:
-            $ref: '#/components/schemas/Component'
-        created:
-          type: string
-          format: date-time
-        credits:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        cvssV2BaseScore:
-          type: number
-        cvssV2ExploitabilitySubScore:
-          type: number
-        cvssV2ImpactSubScore:
-          type: number
-        cvssV2Vector:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        cvssV3BaseScore:
-          type: number
-        cvssV3ExploitabilitySubScore:
-          type: number
-        cvssV3ImpactSubScore:
-          type: number
-        cvssV3Vector:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        cvssV4Score:
-          type: number
-        cvssV4Vector:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        cwes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Cwe'
-        description:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        detail:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        epss:
-          $ref: '#/components/schemas/Epss'
-        epssPercentile:
-          type: number
-        epssScore:
-          type: number
-        friendlyVulnId:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        isKev:
-          type: boolean
-        owaspRRBusinessImpactScore:
-          type: number
-        owaspRRLikelihoodScore:
-          type: number
-        owaspRRTechnicalImpactScore:
-          type: number
-        owaspRRVector:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        patchedVersions:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        published:
-          type: string
-          format: date-time
-        recommendation:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        references:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        rejected:
-          type: string
-          format: date-time
-        serviceComponents:
-          type: array
-          items:
-            $ref: '#/components/schemas/ServiceComponent'
-        severity:
-          type: string
-          enum:
-          - CRITICAL
-          - HIGH
-          - MEDIUM
-          - LOW
-          - INFO
-          - UNASSIGNED
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        source:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        subTitle:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tag'
-          uniqueItems: true
-        title:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        updated:
-          type: string
-          format: date-time
-        uuid:
-          type: string
-          format: uuid
-        vulnId:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        vulnerableVersions:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-      required:
-      - friendlyVulnId
-      - source
-      - uuid
-      - vulnId
-    ProblemDetails:
-      type: object
-      description: An RFC 9457 problem object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation specific to this occurrence of the problem
-          example: Example detail
-        instance:
-          type: string
-          format: uri
-          description: Reference URI that identifies the specific occurrence of the problem
-          example: https://api.example.org/foo/bar/example-instance
-        status:
-          type: integer
-          format: int32
-          description: HTTP status code generated by the origin server for this occurrence of the problem
-          example: 400
-        title:
-          type: string
-          description: Short, human-readable summary of the problem type
-          example: Example title
-        type:
-          type: string
-          format: uri
-          description: A URI reference that identifies the problem type
-          example: https://api.example.org/foo/bar/example-problem
-      required:
-      - detail
-      - status
-      - title
-    DependencyMetrics:
-      type: object
-      properties:
-        critical:
-          type: integer
-          format: int32
-        findingsAudited:
-          type: integer
-          format: int32
-        findingsTotal:
-          type: integer
-          format: int32
-        findingsUnaudited:
-          type: integer
-          format: int32
-        firstOccurrence:
-          type: integer
-          format: int64
-          description: UNIX epoch timestamp in milliseconds
-        high:
-          type: integer
-          format: int32
-        inheritedRiskScore:
-          type: number
-          format: double
-        kev:
-          type: integer
-          format: int32
-        lastOccurrence:
-          type: integer
-          format: int64
-          description: UNIX epoch timestamp in milliseconds
-        low:
-          type: integer
-          format: int32
-        medium:
-          type: integer
-          format: int32
-        policyViolationsAudited:
-          type: integer
-          format: int32
-        policyViolationsFail:
-          type: integer
-          format: int32
-        policyViolationsInfo:
-          type: integer
-          format: int32
-        policyViolationsLicenseAudited:
-          type: integer
-          format: int32
-        policyViolationsLicenseTotal:
-          type: integer
-          format: int32
-        policyViolationsLicenseUnaudited:
-          type: integer
-          format: int32
-        policyViolationsOperationalAudited:
-          type: integer
-          format: int32
-        policyViolationsOperationalTotal:
-          type: integer
-          format: int32
-        policyViolationsOperationalUnaudited:
-          type: integer
-          format: int32
-        policyViolationsSecurityAudited:
-          type: integer
-          format: int32
-        policyViolationsSecurityTotal:
-          type: integer
-          format: int32
-        policyViolationsSecurityUnaudited:
-          type: integer
-          format: int32
-        policyViolationsTotal:
-          type: integer
-          format: int32
-        policyViolationsUnaudited:
-          type: integer
-          format: int32
-        policyViolationsWarn:
-          type: integer
-          format: int32
-        suppressed:
-          type: integer
-          format: int32
-        unassigned:
-          type: integer
-          format: int32
-        vulnerabilities:
-          type: integer
-          format: int32
-      required:
-      - firstOccurrence
-      - lastOccurrence
-    ProjectVersion:
-      type: object
-      properties:
-        active:
-          type: boolean
-        isLatest:
-          type: boolean
-        uuid:
-          type: string
-          format: uuid
-        version:
-          type: string
-    MappedOidcGroup:
-      type: object
-      properties:
-        group:
-          $ref: '#/components/schemas/OidcGroup'
-        uuid:
-          type: string
-          format: uuid
-      required:
-      - uuid
     ProjectMetrics:
       type: object
       properties:
@@ -736,105 +376,101 @@ components:
       required:
       - firstOccurrence
       - lastOccurrence
-    MappedLdapGroup:
+    Policy:
       type: object
       properties:
-        dn:
+        global:
+          type: boolean
+        includeChildren:
+          type: boolean
+        invertTagMatch:
+          type: boolean
+        name:
           type: string
           maxLength: 255
           minLength: 1
-          pattern: '[\P{Cc}]+'
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        onlyLatestProjectVersion:
+          type: boolean
+        operator:
+          type: string
+          enum:
+          - ALL
+          - ANY
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        policyConditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyCondition'
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+          uniqueItems: true
         uuid:
           type: string
           format: uuid
+        violationState:
+          type: string
+          enum:
+          - INFO
+          - WARN
+          - FAIL
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
       required:
-      - dn
+      - name
+      - operator
       - uuid
-    LdapUser:
+      - violationState
+    Cwe:
       type: object
       properties:
-        dn:
+        cweId:
+          type: integer
+          format: int32
+        name:
           type: string
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-        email:
-          type: string
-          maxLength: 255
-          minLength: 0
-          pattern: '[\P{Cc}]+'
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Permission'
-        teams:
-          type: array
-          items:
-            $ref: '#/components/schemas/Team'
-        username:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-      required:
-      - username
-    OidcUser:
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+    AffectedComponent:
       type: object
       properties:
-        email:
-          type: string
-          maxLength: 255
-          minLength: 0
-          pattern: '[\P{Cc}]+'
-        permissions:
+        affectedVersionAttributions:
           type: array
           items:
-            $ref: '#/components/schemas/Permission'
-        subjectIdentifier:
+            $ref: '#/components/schemas/AffectedVersionAttribution'
+        identity:
           type: string
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-        teams:
-          type: array
-          items:
-            $ref: '#/components/schemas/Team'
-        username:
+        identityType:
           type: string
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-      required:
-      - username
-    ApiKey:
-      type: object
-      properties:
-        comment:
+          enum:
+          - CPE
+          - PURL
+        uuid:
           type: string
-          maxLength: 255
-          minLength: 0
-        created:
-          type: integer
-          format: int64
-          description: UNIX epoch timestamp in milliseconds
-        expiresAt:
-          type: integer
-          format: int64
-          description: UNIX epoch timestamp in milliseconds
-        key:
+          format: uuid
+        version:
           type: string
-        lastUsed:
-          type: integer
-          format: int64
-          description: UNIX epoch timestamp in milliseconds
-        legacy:
-          type: boolean
-        maskedKey:
+        versionEndExcluding:
           type: string
-        publicId:
+        versionEndIncluding:
           type: string
-          maxLength: 8
-          minLength: 5
+        versionStartExcluding:
+          type: string
+        versionStartIncluding:
+          type: string
+        versionType:
+          type: string
+          enum:
+          - EXACT
+          - RANGE
     Component:
       type: object
       properties:
@@ -1038,103 +674,6 @@ components:
       - name
       - project
       - uuid
-    ServiceComponent:
-      type: object
-      properties:
-        authenticated:
-          type: boolean
-        bomRef:
-          type: string
-        children:
-          type: array
-          items:
-            $ref: '#/components/schemas/ServiceComponent'
-        crossesTrustBoundary:
-          type: boolean
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataClassification'
-        description:
-          type: string
-          maxLength: 1024
-          minLength: 0
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        endpoints:
-          type: array
-          items:
-            type: string
-        externalReferences:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExternalReference'
-        group:
-          type: string
-          maxLength: 255
-          minLength: 0
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        lastInheritedRiskScore:
-          type: number
-          format: double
-        name:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        notes:
-          type: string
-        parent:
-          $ref: '#/components/schemas/ServiceComponent'
-        project:
-          $ref: '#/components/schemas/Project'
-        provider:
-          $ref: '#/components/schemas/OrganizationalEntity'
-        uuid:
-          type: string
-          format: uuid
-        version:
-          type: string
-          maxLength: 255
-          minLength: 0
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        vulnerabilities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Vulnerability'
-      required:
-      - name
-      - project
-      - uuid
-    OrganizationalContact:
-      type: object
-      properties:
-        email:
-          type: string
-        name:
-          type: string
-        phone:
-          type: string
-    LicenseGroup:
-      type: object
-      properties:
-        licenses:
-          type: array
-          items:
-            $ref: '#/components/schemas/License'
-        name:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        riskWeight:
-          type: integer
-          format: int32
-        uuid:
-          type: string
-          format: uuid
-      required:
-      - name
-      - uuid
     ComponentProperty:
       type: object
       properties:
@@ -1175,340 +714,101 @@ components:
       - propertyName
       - propertyType
       - uuid
-    Policy:
+    OidcGroup:
       type: object
       properties:
-        global:
-          type: boolean
-        includeChildren:
-          type: boolean
-        invertTagMatch:
-          type: boolean
-        name:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        onlyLatestProjectVersion:
-          type: boolean
-        operator:
-          type: string
-          enum:
-          - ALL
-          - ANY
-          maxLength: 255
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        policyConditions:
-          type: array
-          items:
-            $ref: '#/components/schemas/PolicyCondition'
-        projects:
-          type: array
-          items:
-            $ref: '#/components/schemas/Project'
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tag'
-          uniqueItems: true
-        uuid:
-          type: string
-          format: uuid
-        violationState:
-          type: string
-          enum:
-          - INFO
-          - WARN
-          - FAIL
-          maxLength: 255
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-      required:
-      - name
-      - operator
-      - uuid
-      - violationState
-    Permission:
-      type: object
-      properties:
-        description:
-          type: string
-        ldapUsers:
-          type: array
-          items:
-            $ref: '#/components/schemas/LdapUser'
-        managedUsers:
-          type: array
-          items:
-            $ref: '#/components/schemas/ManagedUser'
-        name:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: ^[a-zA-Z_0-9]*$
-        oidcUsers:
-          type: array
-          items:
-            $ref: '#/components/schemas/OidcUser'
-      required:
-      - name
-    OrganizationalEntity:
-      type: object
-      properties:
-        contacts:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationalContact'
-        name:
-          type: string
-        urls:
-          type: array
-          items:
-            type: string
-    Team:
-      type: object
-      properties:
-        apiKeys:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApiKey'
-        ldapUsers:
-          type: array
-          items:
-            $ref: '#/components/schemas/LdapUser'
-        managedUsers:
-          type: array
-          items:
-            $ref: '#/components/schemas/ManagedUser'
-        mappedLdapGroups:
-          type: array
-          items:
-            $ref: '#/components/schemas/MappedLdapGroup'
-        mappedOidcGroups:
-          type: array
-          items:
-            $ref: '#/components/schemas/MappedOidcGroup'
         name:
           type: string
           maxLength: 255
           minLength: 1
           pattern: '[\P{Cc}]+'
-        oidcUsers:
-          type: array
-          items:
-            $ref: '#/components/schemas/OidcUser'
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Permission'
-        serviceAccounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/ServiceAccount'
         uuid:
           type: string
           format: uuid
       required:
       - name
       - uuid
-    PolicyCondition:
+    RepositoryMetaComponent:
       type: object
       properties:
-        operator:
+        lastCheck:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        latestVersion:
+          type: string
+        latestVersionPublishedAt:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        name:
+          type: string
+        namespace:
+          type: string
+        repositoryType:
           type: string
           enum:
-          - IS
-          - IS_NOT
-          - MATCHES
-          - NO_MATCH
-          - NUMERIC_GREATER_THAN
-          - NUMERIC_LESS_THAN
-          - NUMERIC_EQUAL
-          - NUMERIC_NOT_EQUAL
-          - NUMERIC_GREATER_THAN_OR_EQUAL
-          - NUMERIC_LESSER_THAN_OR_EQUAL
-          - CONTAINS_ALL
-          - CONTAINS_ANY
-          maxLength: 255
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        policy:
-          $ref: '#/components/schemas/Policy'
-        subject:
-          type: string
-          enum:
-          - AGE
-          - COORDINATES
-          - CPE
-          - EXPRESSION
-          - LICENSE
-          - LICENSE_GROUP
-          - PACKAGE_URL
-          - SEVERITY
-          - SWID_TAGID
-          - VERSION
-          - COMPONENT_HASH
-          - IS_INTERNAL
-          - CWE
-          - VULNERABILITY_ID
-          - VERSION_DISTANCE
-          - EPSS
-          maxLength: 255
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        uuid:
-          type: string
-          format: uuid
-        value:
-          type: string
-          maxLength: 2147483647
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        violationType:
-          type: string
-          enum:
-          - LICENSE
-          - SECURITY
-          - OPERATIONAL
-          maxLength: 255
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-      required:
-      - operator
-      - subject
-      - uuid
-      - value
-    ExternalReference:
+          - MAVEN
+          - NPM
+          - GEM
+          - PYPI
+          - NUGET
+          - HEX
+          - COMPOSER
+          - CARGO
+          - GO_MODULES
+          - CPAN
+          - GITHUB
+          - HACKAGE
+          - NIXPKGS
+          - UNSUPPORTED
+    ApiKey:
       type: object
       properties:
         comment:
           type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        type:
+          maxLength: 255
+          minLength: 0
+        created:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        expiresAt:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        key:
           type: string
-          enum:
-          - vcs
-          - issue-tracker
-          - website
-          - advisories
-          - bom
-          - mailing-list
-          - social
-          - chat
-          - documentation
-          - support
-          - source-distribution
-          - distribution
-          - distribution-intake
-          - license
-          - build-meta
-          - build-system
-          - release-notes
-          - security-contact
-          - model-card
-          - attestation
-          - threat-model
-          - adversary-model
-          - risk-assessment
-          - vulnerability-assertion
-          - exploitability-statement
-          - pentest-report
-          - static-analysis-report
-          - dynamic-analysis-report
-          - runtime-analysis-report
-          - component-analysis-report
-          - maturity-report
-          - certification-report
-          - codified-infrastructure
-          - quality-metrics
-          - log
-          - configuration
-          - evidence
-          - formulation
-          - rfc-9116
-          - electronic-signature
-          - digital-signature
-          - patent
-          - patent-family
-          - patent-assertion
-          - citation
-          - poam
-          - other
-        url:
+        lastUsed:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        legacy:
+          type: boolean
+        maskedKey:
           type: string
-          minLength: 1
-      required:
-      - url
-    License:
+        publicId:
+          type: string
+          maxLength: 8
+          minLength: 5
+    Tag:
       type: object
       properties:
-        isCustomLicense:
-          type: boolean
-        isDeprecatedLicenseId:
-          type: boolean
-        isFsfLibre:
-          type: boolean
-        isOsiApproved:
-          type: boolean
-        licenseComments:
-          type: string
-        licenseGroups:
-          type: array
-          items:
-            $ref: '#/components/schemas/LicenseGroup'
-        licenseId:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: ^[a-zA-Z0-9_.\-+]*$
-        licenseText:
-          type: string
         name:
           type: string
           maxLength: 255
           minLength: 1
           pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        seeAlso:
-          type: array
-          items:
-            type: string
-        standardLicenseHeader:
-          type: string
-        standardLicenseTemplate:
-          type: string
-        uuid:
-          type: string
-          format: uuid
       required:
-      - licenseId
       - name
-      - uuid
-    ManagedUser:
+    ServiceAccount:
       type: object
       properties:
-        confirmPassword:
-          type: string
         email:
           type: string
           maxLength: 255
           minLength: 0
           pattern: '[\P{Cc}]+'
-        forcePasswordChange:
-          type: boolean
-        fullname:
-          type: string
-          maxLength: 255
-          minLength: 0
-          pattern: '[\P{Cc}]+'
-        lastPasswordChange:
-          type: integer
-          format: int64
-          description: UNIX epoch timestamp in milliseconds
-        newPassword:
-          type: string
-        nonExpiryPassword:
-          type: boolean
         permissions:
           type: array
           items:
@@ -1525,8 +825,188 @@ components:
           minLength: 1
           pattern: '[\P{Cc}]+'
       required:
-      - lastPasswordChange
       - username
+    LdapUser:
+      type: object
+      properties:
+        dn:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - username
+    Tools:
+      type: object
+      properties:
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/Component'
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceComponent'
+    OrganizationalContact:
+      type: object
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+    MappedOidcGroup:
+      type: object
+      properties:
+        group:
+          $ref: '#/components/schemas/OidcGroup'
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - uuid
+    OidcUser:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        subjectIdentifier:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - username
+    DependencyMetrics:
+      type: object
+      properties:
+        critical:
+          type: integer
+          format: int32
+        findingsAudited:
+          type: integer
+          format: int32
+        findingsTotal:
+          type: integer
+          format: int32
+        findingsUnaudited:
+          type: integer
+          format: int32
+        firstOccurrence:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        high:
+          type: integer
+          format: int32
+        inheritedRiskScore:
+          type: number
+          format: double
+        kev:
+          type: integer
+          format: int32
+        lastOccurrence:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        low:
+          type: integer
+          format: int32
+        medium:
+          type: integer
+          format: int32
+        policyViolationsAudited:
+          type: integer
+          format: int32
+        policyViolationsFail:
+          type: integer
+          format: int32
+        policyViolationsInfo:
+          type: integer
+          format: int32
+        policyViolationsLicenseAudited:
+          type: integer
+          format: int32
+        policyViolationsLicenseTotal:
+          type: integer
+          format: int32
+        policyViolationsLicenseUnaudited:
+          type: integer
+          format: int32
+        policyViolationsOperationalAudited:
+          type: integer
+          format: int32
+        policyViolationsOperationalTotal:
+          type: integer
+          format: int32
+        policyViolationsOperationalUnaudited:
+          type: integer
+          format: int32
+        policyViolationsSecurityAudited:
+          type: integer
+          format: int32
+        policyViolationsSecurityTotal:
+          type: integer
+          format: int32
+        policyViolationsSecurityUnaudited:
+          type: integer
+          format: int32
+        policyViolationsTotal:
+          type: integer
+          format: int32
+        policyViolationsUnaudited:
+          type: integer
+          format: int32
+        policyViolationsWarn:
+          type: integer
+          format: int32
+        suppressed:
+          type: integer
+          format: int32
+        unassigned:
+          type: integer
+          format: int32
+        vulnerabilities:
+          type: integer
+          format: int32
+      required:
+      - firstOccurrence
+      - lastOccurrence
     AffectedVersionAttribution:
       type: object
       properties:
@@ -1555,36 +1035,18 @@ components:
       required:
       - firstSeen
       - lastSeen
-    VulnerabilityAlias:
+    DataClassification:
       type: object
       properties:
-        cveId:
+        direction:
           type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        cxId:
+          enum:
+          - INBOUND
+          - OUTBOUND
+          - BI_DIRECTIONAL
+          - UNKNOWN
+        name:
           type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        ghsaId:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        gsdId:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        internalId:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        osvId:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        snykId:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        sonatypeId:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
-        vulnDbId:
-          type: string
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
     ProjectMetadata:
       type: object
       properties:
@@ -1733,14 +1195,607 @@ components:
       - lastBomImport
       - name
       - uuid
-    ServiceAccount:
+    MappedLdapGroup:
       type: object
       properties:
+        dn:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - dn
+      - uuid
+    Vulnerability:
+      type: object
+      properties:
+        affectedActiveProjectCount:
+          type: integer
+          format: int32
+        affectedComponents:
+          type: array
+          items:
+            $ref: '#/components/schemas/AffectedComponent'
+        affectedInactiveProjectCount:
+          type: integer
+          format: int32
+        affectedProjectCount:
+          type: integer
+          format: int32
+        aliases:
+          type: array
+          items:
+            $ref: '#/components/schemas/VulnerabilityAlias'
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/Component'
+        created:
+          type: string
+          format: date-time
+        credits:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        cvssV2BaseScore:
+          type: number
+        cvssV2ExploitabilitySubScore:
+          type: number
+        cvssV2ImpactSubScore:
+          type: number
+        cvssV2Vector:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        cvssV3BaseScore:
+          type: number
+        cvssV3ExploitabilitySubScore:
+          type: number
+        cvssV3ImpactSubScore:
+          type: number
+        cvssV3Vector:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        cvssV4Score:
+          type: number
+        cvssV4Vector:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        cwes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cwe'
+        description:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        detail:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        epss:
+          $ref: '#/components/schemas/Epss'
+        epssPercentile:
+          type: number
+        epssScore:
+          type: number
+        friendlyVulnId:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        isKev:
+          type: boolean
+        owaspRRBusinessImpactScore:
+          type: number
+        owaspRRLikelihoodScore:
+          type: number
+        owaspRRTechnicalImpactScore:
+          type: number
+        owaspRRVector:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        patchedVersions:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        published:
+          type: string
+          format: date-time
+        recommendation:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        references:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        rejected:
+          type: string
+          format: date-time
+        serviceComponents:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceComponent'
+        severity:
+          type: string
+          enum:
+          - CRITICAL
+          - HIGH
+          - MEDIUM
+          - LOW
+          - INFO
+          - UNASSIGNED
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        source:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        subTitle:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+          uniqueItems: true
+        title:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        updated:
+          type: string
+          format: date-time
+        uuid:
+          type: string
+          format: uuid
+        vulnId:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        vulnerableVersions:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+      required:
+      - friendlyVulnId
+      - source
+      - uuid
+      - vulnId
+    Team:
+      type: object
+      properties:
+        apiKeys:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiKey'
+        ldapUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/LdapUser'
+        managedUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagedUser'
+        mappedLdapGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/MappedLdapGroup'
+        mappedOidcGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/MappedOidcGroup'
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        oidcUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OidcUser'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        serviceAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceAccount'
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - name
+      - uuid
+    LicenseGroup:
+      type: object
+      properties:
+        licenses:
+          type: array
+          items:
+            $ref: '#/components/schemas/License'
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        riskWeight:
+          type: integer
+          format: int32
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - name
+      - uuid
+    ServiceComponent:
+      type: object
+      properties:
+        authenticated:
+          type: boolean
+        bomRef:
+          type: string
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceComponent'
+        crossesTrustBoundary:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataClassification'
+        description:
+          type: string
+          maxLength: 1024
+          minLength: 0
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        endpoints:
+          type: array
+          items:
+            type: string
+        externalReferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalReference'
+        group:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        lastInheritedRiskScore:
+          type: number
+          format: double
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        notes:
+          type: string
+        parent:
+          $ref: '#/components/schemas/ServiceComponent'
+        project:
+          $ref: '#/components/schemas/Project'
+        provider:
+          $ref: '#/components/schemas/OrganizationalEntity'
+        uuid:
+          type: string
+          format: uuid
+        version:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        vulnerabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vulnerability'
+      required:
+      - name
+      - project
+      - uuid
+    PolicyCondition:
+      type: object
+      properties:
+        operator:
+          type: string
+          enum:
+          - IS
+          - IS_NOT
+          - MATCHES
+          - NO_MATCH
+          - NUMERIC_GREATER_THAN
+          - NUMERIC_LESS_THAN
+          - NUMERIC_EQUAL
+          - NUMERIC_NOT_EQUAL
+          - NUMERIC_GREATER_THAN_OR_EQUAL
+          - NUMERIC_LESSER_THAN_OR_EQUAL
+          - CONTAINS_ALL
+          - CONTAINS_ANY
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        policy:
+          $ref: '#/components/schemas/Policy'
+        subject:
+          type: string
+          enum:
+          - AGE
+          - COORDINATES
+          - CPE
+          - EXPRESSION
+          - LICENSE
+          - LICENSE_GROUP
+          - PACKAGE_URL
+          - SEVERITY
+          - SWID_TAGID
+          - VERSION
+          - COMPONENT_HASH
+          - IS_INTERNAL
+          - CWE
+          - VULNERABILITY_ID
+          - VERSION_DISTANCE
+          - EPSS
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        uuid:
+          type: string
+          format: uuid
+        value:
+          type: string
+          maxLength: 2147483647
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        violationType:
+          type: string
+          enum:
+          - LICENSE
+          - SECURITY
+          - OPERATIONAL
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+      required:
+      - operator
+      - subject
+      - uuid
+      - value
+    VulnerabilityAlias:
+      type: object
+      properties:
+        cveId:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        cxId:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        ghsaId:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        gsdId:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        internalId:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        osvId:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        snykId:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        sonatypeId:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+        vulnDbId:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
+    ExternalReference:
+      type: object
+      properties:
+        comment:
+          type: string
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        type:
+          type: string
+          enum:
+          - vcs
+          - issue-tracker
+          - website
+          - advisories
+          - bom
+          - mailing-list
+          - social
+          - chat
+          - documentation
+          - support
+          - source-distribution
+          - distribution
+          - distribution-intake
+          - license
+          - build-meta
+          - build-system
+          - release-notes
+          - security-contact
+          - model-card
+          - attestation
+          - threat-model
+          - adversary-model
+          - risk-assessment
+          - vulnerability-assertion
+          - exploitability-statement
+          - pentest-report
+          - static-analysis-report
+          - dynamic-analysis-report
+          - runtime-analysis-report
+          - component-analysis-report
+          - maturity-report
+          - certification-report
+          - codified-infrastructure
+          - quality-metrics
+          - log
+          - configuration
+          - evidence
+          - formulation
+          - rfc-9116
+          - electronic-signature
+          - digital-signature
+          - patent
+          - patent-family
+          - patent-assertion
+          - citation
+          - poam
+          - other
+        url:
+          type: string
+          minLength: 1
+      required:
+      - url
+    Permission:
+      type: object
+      properties:
+        description:
+          type: string
+        ldapUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/LdapUser'
+        managedUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagedUser'
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[a-zA-Z_0-9]*$
+        oidcUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OidcUser'
+      required:
+      - name
+    ProblemDetails:
+      type: object
+      description: An RFC 9457 problem object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+          example: Example detail
+        instance:
+          type: string
+          format: uri
+          description: Reference URI that identifies the specific occurrence of the problem
+          example: https://api.example.org/foo/bar/example-instance
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code generated by the origin server for this occurrence of the problem
+          example: 400
+        title:
+          type: string
+          description: Short, human-readable summary of the problem type
+          example: Example title
+        type:
+          type: string
+          format: uri
+          description: A URI reference that identifies the problem type
+          example: https://api.example.org/foo/bar/example-problem
+      required:
+      - detail
+      - status
+      - title
+    Epss:
+      type: object
+      properties:
+        cve:
+          type: string
+        percentile:
+          type: number
+        score:
+          type: number
+    OrganizationalEntity:
+      type: object
+      properties:
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationalContact'
+        name:
+          type: string
+        urls:
+          type: array
+          items:
+            type: string
+    License:
+      type: object
+      properties:
+        isCustomLicense:
+          type: boolean
+        isDeprecatedLicenseId:
+          type: boolean
+        isFsfLibre:
+          type: boolean
+        isOsiApproved:
+          type: boolean
+        licenseComments:
+          type: string
+        licenseGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/LicenseGroup'
+        licenseId:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[a-zA-Z0-9_.\-+]*$
+        licenseText:
+          type: string
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        seeAlso:
+          type: array
+          items:
+            type: string
+        standardLicenseHeader:
+          type: string
+        standardLicenseTemplate:
+          type: string
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - licenseId
+      - name
+      - uuid
+    ManagedUser:
+      type: object
+      properties:
+        confirmPassword:
+          type: string
         email:
           type: string
           maxLength: 255
           minLength: 0
           pattern: '[\P{Cc}]+'
+        forcePasswordChange:
+          type: boolean
+        fullname:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        lastPasswordChange:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        newPassword:
+          type: string
+        nonExpiryPassword:
+          type: boolean
         permissions:
           type: array
           items:
@@ -1757,74 +1812,20 @@ components:
           minLength: 1
           pattern: '[\P{Cc}]+'
       required:
+      - lastPasswordChange
       - username
-    RepositoryMetaComponent:
+    ProjectVersion:
       type: object
       properties:
-        lastCheck:
-          type: integer
-          format: int64
-          description: UNIX epoch timestamp in milliseconds
-        latestVersion:
-          type: string
-        latestVersionPublishedAt:
-          type: integer
-          format: int64
-          description: UNIX epoch timestamp in milliseconds
-        name:
-          type: string
-        namespace:
-          type: string
-        repositoryType:
-          type: string
-          enum:
-          - MAVEN
-          - NPM
-          - GEM
-          - PYPI
-          - NUGET
-          - HEX
-          - COMPOSER
-          - CARGO
-          - GO_MODULES
-          - CPAN
-          - GITHUB
-          - HACKAGE
-          - NIXPKGS
-          - UNSUPPORTED
-    OidcGroup:
-      type: object
-      properties:
-        name:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
+        active:
+          type: boolean
+        isLatest:
+          type: boolean
         uuid:
           type: string
           format: uuid
-      required:
-      - name
-      - uuid
-    Tag:
-      type: object
-      properties:
-        name:
+        version:
           type: string
-          maxLength: 255
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-      required:
-      - name
-    Epss:
-      type: object
-      properties:
-        cve:
-          type: string
-        percentile:
-          type: number
-        score:
-          type: number
   securitySchemes:
     ApiKeyAuth:
       description: Authentication via API key.
@@ -1840,6 +1841,3 @@ components:
         `POST /api/v1/user/oidc/login`.'
       scheme: bearer
       type: http
-x-refined-from:
-- dependency-track-openapi-v1.yaml
-- dependency-track-openapi.yml

@@ -1,7 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Extensions API
-  version: 2.0.0
+  title: OWASP Dependency-Track Extensions API
+  description: '# REST API of OWASP Dependency-Track
+
+
+    ## Pagination
+
+
+    This API implements token-based pagination.'
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
@@ -9,7 +15,7 @@ info:
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged Extensions across 2 of this provider''s published API definitions: dependency-track-openapi-v2.yaml, dependency-track-v2-openapi.yml. Each path carries the servers of the definition it was published in.'
+  version: 2.0.0
 servers:
 - url: /api/v2
 security:
@@ -42,8 +48,6 @@ paths:
           $ref: '#/components/responses/generic-forbidden-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
   /extension-points/{extension_point_name}/extensions:
     get:
       tags:
@@ -76,8 +80,6 @@ paths:
           $ref: '#/components/responses/generic-not-found-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
   /extension-points/{extension_point_name}/extensions/{extension_name}/config:
     get:
       tags:
@@ -172,8 +174,6 @@ paths:
           $ref: '#/components/responses/generic-not-found-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
   /extension-points/{extension_point_name}/extensions/{extension_name}/config-schema:
     get:
       tags:
@@ -214,8 +214,6 @@ paths:
           $ref: '#/components/responses/generic-not-found-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
   /extension-points/{extension_point_name}/extensions/{extension_name}/test:
     post:
       tags:
@@ -289,67 +287,14 @@ paths:
           $ref: '#/components/responses/generic-not-found-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
 components:
   schemas:
-    paginated-response:
-      required:
-      - total
-      type: object
-      properties:
-        next_page_token:
-          type: string
-          description: Token to retrieve the next page. Absent when no more items exist.
-        total:
-          $ref: '#/components/schemas/total-count'
-      x-parent: true
-    json-schema-validation-error:
-      required:
-      - instance_location
-      - message
-      type: object
-      properties:
-        instance_location:
-          type: string
-          description: JSON Pointer to the location in the instance that failed validation
-          example: /config/port
-        evaluation_path:
-          type: string
-          description: JSON Pointer to the location in the schema during evaluation
-          example: /properties/config/properties/port
-        schema_location:
-          type: string
-          description: Schema location that generated the error
-          example: https://example.com/schemas/config#/properties/config/properties/port
-        keyword:
-          type: string
-          description: The validation keyword that failed
-          example: type
-        message:
-          type: string
-          description: Human-readable error message
-          example: Value must be a number
-      description: 'A JSON Schema validation error as per
-
-        <https://json-schema.org/draft/2020-12/json-schema-core.html#name-output-structure>.'
     test-extension-request:
       type: object
       properties:
         config:
           type: object
           additionalProperties: true
-    list-extension-points-response:
-      required:
-      - items
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/list-extension-points-response-item'
-      allOf:
-      - $ref: '#/components/schemas/paginated-response'
     json-schema-validation-problem-details:
       required:
       - errors
@@ -381,41 +326,59 @@ components:
         testable:
           type: boolean
           description: Whether the extension can be tested.
-    get-extension-config-response:
-      required:
-      - config
-      type: object
-      properties:
-        config:
-          type: object
-          additionalProperties: true
-    update-extension-config-request:
-      required:
-      - config
-      type: object
-      properties:
-        config:
-          type: object
-          additionalProperties: true
-    extension-test-check:
+    list-extension-points-response-item:
       required:
       - name
-      - status
       type: object
       properties:
         name:
           type: string
-          example: connection
-        status:
-          $ref: '#/components/schemas/extension-test-check-status'
-        message:
-          type: string
-          example: Connection failed
-    total-count-type:
+    extension-test-check-status:
       type: string
       enum:
-      - AT_LEAST
-      - EXACT
+      - PASSED
+      - FAILED
+      - SKIPPED
+    list-extension-points-response:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/list-extension-points-response-item'
+      allOf:
+      - $ref: '#/components/schemas/paginated-response'
+    json-schema-validation-error:
+      required:
+      - instance_location
+      - message
+      type: object
+      properties:
+        instance_location:
+          type: string
+          description: JSON Pointer to the location in the instance that failed validation
+          example: /config/port
+        evaluation_path:
+          type: string
+          description: JSON Pointer to the location in the schema during evaluation
+          example: /properties/config/properties/port
+        schema_location:
+          type: string
+          description: Schema location that generated the error
+          example: https://example.com/schemas/config#/properties/config/properties/port
+        keyword:
+          type: string
+          description: The validation keyword that failed
+          example: type
+        message:
+          type: string
+          description: Human-readable error message
+          example: Value must be a number
+      description: 'A JSON Schema validation error as per
+
+        <https://json-schema.org/draft/2020-12/json-schema-core.html#name-output-structure>.'
     list-extensions-response:
       required:
       - items
@@ -427,15 +390,31 @@ components:
             $ref: '#/components/schemas/list-extensions-response-item'
       allOf:
       - $ref: '#/components/schemas/paginated-response'
-    test-extension-response:
+    extension-config-schema:
       required:
-      - checks
+      - $schema
       type: object
       properties:
-        checks:
-          type: array
-          items:
-            $ref: '#/components/schemas/extension-test-check'
+        $schema:
+          type: string
+          format: uri
+      additionalProperties: true
+    update-extension-config-request:
+      required:
+      - config
+      type: object
+      properties:
+        config:
+          type: object
+          additionalProperties: true
+    get-extension-config-response:
+      required:
+      - config
+      type: object
+      properties:
+        config:
+          type: object
+          additionalProperties: true
     problem-details:
       required:
       - detail
@@ -471,28 +450,6 @@ components:
       externalDocs:
         url: https://www.rfc-editor.org/rfc/rfc9457.html
       x-parent: true
-    extension-config-schema:
-      required:
-      - $schema
-      type: object
-      properties:
-        $schema:
-          type: string
-          format: uri
-      additionalProperties: true
-    list-extension-points-response-item:
-      required:
-      - name
-      type: object
-      properties:
-        name:
-          type: string
-    extension-test-check-status:
-      type: string
-      enum:
-      - PASSED
-      - FAILED
-      - SKIPPED
     total-count:
       required:
       - count
@@ -506,35 +463,46 @@ components:
           format: int64
         type:
           $ref: '#/components/schemas/total-count-type'
+    total-count-type:
+      type: string
+      enum:
+      - AT_LEAST
+      - EXACT
+    test-extension-response:
+      required:
+      - checks
+      type: object
+      properties:
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/extension-test-check'
+    extension-test-check:
+      required:
+      - name
+      - status
+      type: object
+      properties:
+        name:
+          type: string
+          example: connection
+        status:
+          $ref: '#/components/schemas/extension-test-check-status'
+        message:
+          type: string
+          example: Connection failed
+    paginated-response:
+      required:
+      - total
+      type: object
+      properties:
+        next_page_token:
+          type: string
+          description: Token to retrieve the next page. Absent when no more items exist.
+        total:
+          $ref: '#/components/schemas/total-count'
+      x-parent: true
   responses:
-    generic-error:
-      description: Unexpected error
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-    generic-forbidden-error:
-      description: Forbidden
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-          example:
-            type: about:blank
-            status: 403
-            title: Forbidden
-            detail: Not permitted to access the requested resource.
-    generic-not-found-error:
-      description: Not found
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-          example:
-            type: about:blank
-            status: 404
-            title: Not Found
-            detail: The requested resource could not be found.
     generic-unauthorized-error:
       description: Unauthorized
       content:
@@ -546,6 +514,34 @@ components:
             status: 401
             title: Unauthorized
             detail: Not authorized to access the requested resource.
+    generic-forbidden-error:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 403
+            title: Forbidden
+            detail: Not permitted to access the requested resource.
+    generic-error:
+      description: Unexpected error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+    generic-not-found-error:
+      description: Not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 404
+            title: Not Found
+            detail: The requested resource could not be found.
   securitySchemes:
     apiKeyAuth:
       type: apiKey
@@ -561,6 +557,3 @@ components:
         `POST /api/v1/user/oidc/login`, or `POST /api/v2/oauth/token`.'
       scheme: bearer
       bearerFormat: Opaque
-x-refined-from:
-- dependency-track-openapi-v2.yaml
-- dependency-track-v2-openapi.yml

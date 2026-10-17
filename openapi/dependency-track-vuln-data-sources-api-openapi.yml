@@ -1,7 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Vuln Data Sources API
-  version: 2.0.0
+  title: OWASP Dependency-Track Vuln Data Sources API
+  description: '# REST API of OWASP Dependency-Track
+
+
+    ## Pagination
+
+
+    This API implements token-based pagination.'
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
@@ -9,7 +15,7 @@ info:
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged Vuln Data Sources across 2 of this provider''s published API definitions: dependency-track-openapi-v2.yaml, dependency-track-v2-openapi.yml. Each path carries the servers of the definition it was published in.'
+  version: 2.0.0
 servers:
 - url: /api/v2
 security:
@@ -65,8 +71,6 @@ paths:
                 $ref: '#/components/schemas/problem-details'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
   /vuln-data-sources/{name}/mirror-runs/latest:
     get:
       tags:
@@ -108,8 +112,6 @@ paths:
           $ref: '#/components/responses/generic-not-found-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
 components:
   responses:
     generic-error:
@@ -118,28 +120,6 @@ components:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/problem-details'
-    generic-not-found-error:
-      description: Not found
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-          example:
-            type: about:blank
-            status: 404
-            title: Not Found
-            detail: The requested resource could not be found.
-    generic-unauthorized-error:
-      description: Unauthorized
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-          example:
-            type: about:blank
-            status: 401
-            title: Unauthorized
-            detail: Not authorized to access the requested resource.
     generic-forbidden-error:
       description: Forbidden
       content:
@@ -151,6 +131,28 @@ components:
             status: 403
             title: Forbidden
             detail: Not permitted to access the requested resource.
+    generic-unauthorized-error:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 401
+            title: Unauthorized
+            detail: Not authorized to access the requested resource.
+    generic-not-found-error:
+      description: Not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 404
+            title: Not Found
+            detail: The requested resource could not be found.
   schemas:
     problem-details:
       required:
@@ -187,11 +189,6 @@ components:
       externalDocs:
         url: https://www.rfc-editor.org/rfc/rfc9457.html
       x-parent: true
-    timestamp:
-      type: integer
-      description: Epoch timestamp in milliseconds since January 1, 1970 UTC.
-      format: int64
-      example: 1752209050377
     vuln-data-source-mirror-status:
       required:
       - status
@@ -212,6 +209,11 @@ components:
         failure_reason:
           type: string
           description: Reason for why the mirror run failed.
+    timestamp:
+      type: integer
+      description: Epoch timestamp in milliseconds since January 1, 1970 UTC.
+      format: int64
+      example: 1752209050377
   securitySchemes:
     apiKeyAuth:
       type: apiKey
@@ -227,6 +229,3 @@ components:
         `POST /api/v1/user/oidc/login`, or `POST /api/v2/oauth/token`.'
       scheme: bearer
       bearerFormat: Opaque
-x-refined-from:
-- dependency-track-openapi-v2.yaml
-- dependency-track-v2-openapi.yml

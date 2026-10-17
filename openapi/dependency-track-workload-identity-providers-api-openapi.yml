@@ -1,7 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Workload Identity Providers API
-  version: 2.0.0
+  title: OWASP Dependency-Track Workload Identity Providers API
+  description: '# REST API of OWASP Dependency-Track
+
+
+    ## Pagination
+
+
+    This API implements token-based pagination.'
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
@@ -9,7 +15,7 @@ info:
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged Workload Identity Providers across 2 of this provider''s published API definitions: dependency-track-openapi-v2.yaml, dependency-track-v2-openapi.yml. Each path carries the servers of the definition it was published in.'
+  version: 2.0.0
 servers:
 - url: /api/v2
 security:
@@ -128,8 +134,6 @@ paths:
           $ref: '#/components/responses/generic-conflict-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
   /workload-identity-providers/{name}:
     get:
       tags:
@@ -244,79 +248,53 @@ paths:
           $ref: '#/components/responses/generic-not-found-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
 components:
   schemas:
-    paginated-response:
+    list-workload-identity-providers-response:
       required:
-      - total
+      - items
       type: object
       properties:
-        next_page_token:
-          type: string
-          description: Token to retrieve the next page. Absent when no more items exist.
-        total:
-          $ref: '#/components/schemas/total-count'
-      x-parent: true
-    workload-identity-provider:
-      required:
-      - audience
-      - created_at
-      - issuer
-      - name
-      - session_lifetime_seconds
-      - type
-      type: object
-      properties:
-        name:
-          $ref: '#/components/schemas/workload-identity-provider-name'
-        type:
-          $ref: '#/components/schemas/workload-identity-provider-type'
-        issuer:
-          maxLength: 255
-          type: string
-          description: The expected `iss` claim for `OIDC` providers, or the SPIFFE trust domain for `SPIFFE` providers.
-          example: https://token.actions.githubusercontent.com
-        audience:
-          maxLength: 255
-          type: string
-          description: The value that the token's `aud` claim must contain.
-          example: https://dependency-track.example.com
-        jwks_url:
-          maxLength: 2048
-          type: string
-          description: The URL the signing keys are fetched from. For `OIDC` providers, this is the `jwks_uri` resolved from the issuer's discovery document. Absent when the keys were provided inline.
-        jwks_key_ids:
-          maxItems: 64
+        items:
           type: array
-          description: The key IDs of the inline key set. Absent when the keys are fetched from a URL.
           items:
-            maxLength: 255
-            type: string
-        session_lifetime_seconds:
-          maximum: 86400
-          minimum: 60
-          type: integer
-          description: The lifetime of sessions created through this provider, unless a binding sets its own.
-          format: int32
-          example: 3600
-        created_at:
-          $ref: '#/components/schemas/timestamp'
-    constraint-violation-error:
+            $ref: '#/components/schemas/workload-identity-provider'
+      allOf:
+      - $ref: '#/components/schemas/paginated-response'
+    workload-identity-provider-name:
+      maxLength: 63
+      pattern: ^[a-zA-Z0-9][a-zA-Z0-9_-]*$
+      type: string
+      description: The name of the workload identity provider.
+      example: github-actions
+    timestamp:
+      type: integer
+      description: Epoch timestamp in milliseconds since January 1, 1970 UTC.
+      format: int64
+      example: 1752209050377
+    invalid-request-problem-details:
       required:
-      - message
+      - errors
       type: object
       properties:
-        path:
-          type: string
-          description: Path to the invalid field in the request
-        value:
-          type: string
-          description: The invalid value
-        message:
-          type: string
-          description: Message explaining the error
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/constraint-violation-error'
+      allOf:
+      - $ref: '#/components/schemas/problem-details'
+    workload-identity-provider-type:
+      type: string
+      description: 'The type of issuer the provider trusts.
+
+
+        * `OIDC`: an OpenID Connect issuer. Tokens must carry an `iss` claim equal to the provider''s issuer.
+
+        * `SPIFFE`: a SPIFFE trust domain. The `iss` claim is ignored, and `sub` must be a SPIFFE ID of that trust domain.'
+      example: OIDC
+      enum:
+      - OIDC
+      - SPIFFE
     create-workload-identity-provider-request:
       required:
       - audience
@@ -356,85 +334,6 @@ components:
           format: int32
           example: 3600
           default: 3600
-    timestamp:
-      type: integer
-      description: Epoch timestamp in milliseconds since January 1, 1970 UTC.
-      format: int64
-      example: 1752209050377
-    update-workload-identity-provider-request:
-      type: object
-      properties:
-        issuer:
-          maxLength: 255
-          type: string
-          description: The expected `iss` claim for `OIDC` providers, or the SPIFFE trust domain for `SPIFFE` providers, such as `example.org`.
-          example: https://token.actions.githubusercontent.com
-        audience:
-          maxLength: 255
-          type: string
-          description: The value that the token's `aud` claim must contain.
-          example: https://dependency-track.example.com
-        jwks_url:
-          maxLength: 2048
-          type: string
-          description: The URL to fetch the signing keys from. Must be `https`.
-          example: https://example.org/keys
-        jwks:
-          type: object
-          additionalProperties: true
-          description: An RFC 7517 JSON Web Key Set holding the issuer's public signing keys.
-        session_lifetime_seconds:
-          maximum: 86400
-          minimum: 60
-          type: integer
-          description: The lifetime of sessions created through this provider, unless a binding sets its own.
-          format: int32
-          example: 3600
-    workload-identity-provider-type:
-      type: string
-      description: 'The type of issuer the provider trusts.
-
-
-        * `OIDC`: an OpenID Connect issuer. Tokens must carry an `iss` claim equal to the provider''s issuer.
-
-        * `SPIFFE`: a SPIFFE trust domain. The `iss` claim is ignored, and `sub` must be a SPIFFE ID of that trust domain.'
-      example: OIDC
-      enum:
-      - OIDC
-      - SPIFFE
-    invalid-request-problem-details:
-      required:
-      - errors
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/constraint-violation-error'
-      allOf:
-      - $ref: '#/components/schemas/problem-details'
-    list-workload-identity-providers-response:
-      required:
-      - items
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/workload-identity-provider'
-      allOf:
-      - $ref: '#/components/schemas/paginated-response'
-    total-count-type:
-      type: string
-      enum:
-      - AT_LEAST
-      - EXACT
-    workload-identity-provider-name:
-      maxLength: 63
-      pattern: ^[a-zA-Z0-9][a-zA-Z0-9_-]*$
-      type: string
-      description: The name of the workload identity provider.
-      example: github-actions
     problem-details:
       required:
       - detail
@@ -483,7 +382,132 @@ components:
           format: int64
         type:
           $ref: '#/components/schemas/total-count-type'
+    total-count-type:
+      type: string
+      enum:
+      - AT_LEAST
+      - EXACT
+    update-workload-identity-provider-request:
+      type: object
+      properties:
+        issuer:
+          maxLength: 255
+          type: string
+          description: The expected `iss` claim for `OIDC` providers, or the SPIFFE trust domain for `SPIFFE` providers, such as `example.org`.
+          example: https://token.actions.githubusercontent.com
+        audience:
+          maxLength: 255
+          type: string
+          description: The value that the token's `aud` claim must contain.
+          example: https://dependency-track.example.com
+        jwks_url:
+          maxLength: 2048
+          type: string
+          description: The URL to fetch the signing keys from. Must be `https`.
+          example: https://example.org/keys
+        jwks:
+          type: object
+          additionalProperties: true
+          description: An RFC 7517 JSON Web Key Set holding the issuer's public signing keys.
+        session_lifetime_seconds:
+          maximum: 86400
+          minimum: 60
+          type: integer
+          description: The lifetime of sessions created through this provider, unless a binding sets its own.
+          format: int32
+          example: 3600
+    constraint-violation-error:
+      required:
+      - message
+      type: object
+      properties:
+        path:
+          type: string
+          description: Path to the invalid field in the request
+        value:
+          type: string
+          description: The invalid value
+        message:
+          type: string
+          description: Message explaining the error
+    workload-identity-provider:
+      required:
+      - audience
+      - created_at
+      - issuer
+      - name
+      - session_lifetime_seconds
+      - type
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/workload-identity-provider-name'
+        type:
+          $ref: '#/components/schemas/workload-identity-provider-type'
+        issuer:
+          maxLength: 255
+          type: string
+          description: The expected `iss` claim for `OIDC` providers, or the SPIFFE trust domain for `SPIFFE` providers.
+          example: https://token.actions.githubusercontent.com
+        audience:
+          maxLength: 255
+          type: string
+          description: The value that the token's `aud` claim must contain.
+          example: https://dependency-track.example.com
+        jwks_url:
+          maxLength: 2048
+          type: string
+          description: The URL the signing keys are fetched from. For `OIDC` providers, this is the `jwks_uri` resolved from the issuer's discovery document. Absent when the keys were provided inline.
+        jwks_key_ids:
+          maxItems: 64
+          type: array
+          description: The key IDs of the inline key set. Absent when the keys are fetched from a URL.
+          items:
+            maxLength: 255
+            type: string
+        session_lifetime_seconds:
+          maximum: 86400
+          minimum: 60
+          type: integer
+          description: The lifetime of sessions created through this provider, unless a binding sets its own.
+          format: int32
+          example: 3600
+        created_at:
+          $ref: '#/components/schemas/timestamp'
+    paginated-response:
+      required:
+      - total
+      type: object
+      properties:
+        next_page_token:
+          type: string
+          description: Token to retrieve the next page. Absent when no more items exist.
+        total:
+          $ref: '#/components/schemas/total-count'
+      x-parent: true
   responses:
+    generic-unauthorized-error:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 401
+            title: Unauthorized
+            detail: Not authorized to access the requested resource.
+    generic-forbidden-error:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 403
+            title: Forbidden
+            detail: Not permitted to access the requested resource.
     generic-error:
       description: Unexpected error
       content:
@@ -505,28 +529,6 @@ components:
             - path: foo.bar
               value: baz
               message: Must be a number
-    generic-forbidden-error:
-      description: Forbidden
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-          example:
-            type: about:blank
-            status: 403
-            title: Forbidden
-            detail: Not permitted to access the requested resource.
-    generic-conflict-error:
-      description: Forbidden
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-          example:
-            type: about:blank
-            status: 409
-            title: Conflict
-            detail: The resource already exists.
     generic-not-found-error:
       description: Not found
       content:
@@ -538,17 +540,17 @@ components:
             status: 404
             title: Not Found
             detail: The requested resource could not be found.
-    generic-unauthorized-error:
-      description: Unauthorized
+    generic-conflict-error:
+      description: Forbidden
       content:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/problem-details'
           example:
             type: about:blank
-            status: 401
-            title: Unauthorized
-            detail: Not authorized to access the requested resource.
+            status: 409
+            title: Conflict
+            detail: The resource already exists.
   securitySchemes:
     apiKeyAuth:
       type: apiKey
@@ -564,6 +566,3 @@ components:
         `POST /api/v1/user/oidc/login`, or `POST /api/v2/oauth/token`.'
       scheme: bearer
       bearerFormat: Opaque
-x-refined-from:
-- dependency-track-openapi-v2.yaml
-- dependency-track-v2-openapi.yml

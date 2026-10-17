@@ -1,7 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Vuln Policies API
-  version: 2.0.0
+  title: OWASP Dependency-Track Vuln Policies API
+  description: '# REST API of OWASP Dependency-Track
+
+
+    ## Pagination
+
+
+    This API implements token-based pagination.'
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
@@ -9,7 +15,7 @@ info:
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged Vuln Policies across 2 of this provider''s published API definitions: dependency-track-openapi-v2.yaml, dependency-track-v2-openapi.yml. Each path carries the servers of the definition it was published in.'
+  version: 2.0.0
 servers:
 - url: /api/v2
 security:
@@ -125,8 +131,6 @@ paths:
           $ref: '#/components/responses/generic-conflict-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
   /vuln-policies/{uuid}:
     get:
       tags:
@@ -242,8 +246,6 @@ paths:
           $ref: '#/components/responses/generic-not-found-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
   /vuln-policy-bundles:
     get:
       tags:
@@ -267,8 +269,6 @@ paths:
           $ref: '#/components/responses/generic-forbidden-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
   /vuln-policy-bundles/{uuid}:
     delete:
       tags:
@@ -301,8 +301,6 @@ paths:
           $ref: '#/components/responses/generic-not-found-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
   /vuln-policy-bundles/{uuid}/sync-runs:
     post:
       tags:
@@ -350,8 +348,6 @@ paths:
                 $ref: '#/components/schemas/problem-details'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
   /vuln-policy-bundles/{uuid}/sync-runs/latest:
     get:
       tags:
@@ -394,270 +390,8 @@ paths:
           $ref: '#/components/responses/generic-not-found-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
 components:
   schemas:
-    paginated-response:
-      required:
-      - total
-      type: object
-      properties:
-        next_page_token:
-          type: string
-          description: Token to retrieve the next page. Absent when no more items exist.
-        total:
-          $ref: '#/components/schemas/total-count'
-      x-parent: true
-    constraint-violation-error:
-      required:
-      - message
-      type: object
-      properties:
-        path:
-          type: string
-          description: Path to the invalid field in the request
-        value:
-          type: string
-          description: The invalid value
-        message:
-          type: string
-          description: Message explaining the error
-    list-vuln-policies-response-item:
-      required:
-      - name
-      - operation_mode
-      - priority
-      - source
-      - uuid
-      type: object
-      properties:
-        uuid:
-          type: string
-          format: uuid
-        name:
-          type: string
-        description:
-          type: string
-        author:
-          type: string
-        priority:
-          type: integer
-          format: int32
-        operation_mode:
-          $ref: '#/components/schemas/vuln-policy-operation-mode'
-        source:
-          $ref: '#/components/schemas/vuln-policy-source'
-    list-vuln-policies-response:
-      required:
-      - items
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/list-vuln-policies-response-item'
-      allOf:
-      - $ref: '#/components/schemas/paginated-response'
-    list-vuln-policy-bundles-response-item:
-      required:
-      - url
-      - uuid
-      type: object
-      properties:
-        uuid:
-          type: string
-          format: uuid
-        url:
-          type: string
-        hash:
-          type: string
-        last_successful_sync:
-          $ref: '#/components/schemas/timestamp'
-        created:
-          $ref: '#/components/schemas/timestamp'
-        updated:
-          $ref: '#/components/schemas/timestamp'
-    timestamp:
-      type: integer
-      description: Epoch timestamp in milliseconds since January 1, 1970 UTC.
-      format: int64
-      example: 1752209050377
-    vuln-policy-operation-mode:
-      type: string
-      enum:
-      - DISABLED
-      - APPLY
-      - LOG
-    vuln-policy-analysis:
-      required:
-      - state
-      type: object
-      properties:
-        state:
-          type: string
-          enum:
-          - EXPLOITABLE
-          - IN_TRIAGE
-          - FALSE_POSITIVE
-          - NOT_AFFECTED
-          - RESOLVED
-        justification:
-          type: string
-          enum:
-          - CODE_NOT_PRESENT
-          - CODE_NOT_REACHABLE
-          - REQUIRES_CONFIGURATION
-          - REQUIRES_DEPENDENCY
-          - REQUIRES_ENVIRONMENT
-          - PROTECTED_BY_COMPILER
-          - PROTECTED_AT_RUNTIME
-          - PROTECTED_AT_PERIMETER
-          - PROTECTED_BY_MITIGATING_CONTROL
-        vendor_response:
-          type: string
-          enum:
-          - CAN_NOT_FIX
-          - WILL_NOT_FIX
-          - UPDATE
-          - ROLLBACK
-          - WORKAROUND_AVAILABLE
-        details:
-          type: string
-        suppress:
-          type: boolean
-          default: false
-    vuln-policy-source:
-      type: string
-      enum:
-      - USER
-      - BUNDLE
-    invalid-request-problem-details:
-      required:
-      - errors
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/constraint-violation-error'
-      allOf:
-      - $ref: '#/components/schemas/problem-details'
-    total-count-type:
-      type: string
-      enum:
-      - AT_LEAST
-      - EXACT
-    vuln-policy-rating:
-      required:
-      - method
-      - severity
-      type: object
-      properties:
-        method:
-          type: string
-          enum:
-          - CVSSV2
-          - CVSSV3
-          - CVSSV4
-          - OWASP
-        severity:
-          type: string
-          enum:
-          - CRITICAL
-          - HIGH
-          - MEDIUM
-          - LOW
-          - INFO
-        vector:
-          type: string
-        score:
-          type: number
-          format: double
-    vuln-policy-bundle-sync-status:
-      required:
-      - status
-      type: object
-      properties:
-        status:
-          type: string
-          description: Status of the synchronization.
-          enum:
-          - PENDING
-          - RUNNING
-          - COMPLETED
-          - FAILED
-        started_at:
-          $ref: '#/components/schemas/timestamp'
-        completed_at:
-          $ref: '#/components/schemas/timestamp'
-        failure_reason:
-          type: string
-          description: Reason for why the synchronization failed.
-    invalid-cel-expression-problem-details:
-      required:
-      - errors
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/cel-expression-error'
-      allOf:
-      - $ref: '#/components/schemas/problem-details'
-    problem-details:
-      required:
-      - detail
-      - title
-      - type
-      type: object
-      properties:
-        type:
-          type: string
-          description: A URI reference that identifies the problem type
-          format: uri-reference
-          default: about:blank
-        status:
-          maximum: 599
-          minimum: 400
-          type: integer
-          description: HTTP status code generated by the origin server for this occurrence of the problem
-          format: int32
-          example: 500
-        title:
-          maxLength: 255
-          type: string
-          description: Short, human-readable summary of the problem type
-        detail:
-          maxLength: 1024
-          type: string
-          description: Human-readable explanation specific to this occurrence of the problem
-        instance:
-          type: string
-          description: Reference URI that identifies the specific occurrence of the problem
-          format: uri-reference
-      description: An RFC 9457 problem object.
-      externalDocs:
-        url: https://www.rfc-editor.org/rfc/rfc9457.html
-      x-parent: true
-    cel-expression-error:
-      required:
-      - column
-      - line
-      - message
-      type: object
-      properties:
-        line:
-          type: integer
-          description: Line number where the error occurred
-          format: int32
-        column:
-          type: integer
-          description: Column number where the error occurred
-          format: int32
-        message:
-          type: string
-          description: Description of the error
     update-vuln-policy-request:
       required:
       - analysis
@@ -698,17 +432,6 @@ components:
           $ref: '#/components/schemas/timestamp'
         valid_until:
           $ref: '#/components/schemas/timestamp'
-    list-vuln-policy-bundles-response:
-      required:
-      - items
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/list-vuln-policy-bundles-response-item'
-      allOf:
-      - $ref: '#/components/schemas/paginated-response'
     create-vuln-policy-request:
       required:
       - analysis
@@ -749,19 +472,102 @@ components:
           $ref: '#/components/schemas/timestamp'
         valid_until:
           $ref: '#/components/schemas/timestamp'
-    total-count:
+    list-vuln-policies-response-item:
       required:
-      - count
-      - type
+      - name
+      - operation_mode
+      - priority
+      - source
+      - uuid
       type: object
       properties:
-        count:
-          minimum: 0
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        author:
+          type: string
+        priority:
           type: integer
-          description: The total number of records across all pages. Might be an exact count, or a lower bound. Refer to the `type` field for the applicable semantics.
-          format: int64
-        type:
-          $ref: '#/components/schemas/total-count-type'
+          format: int32
+        operation_mode:
+          $ref: '#/components/schemas/vuln-policy-operation-mode'
+        source:
+          $ref: '#/components/schemas/vuln-policy-source'
+    list-vuln-policy-bundles-response-item:
+      required:
+      - url
+      - uuid
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        url:
+          type: string
+        hash:
+          type: string
+        last_successful_sync:
+          $ref: '#/components/schemas/timestamp'
+        created:
+          $ref: '#/components/schemas/timestamp'
+        updated:
+          $ref: '#/components/schemas/timestamp'
+    list-vuln-policies-response:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/list-vuln-policies-response-item'
+      allOf:
+      - $ref: '#/components/schemas/paginated-response'
+    timestamp:
+      type: integer
+      description: Epoch timestamp in milliseconds since January 1, 1970 UTC.
+      format: int64
+      example: 1752209050377
+    vuln-policy-bundle-sync-status:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of the synchronization.
+          enum:
+          - PENDING
+          - RUNNING
+          - COMPLETED
+          - FAILED
+        started_at:
+          $ref: '#/components/schemas/timestamp'
+        completed_at:
+          $ref: '#/components/schemas/timestamp'
+        failure_reason:
+          type: string
+          description: Reason for why the synchronization failed.
+    vuln-policy-source:
+      type: string
+      enum:
+      - USER
+      - BUNDLE
+    invalid-request-problem-details:
+      required:
+      - errors
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/constraint-violation-error'
+      allOf:
+      - $ref: '#/components/schemas/problem-details'
     get-vuln-policy-response:
       required:
       - analysis
@@ -808,7 +614,223 @@ components:
           $ref: '#/components/schemas/timestamp'
         updated:
           $ref: '#/components/schemas/timestamp'
+    cel-expression-error:
+      required:
+      - column
+      - line
+      - message
+      type: object
+      properties:
+        line:
+          type: integer
+          description: Line number where the error occurred
+          format: int32
+        column:
+          type: integer
+          description: Column number where the error occurred
+          format: int32
+        message:
+          type: string
+          description: Description of the error
+    list-vuln-policy-bundles-response:
+      required:
+      - items
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/list-vuln-policy-bundles-response-item'
+      allOf:
+      - $ref: '#/components/schemas/paginated-response'
+    vuln-policy-analysis:
+      required:
+      - state
+      type: object
+      properties:
+        state:
+          type: string
+          enum:
+          - EXPLOITABLE
+          - IN_TRIAGE
+          - FALSE_POSITIVE
+          - NOT_AFFECTED
+          - RESOLVED
+        justification:
+          type: string
+          enum:
+          - CODE_NOT_PRESENT
+          - CODE_NOT_REACHABLE
+          - REQUIRES_CONFIGURATION
+          - REQUIRES_DEPENDENCY
+          - REQUIRES_ENVIRONMENT
+          - PROTECTED_BY_COMPILER
+          - PROTECTED_AT_RUNTIME
+          - PROTECTED_AT_PERIMETER
+          - PROTECTED_BY_MITIGATING_CONTROL
+        vendor_response:
+          type: string
+          enum:
+          - CAN_NOT_FIX
+          - WILL_NOT_FIX
+          - UPDATE
+          - ROLLBACK
+          - WORKAROUND_AVAILABLE
+        details:
+          type: string
+        suppress:
+          type: boolean
+          default: false
+    problem-details:
+      required:
+      - detail
+      - title
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+          format: uri-reference
+          default: about:blank
+        status:
+          maximum: 599
+          minimum: 400
+          type: integer
+          description: HTTP status code generated by the origin server for this occurrence of the problem
+          format: int32
+          example: 500
+        title:
+          maxLength: 255
+          type: string
+          description: Short, human-readable summary of the problem type
+        detail:
+          maxLength: 1024
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          description: Reference URI that identifies the specific occurrence of the problem
+          format: uri-reference
+      description: An RFC 9457 problem object.
+      externalDocs:
+        url: https://www.rfc-editor.org/rfc/rfc9457.html
+      x-parent: true
+    vuln-policy-rating:
+      required:
+      - method
+      - severity
+      type: object
+      properties:
+        method:
+          type: string
+          enum:
+          - CVSSV2
+          - CVSSV3
+          - CVSSV4
+          - OWASP
+        severity:
+          type: string
+          enum:
+          - CRITICAL
+          - HIGH
+          - MEDIUM
+          - LOW
+          - INFO
+        vector:
+          type: string
+        score:
+          type: number
+          format: double
+    total-count:
+      required:
+      - count
+      - type
+      type: object
+      properties:
+        count:
+          minimum: 0
+          type: integer
+          description: The total number of records across all pages. Might be an exact count, or a lower bound. Refer to the `type` field for the applicable semantics.
+          format: int64
+        type:
+          $ref: '#/components/schemas/total-count-type'
+    total-count-type:
+      type: string
+      enum:
+      - AT_LEAST
+      - EXACT
+    vuln-policy-operation-mode:
+      type: string
+      enum:
+      - DISABLED
+      - APPLY
+      - LOG
+    constraint-violation-error:
+      required:
+      - message
+      type: object
+      properties:
+        path:
+          type: string
+          description: Path to the invalid field in the request
+        value:
+          type: string
+          description: The invalid value
+        message:
+          type: string
+          description: Message explaining the error
+    paginated-response:
+      required:
+      - total
+      type: object
+      properties:
+        next_page_token:
+          type: string
+          description: Token to retrieve the next page. Absent when no more items exist.
+        total:
+          $ref: '#/components/schemas/total-count'
+      x-parent: true
+    invalid-cel-expression-problem-details:
+      required:
+      - errors
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/cel-expression-error'
+      allOf:
+      - $ref: '#/components/schemas/problem-details'
   responses:
+    generic-unauthorized-error:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 401
+            title: Unauthorized
+            detail: Not authorized to access the requested resource.
+    generic-forbidden-error:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 403
+            title: Forbidden
+            detail: Not permitted to access the requested resource.
+    generic-error:
+      description: Unexpected error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
     invalid-request-error:
       description: Bad request
       content:
@@ -824,34 +846,6 @@ components:
             - path: foo.bar
               value: baz
               message: Must be a number
-    generic-error:
-      description: Unexpected error
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-    generic-forbidden-error:
-      description: Forbidden
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-          example:
-            type: about:blank
-            status: 403
-            title: Forbidden
-            detail: Not permitted to access the requested resource.
-    generic-conflict-error:
-      description: Forbidden
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-          example:
-            type: about:blank
-            status: 409
-            title: Conflict
-            detail: The resource already exists.
     generic-not-found-error:
       description: Not found
       content:
@@ -863,17 +857,17 @@ components:
             status: 404
             title: Not Found
             detail: The requested resource could not be found.
-    generic-unauthorized-error:
-      description: Unauthorized
+    generic-conflict-error:
+      description: Forbidden
       content:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/problem-details'
           example:
             type: about:blank
-            status: 401
-            title: Unauthorized
-            detail: Not authorized to access the requested resource.
+            status: 409
+            title: Conflict
+            detail: The resource already exists.
   securitySchemes:
     apiKeyAuth:
       type: apiKey
@@ -889,6 +883,3 @@ components:
         `POST /api/v1/user/oidc/login`, or `POST /api/v2/oauth/token`.'
       scheme: bearer
       bearerFormat: Opaque
-x-refined-from:
-- dependency-track-openapi-v2.yaml
-- dependency-track-v2-openapi.yml

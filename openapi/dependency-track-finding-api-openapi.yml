@@ -1,14 +1,21 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Finding API
-  version: 1.0.0
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
+  description: 'REST API of OWASP Dependency-Track
+
+
+    > **Note:** This API version is in maintenance mode and will be
+
+    > superseded by v2, available under `/api/v2`, which follows a
+
+    > spec-first approach.'
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged finding across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+  title: OWASP Dependency-Track Finding API
+  version: 1.0.0
 servers:
 - url: /api
 tags:
@@ -205,8 +212,6 @@ paths:
       summary: Returns a list of all findings
       tags:
       - finding
-    servers:
-    - url: /api
   /v1/finding/grouped:
     get:
       description: Requires permission VIEW_VULNERABILITY
@@ -383,8 +388,6 @@ paths:
       summary: Returns a list of all findings grouped by vulnerability
       tags:
       - finding
-    servers:
-    - url: /api
   /v1/finding/project/{uuid}:
     get:
       description: Requires permission VIEW_VULNERABILITY
@@ -534,8 +537,6 @@ paths:
       summary: Returns a list of all findings for a specific project or generates SARIF file…
       tags:
       - finding
-    servers:
-    - url: /api
   /v1/finding/project/{uuid}/analyze:
     post:
       description: Requires permission VULNERABILITY_ANALYSIS
@@ -571,8 +572,6 @@ paths:
       summary: Triggers Vulnerability Analysis on a specific project
       tags:
       - finding
-    servers:
-    - url: /api
   /v1/finding/project/{uuid}/export:
     get:
       description: Requires permission VIEW_VULNERABILITY
@@ -608,10 +607,29 @@ paths:
       summary: Returns the findings for the specified project as FPF
       tags:
       - finding
-    servers:
-    - url: /api
 components:
   schemas:
+    Finding:
+      type: object
+      properties:
+        analysis:
+          type: object
+          additionalProperties:
+            type: object
+        attribution:
+          type: object
+          additionalProperties:
+            type: object
+        component:
+          type: object
+          additionalProperties:
+            type: object
+        matrix:
+          type: string
+        vulnerability:
+          type: object
+          additionalProperties:
+            type: object
     BomUploadResponse:
       type: object
       properties:
@@ -657,27 +675,6 @@ components:
       - detail
       - status
       - title
-    Finding:
-      type: object
-      properties:
-        analysis:
-          type: object
-          additionalProperties:
-            type: object
-        attribution:
-          type: object
-          additionalProperties:
-            type: object
-        component:
-          type: object
-          additionalProperties:
-            type: object
-        matrix:
-          type: string
-        vulnerability:
-          type: object
-          additionalProperties:
-            type: object
   headers:
     TotalCountType:
       description: Whether `X-Total-Count` is exact (`EXACT`) or a lower bound (`AT_LEAST`). `AT_LEAST` with a count of 0 means the total is unknown.
@@ -701,6 +698,3 @@ components:
         `POST /api/v1/user/oidc/login`.'
       scheme: bearer
       type: http
-x-refined-from:
-- dependency-track-openapi-v1.yaml
-- dependency-track-openapi.yml

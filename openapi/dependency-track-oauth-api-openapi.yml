@@ -1,7 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track OAuth API
-  version: 2.0.0
+  title: OWASP Dependency-Track OAuth API
+  description: '# REST API of OWASP Dependency-Track
+
+
+    ## Pagination
+
+
+    This API implements token-based pagination.'
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
@@ -9,7 +15,7 @@ info:
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged OAuth across 2 of this provider''s published API definitions: dependency-track-openapi-v2.yaml, dependency-track-v2-openapi.yml. Each path carries the servers of the definition it was published in.'
+  version: 2.0.0
 servers:
 - url: /api/v2
 security:
@@ -90,8 +96,6 @@ paths:
         default:
           $ref: '#/components/responses/generic-error'
       security: []
-    servers:
-    - url: /api/v2
 components:
   responses:
     generic-error:
@@ -101,35 +105,6 @@ components:
           schema:
             $ref: '#/components/schemas/problem-details'
   schemas:
-    create-oauth-token-response:
-      required:
-      - access_token
-      - expires_in
-      - issued_token_type
-      - token_type
-      type: object
-      properties:
-        access_token:
-          maxLength: 8192
-          type: string
-          description: An access token.
-        issued_token_type:
-          maxLength: 64
-          type: string
-          description: Always `urn:ietf:params:oauth:token-type:access_token`.
-          example: urn:ietf:params:oauth:token-type:access_token
-        token_type:
-          maxLength: 32
-          type: string
-          description: Always `Bearer`.
-          example: Bearer
-        expires_in:
-          maximum: 86400
-          minimum: 60
-          type: integer
-          description: How many seconds the access token is valid for. For token exchange, this is the workload identity provider's `session_lifetime_seconds`.
-          format: int32
-          example: 3600
     problem-details:
       required:
       - detail
@@ -165,12 +140,6 @@ components:
       externalDocs:
         url: https://www.rfc-editor.org/rfc/rfc9457.html
       x-parent: true
-    workload-identity-provider-name:
-      maxLength: 63
-      pattern: ^[a-zA-Z0-9][a-zA-Z0-9_-]*$
-      type: string
-      description: The name of the workload identity provider.
-      example: github-actions
     create-oauth-token-request:
       required:
       - grant_type
@@ -219,6 +188,41 @@ components:
           maxLength: 256
           type: string
           description: A short, generic description of the error.
+    create-oauth-token-response:
+      required:
+      - access_token
+      - expires_in
+      - issued_token_type
+      - token_type
+      type: object
+      properties:
+        access_token:
+          maxLength: 8192
+          type: string
+          description: An access token.
+        issued_token_type:
+          maxLength: 64
+          type: string
+          description: Always `urn:ietf:params:oauth:token-type:access_token`.
+          example: urn:ietf:params:oauth:token-type:access_token
+        token_type:
+          maxLength: 32
+          type: string
+          description: Always `Bearer`.
+          example: Bearer
+        expires_in:
+          maximum: 86400
+          minimum: 60
+          type: integer
+          description: How many seconds the access token is valid for. For token exchange, this is the workload identity provider's `session_lifetime_seconds`.
+          format: int32
+          example: 3600
+    workload-identity-provider-name:
+      maxLength: 63
+      pattern: ^[a-zA-Z0-9][a-zA-Z0-9_-]*$
+      type: string
+      description: The name of the workload identity provider.
+      example: github-actions
   securitySchemes:
     apiKeyAuth:
       type: apiKey
@@ -234,6 +238,3 @@ components:
         `POST /api/v1/user/oidc/login`, or `POST /api/v2/oauth/token`.'
       scheme: bearer
       bearerFormat: Opaque
-x-refined-from:
-- dependency-track-openapi-v2.yaml
-- dependency-track-v2-openapi.yml

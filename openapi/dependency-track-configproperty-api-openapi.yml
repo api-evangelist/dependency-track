@@ -1,14 +1,21 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Config Property API
-  version: 1.0.0
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
+  description: 'REST API of OWASP Dependency-Track
+
+
+    > **Note:** This API version is in maintenance mode and will be
+
+    > superseded by v2, available under `/api/v2`, which follows a
+
+    > spec-first approach.'
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged configProperty across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+  title: OWASP Dependency-Track Config Property API
+  version: 1.0.0
 servers:
 - url: /api
 tags:
@@ -60,8 +67,6 @@ paths:
       summary: Updates a config property
       tags:
       - configProperty
-    servers:
-    - url: /api
   /v1/configProperty/aggregate:
     post:
       description: Requires permission SYSTEM_CONFIGURATION or SYSTEM_CONFIGURATION_UPDATE
@@ -93,8 +98,6 @@ paths:
       summary: Updates an array of config properties
       tags:
       - configProperty
-    servers:
-    - url: /api
   /v1/configProperty/internal/{groupName}/{propertyName}:
     get:
       description: 'Requires authentication, but no permission.
@@ -133,8 +136,6 @@ paths:
       summary: Returns an internal ConfigProperty
       tags:
       - configProperty
-    servers:
-    - url: /api
   /v1/configProperty/public/{groupName}/{propertyName}:
     get:
       description: ''
@@ -169,10 +170,30 @@ paths:
       summary: Returns a public ConfigProperty
       tags:
       - configProperty
-    servers:
-    - url: /api
 components:
   schemas:
+    UpdateConfigPropertyRequest:
+      type: object
+      properties:
+        groupName:
+          type: string
+          description: Group the property belongs to
+          maxLength: 255
+          minLength: 1
+          pattern: \P{Cc}+
+        propertyName:
+          type: string
+          description: Name of the property
+          maxLength: 255
+          minLength: 1
+          pattern: \P{Cc}+
+        propertyValue:
+          type: string
+          description: Value of the property
+          pattern: \P{Cc}+
+      required:
+      - groupName
+      - propertyName
     ConfigPropertyResponse:
       type: object
       properties:
@@ -203,28 +224,6 @@ components:
       - groupName
       - propertyName
       - propertyType
-    UpdateConfigPropertyRequest:
-      type: object
-      properties:
-        groupName:
-          type: string
-          description: Group the property belongs to
-          maxLength: 255
-          minLength: 1
-          pattern: \P{Cc}+
-        propertyName:
-          type: string
-          description: Name of the property
-          maxLength: 255
-          minLength: 1
-          pattern: \P{Cc}+
-        propertyValue:
-          type: string
-          description: Value of the property
-          pattern: \P{Cc}+
-      required:
-      - groupName
-      - propertyName
   securitySchemes:
     ApiKeyAuth:
       description: Authentication via API key.
@@ -240,6 +239,3 @@ components:
         `POST /api/v1/user/oidc/login`.'
       scheme: bearer
       type: http
-x-refined-from:
-- dependency-track-openapi-v1.yaml
-- dependency-track-openapi.yml

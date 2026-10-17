@@ -1,14 +1,21 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Repository API
-  version: 1.0.0
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
+  description: 'REST API of OWASP Dependency-Track
+
+
+    > **Note:** This API version is in maintenance mode and will be
+
+    > superseded by v2, available under `/api/v2`, which follows a
+
+    > spec-first approach.'
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged repository across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+  title: OWASP Dependency-Track Repository API
+  version: 1.0.0
 servers:
 - url: /api
 tags:
@@ -126,8 +133,6 @@ paths:
       summary: Creates a new repository
       tags:
       - Repository
-    servers:
-    - url: /api
   /v1/repository/latest:
     get:
       operationId: getRepositoryMetaComponent
@@ -159,8 +164,6 @@ paths:
       summary: Attempts to resolve the latest version of the component available in the…
       tags:
       - Repository
-    servers:
-    - url: /api
   /v1/repository/{type}:
     get:
       description: Requires permission SYSTEM_CONFIGURATION or SYSTEM_CONFIGURATION_READ
@@ -244,8 +247,6 @@ paths:
       summary: Returns repositories that support the specific type
       tags:
       - Repository
-    servers:
-    - url: /api
   /v1/repository/{uuid}:
     delete:
       description: Requires permission SYSTEM_CONFIGURATION or SYSTEM_CONFIGURATION_DELETE
@@ -271,10 +272,97 @@ paths:
       summary: Deletes a repository
       tags:
       - Repository
-    servers:
-    - url: /api
 components:
   schemas:
+    UpdateRepositoryRequest:
+      type: object
+      properties:
+        authenticationRequired:
+          type: boolean
+          description: Whether the repository requires authentication
+        enabled:
+          type: boolean
+          description: Whether the repository is enabled
+        internal:
+          type: boolean
+          description: Whether the repository is internal to the organization
+        password:
+          type: string
+          description: Name of the secret holding the password or token
+        url:
+          type: string
+          description: URL of the repository
+          minLength: 1
+        username:
+          type: string
+          description: Username to authenticate with
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the repository to update
+      required:
+      - authenticationRequired
+      - enabled
+      - url
+      - uuid
+    RepositoryResponse:
+      type: object
+      properties:
+        authenticationRequired:
+          type: boolean
+          description: Whether the repository requires authentication
+        enabled:
+          type: boolean
+          description: Whether the repository is enabled
+        identifier:
+          type: string
+          description: Unique identifier of the repository within its type
+        internal:
+          type: boolean
+          description: Whether the repository is internal to the organization
+        password:
+          type: string
+          description: Name of the secret holding the password or token
+        resolutionOrder:
+          type: integer
+          format: int32
+          description: Order in which the repository is queried during version resolution
+        type:
+          type: string
+          description: Type of the repository
+          enum:
+          - MAVEN
+          - NPM
+          - GEM
+          - PYPI
+          - NUGET
+          - HEX
+          - COMPOSER
+          - CARGO
+          - GO_MODULES
+          - CPAN
+          - GITHUB
+          - HACKAGE
+          - NIXPKGS
+          - UNSUPPORTED
+        url:
+          type: string
+          description: URL of the repository
+        username:
+          type: string
+          description: Username to authenticate with
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the repository
+      required:
+      - authenticationRequired
+      - enabled
+      - identifier
+      - resolutionOrder
+      - type
+      - url
+      - uuid
     RepositoryMetaComponent:
       type: object
       properties:
@@ -359,95 +447,6 @@ components:
       - identifier
       - type
       - url
-    RepositoryResponse:
-      type: object
-      properties:
-        authenticationRequired:
-          type: boolean
-          description: Whether the repository requires authentication
-        enabled:
-          type: boolean
-          description: Whether the repository is enabled
-        identifier:
-          type: string
-          description: Unique identifier of the repository within its type
-        internal:
-          type: boolean
-          description: Whether the repository is internal to the organization
-        password:
-          type: string
-          description: Name of the secret holding the password or token
-        resolutionOrder:
-          type: integer
-          format: int32
-          description: Order in which the repository is queried during version resolution
-        type:
-          type: string
-          description: Type of the repository
-          enum:
-          - MAVEN
-          - NPM
-          - GEM
-          - PYPI
-          - NUGET
-          - HEX
-          - COMPOSER
-          - CARGO
-          - GO_MODULES
-          - CPAN
-          - GITHUB
-          - HACKAGE
-          - NIXPKGS
-          - UNSUPPORTED
-        url:
-          type: string
-          description: URL of the repository
-        username:
-          type: string
-          description: Username to authenticate with
-        uuid:
-          type: string
-          format: uuid
-          description: UUID of the repository
-      required:
-      - authenticationRequired
-      - enabled
-      - identifier
-      - resolutionOrder
-      - type
-      - url
-      - uuid
-    UpdateRepositoryRequest:
-      type: object
-      properties:
-        authenticationRequired:
-          type: boolean
-          description: Whether the repository requires authentication
-        enabled:
-          type: boolean
-          description: Whether the repository is enabled
-        internal:
-          type: boolean
-          description: Whether the repository is internal to the organization
-        password:
-          type: string
-          description: Name of the secret holding the password or token
-        url:
-          type: string
-          description: URL of the repository
-          minLength: 1
-        username:
-          type: string
-          description: Username to authenticate with
-        uuid:
-          type: string
-          format: uuid
-          description: UUID of the repository to update
-      required:
-      - authenticationRequired
-      - enabled
-      - url
-      - uuid
   securitySchemes:
     ApiKeyAuth:
       description: Authentication via API key.
@@ -463,6 +462,3 @@ components:
         `POST /api/v1/user/oidc/login`.'
       scheme: bearer
       type: http
-x-refined-from:
-- dependency-track-openapi-v1.yaml
-- dependency-track-openapi.yml

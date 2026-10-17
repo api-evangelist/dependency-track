@@ -1,14 +1,21 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Metrics API
-  version: 1.0.0
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
+  description: 'REST API of OWASP Dependency-Track
+
+
+    > **Note:** This API version is in maintenance mode and will be
+
+    > superseded by v2, available under `/api/v2`, which follows a
+
+    > spec-first approach.'
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged metrics across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+  title: OWASP Dependency-Track Metrics API
+  version: 1.0.0
 servers:
 - url: /api
 tags:
@@ -49,8 +56,6 @@ paths:
       summary: Returns current metrics for a specific component
       tags:
       - Metrics
-    servers:
-    - url: /api
   /v1/metrics/component/{uuid}/days/{days}:
     get:
       description: Requires permission VIEW_PORTFOLIO
@@ -95,8 +100,6 @@ paths:
       summary: Returns X days of historical metrics for a specific component
       tags:
       - Metrics
-    servers:
-    - url: /api
   /v1/metrics/component/{uuid}/refresh:
     get:
       description: Requires permission PORTFOLIO_MANAGEMENT or PORTFOLIO_MANAGEMENT_UPDATE
@@ -128,8 +131,6 @@ paths:
       summary: Requests a refresh of a specific components metrics
       tags:
       - Metrics
-    servers:
-    - url: /api
   /v1/metrics/component/{uuid}/since/{date}:
     get:
       description: 'Date format must be YYYYMMDD. The date is interpreted as UTC midnight.
@@ -176,8 +177,6 @@ paths:
       summary: Returns historical metrics for a specific component from a specific date
       tags:
       - Metrics
-    servers:
-    - url: /api
   /v1/metrics/portfolio/current:
     get:
       description: Requires permission VIEW_PORTFOLIO
@@ -197,8 +196,6 @@ paths:
       summary: Returns current metrics for the entire portfolio
       tags:
       - Metrics
-    servers:
-    - url: /api
   /v1/metrics/portfolio/refresh:
     get:
       description: Requires permission PORTFOLIO_MANAGEMENT or PORTFOLIO_MANAGEMENT_UPDATE
@@ -214,8 +211,6 @@ paths:
       summary: Requests a refresh of the portfolio metrics
       tags:
       - Metrics
-    servers:
-    - url: /api
   /v1/metrics/portfolio/since/{date}:
     get:
       description: 'Date format must be YYYYMMDD. The number of days returned is computed against the current UTC date.
@@ -247,8 +242,6 @@ paths:
       summary: Returns historical metrics for the entire portfolio from a specific date
       tags:
       - Metrics
-    servers:
-    - url: /api
   /v1/metrics/portfolio/{days}/days:
     get:
       description: Requires permission VIEW_PORTFOLIO
@@ -279,8 +272,6 @@ paths:
       summary: Returns X days of historical metrics for the entire portfolio
       tags:
       - Metrics
-    servers:
-    - url: /api
   /v1/metrics/project/{uuid}/current:
     get:
       description: Requires permission VIEW_PORTFOLIO
@@ -316,8 +307,6 @@ paths:
       summary: Returns current metrics for a specific project
       tags:
       - Metrics
-    servers:
-    - url: /api
   /v1/metrics/project/{uuid}/days/{days}:
     get:
       description: Requires permission VIEW_PORTFOLIO
@@ -362,8 +351,6 @@ paths:
       summary: Returns X days of historical metrics for a specific project
       tags:
       - Metrics
-    servers:
-    - url: /api
   /v1/metrics/project/{uuid}/refresh:
     get:
       description: Requires permission PORTFOLIO_MANAGEMENT or PORTFOLIO_MANAGEMENT_UPDATE
@@ -395,8 +382,6 @@ paths:
       summary: Requests a refresh of a specific projects metrics
       tags:
       - Metrics
-    servers:
-    - url: /api
   /v1/metrics/project/{uuid}/since/{date}:
     get:
       description: 'Date format must be YYYYMMDD. The date is interpreted as UTC midnight.
@@ -443,8 +428,6 @@ paths:
       summary: Returns historical metrics for a specific project from a specific date
       tags:
       - Metrics
-    servers:
-    - url: /api
   /v1/metrics/vulnerability:
     get:
       description: Requires permission VIEW_PORTFOLIO
@@ -466,28 +449,103 @@ paths:
       summary: Returns the sum of all vulnerabilities in the database by year and month
       tags:
       - Metrics
-    servers:
-    - url: /api
 components:
   schemas:
-    VulnerabilityMetrics:
+    DependencyMetrics:
       type: object
       properties:
-        count:
+        critical:
           type: integer
           format: int32
-        measuredAt:
+        findingsAudited:
+          type: integer
+          format: int32
+        findingsTotal:
+          type: integer
+          format: int32
+        findingsUnaudited:
+          type: integer
+          format: int32
+        firstOccurrence:
           type: integer
           format: int64
           description: UNIX epoch timestamp in milliseconds
-        month:
+        high:
           type: integer
           format: int32
-        year:
+        inheritedRiskScore:
+          type: number
+          format: double
+        kev:
+          type: integer
+          format: int32
+        lastOccurrence:
+          type: integer
+          format: int64
+          description: UNIX epoch timestamp in milliseconds
+        low:
+          type: integer
+          format: int32
+        medium:
+          type: integer
+          format: int32
+        policyViolationsAudited:
+          type: integer
+          format: int32
+        policyViolationsFail:
+          type: integer
+          format: int32
+        policyViolationsInfo:
+          type: integer
+          format: int32
+        policyViolationsLicenseAudited:
+          type: integer
+          format: int32
+        policyViolationsLicenseTotal:
+          type: integer
+          format: int32
+        policyViolationsLicenseUnaudited:
+          type: integer
+          format: int32
+        policyViolationsOperationalAudited:
+          type: integer
+          format: int32
+        policyViolationsOperationalTotal:
+          type: integer
+          format: int32
+        policyViolationsOperationalUnaudited:
+          type: integer
+          format: int32
+        policyViolationsSecurityAudited:
+          type: integer
+          format: int32
+        policyViolationsSecurityTotal:
+          type: integer
+          format: int32
+        policyViolationsSecurityUnaudited:
+          type: integer
+          format: int32
+        policyViolationsTotal:
+          type: integer
+          format: int32
+        policyViolationsUnaudited:
+          type: integer
+          format: int32
+        policyViolationsWarn:
+          type: integer
+          format: int32
+        suppressed:
+          type: integer
+          format: int32
+        unassigned:
+          type: integer
+          format: int32
+        vulnerabilities:
           type: integer
           format: int32
       required:
-      - measuredAt
+      - firstOccurrence
+      - lastOccurrence
     ProjectMetrics:
       type: object
       properties:
@@ -589,6 +647,37 @@ components:
       required:
       - firstOccurrence
       - lastOccurrence
+    ProblemDetails:
+      type: object
+      description: An RFC 9457 problem object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+          example: Example detail
+        instance:
+          type: string
+          format: uri
+          description: Reference URI that identifies the specific occurrence of the problem
+          example: https://api.example.org/foo/bar/example-instance
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code generated by the origin server for this occurrence of the problem
+          example: 400
+        title:
+          type: string
+          description: Short, human-readable summary of the problem type
+          example: Example title
+        type:
+          type: string
+          format: uri
+          description: A URI reference that identifies the problem type
+          example: https://api.example.org/foo/bar/example-problem
+      required:
+      - detail
+      - status
+      - title
     PortfolioMetrics:
       type: object
       properties:
@@ -696,132 +785,24 @@ components:
       required:
       - firstOccurrence
       - lastOccurrence
-    ProblemDetails:
-      type: object
-      description: An RFC 9457 problem object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation specific to this occurrence of the problem
-          example: Example detail
-        instance:
-          type: string
-          format: uri
-          description: Reference URI that identifies the specific occurrence of the problem
-          example: https://api.example.org/foo/bar/example-instance
-        status:
-          type: integer
-          format: int32
-          description: HTTP status code generated by the origin server for this occurrence of the problem
-          example: 400
-        title:
-          type: string
-          description: Short, human-readable summary of the problem type
-          example: Example title
-        type:
-          type: string
-          format: uri
-          description: A URI reference that identifies the problem type
-          example: https://api.example.org/foo/bar/example-problem
-      required:
-      - detail
-      - status
-      - title
-    DependencyMetrics:
+    VulnerabilityMetrics:
       type: object
       properties:
-        critical:
+        count:
           type: integer
           format: int32
-        findingsAudited:
-          type: integer
-          format: int32
-        findingsTotal:
-          type: integer
-          format: int32
-        findingsUnaudited:
-          type: integer
-          format: int32
-        firstOccurrence:
+        measuredAt:
           type: integer
           format: int64
           description: UNIX epoch timestamp in milliseconds
-        high:
+        month:
           type: integer
           format: int32
-        inheritedRiskScore:
-          type: number
-          format: double
-        kev:
-          type: integer
-          format: int32
-        lastOccurrence:
-          type: integer
-          format: int64
-          description: UNIX epoch timestamp in milliseconds
-        low:
-          type: integer
-          format: int32
-        medium:
-          type: integer
-          format: int32
-        policyViolationsAudited:
-          type: integer
-          format: int32
-        policyViolationsFail:
-          type: integer
-          format: int32
-        policyViolationsInfo:
-          type: integer
-          format: int32
-        policyViolationsLicenseAudited:
-          type: integer
-          format: int32
-        policyViolationsLicenseTotal:
-          type: integer
-          format: int32
-        policyViolationsLicenseUnaudited:
-          type: integer
-          format: int32
-        policyViolationsOperationalAudited:
-          type: integer
-          format: int32
-        policyViolationsOperationalTotal:
-          type: integer
-          format: int32
-        policyViolationsOperationalUnaudited:
-          type: integer
-          format: int32
-        policyViolationsSecurityAudited:
-          type: integer
-          format: int32
-        policyViolationsSecurityTotal:
-          type: integer
-          format: int32
-        policyViolationsSecurityUnaudited:
-          type: integer
-          format: int32
-        policyViolationsTotal:
-          type: integer
-          format: int32
-        policyViolationsUnaudited:
-          type: integer
-          format: int32
-        policyViolationsWarn:
-          type: integer
-          format: int32
-        suppressed:
-          type: integer
-          format: int32
-        unassigned:
-          type: integer
-          format: int32
-        vulnerabilities:
+        year:
           type: integer
           format: int32
       required:
-      - firstOccurrence
-      - lastOccurrence
+      - measuredAt
   securitySchemes:
     ApiKeyAuth:
       description: Authentication via API key.
@@ -837,6 +818,3 @@ components:
         `POST /api/v1/user/oidc/login`.'
       scheme: bearer
       type: http
-x-refined-from:
-- dependency-track-openapi-v1.yaml
-- dependency-track-openapi.yml

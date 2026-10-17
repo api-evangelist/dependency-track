@@ -1,14 +1,21 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Vex API
-  version: 1.0.0
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
+  description: 'REST API of OWASP Dependency-Track
+
+
+    > **Note:** This API version is in maintenance mode and will be
+
+    > superseded by v2, available under `/api/v2`, which follows a
+
+    > spec-first approach.'
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged vex across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+  title: OWASP Dependency-Track Vex API
+  version: 1.0.0
 servers:
 - url: /api
 tags:
@@ -135,8 +142,6 @@ paths:
       summary: Upload a supported VEX document
       tags:
       - vex
-    servers:
-    - url: /api
   /v1/vex/cyclonedx/project/{uuid}:
     get:
       description: Requires permission VULNERABILITY_ANALYSIS or VULNERABILITY_ANALYSIS_READ
@@ -185,24 +190,8 @@ paths:
       summary: Returns a VEX for a project in CycloneDX format
       tags:
       - vex
-    servers:
-    - url: /api
 components:
   schemas:
-    BomUploadResponse:
-      type: object
-      properties:
-        projectUuid:
-          type: string
-          format: uuid
-          description: UUID of the project the BOM was uploaded for
-        token:
-          type: string
-          format: uuid
-          description: Token used to check task progress
-      required:
-      - projectUuid
-      - token
     ProblemDetails:
       type: object
       description: An RFC 9457 problem object
@@ -234,6 +223,36 @@ components:
       - detail
       - status
       - title
+    BomUploadResponse:
+      type: object
+      properties:
+        projectUuid:
+          type: string
+          format: uuid
+          description: UUID of the project the BOM was uploaded for
+        token:
+          type: string
+          format: uuid
+          description: Token used to check task progress
+      required:
+      - projectUuid
+      - token
+    InvalidBomProblemDetails:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ProblemDetails'
+      - type: object
+        properties:
+          errors:
+            type: array
+            description: Errors identified during schema validation
+            items:
+              type: string
+              description: Errors identified during schema validation
+      required:
+      - detail
+      - status
+      - title
     VexSubmitRequest:
       type: object
       properties:
@@ -256,22 +275,6 @@ components:
       - projectName
       - projectVersion
       - vex
-    InvalidBomProblemDetails:
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/ProblemDetails'
-      - type: object
-        properties:
-          errors:
-            type: array
-            description: Errors identified during schema validation
-            items:
-              type: string
-              description: Errors identified during schema validation
-      required:
-      - detail
-      - status
-      - title
   securitySchemes:
     ApiKeyAuth:
       description: Authentication via API key.
@@ -287,6 +290,3 @@ components:
         `POST /api/v1/user/oidc/login`.'
       scheme: bearer
       type: http
-x-refined-from:
-- dependency-track-openapi-v1.yaml
-- dependency-track-openapi.yml

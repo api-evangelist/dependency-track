@@ -1,14 +1,21 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track User API
-  version: 1.0.0
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
+  description: 'REST API of OWASP Dependency-Track
+
+
+    > **Note:** This API version is in maintenance mode and will be
+
+    > superseded by v2, available under `/api/v2`, which follows a
+
+    > spec-first approach.'
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged user across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+  title: OWASP Dependency-Track User API
+  version: 1.0.0
 servers:
 - url: /api
 tags:
@@ -45,8 +52,6 @@ paths:
       summary: Asserts login credentials and upon successful authentication, verifies…
       tags:
       - User
-    servers:
-    - url: /api
   /v1/user/ldap:
     delete:
       description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_DELETE
@@ -122,8 +127,6 @@ paths:
       summary: Creates a new user that references an existing LDAP object
       tags:
       - User
-    servers:
-    - url: /api
   /v1/user/login:
     post:
       description: Upon a successful login, a bearer token will be returned in the response body.
@@ -155,8 +158,6 @@ paths:
       summary: Assert login credentials
       tags:
       - User
-    servers:
-    - url: /api
   /v1/user/logout:
     post:
       description: Invalidates the current session. No-op when authenticated via API key.
@@ -177,8 +178,6 @@ paths:
       summary: Invalidates the current session
       tags:
       - User
-    servers:
-    - url: /api
   /v1/user/managed:
     delete:
       description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_DELETE
@@ -281,8 +280,6 @@ paths:
       summary: Creates a new user
       tags:
       - User
-    servers:
-    - url: /api
   /v1/user/membership:
     put:
       description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_UPDATE
@@ -319,8 +316,6 @@ paths:
       summary: Sets specified teams to a user
       tags:
       - User
-    servers:
-    - url: /api
   /v1/user/oidc:
     delete:
       description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_DELETE
@@ -390,8 +385,6 @@ paths:
       summary: Creates a new user that references an existing OpenID Connect user
       tags:
       - User
-    servers:
-    - url: /api
   /v1/user/oidc/login:
     post:
       description: Upon a successful login, a bearer token will be returned in the response body.
@@ -428,8 +421,6 @@ paths:
       summary: Login with OpenID Connect
       tags:
       - User
-    servers:
-    - url: /api
   /v1/user/self:
     get:
       operationId: getSelf_1
@@ -472,8 +463,6 @@ paths:
       summary: Updates information about the current logged in user
       tags:
       - User
-    servers:
-    - url: /api
   /v1/user/self/permissions:
     get:
       description: Returns all permissions the authenticated user has, including those inherited from teams.
@@ -495,8 +484,6 @@ paths:
       summary: Returns the effective permissions of the authenticated user
       tags:
       - User
-    servers:
-    - url: /api
   /v1/user/{username}/membership:
     delete:
       description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_DELETE
@@ -570,10 +557,167 @@ paths:
       summary: Adds the username to the specified team
       tags:
       - User
-    servers:
-    - url: /api
 components:
   schemas:
+    DeleteUserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username of the user to delete
+          minLength: 1
+      required:
+      - username
+    Permission:
+      type: object
+      properties:
+        description:
+          type: string
+        ldapUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/LdapUser'
+        managedUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagedUser'
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[a-zA-Z_0-9]*$
+        oidcUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OidcUser'
+      required:
+      - name
+    ProblemDetails:
+      type: object
+      description: An RFC 9457 problem object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence of the problem
+          example: Example detail
+        instance:
+          type: string
+          format: uri
+          description: Reference URI that identifies the specific occurrence of the problem
+          example: https://api.example.org/foo/bar/example-instance
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code generated by the origin server for this occurrence of the problem
+          example: 400
+        title:
+          type: string
+          description: Short, human-readable summary of the problem type
+          example: Example title
+        type:
+          type: string
+          format: uri
+          description: A URI reference that identifies the problem type
+          example: https://api.example.org/foo/bar/example-problem
+      required:
+      - detail
+      - status
+      - title
+    IdentifiableObject:
+      type: object
+      properties:
+        uuid:
+          type: string
+    ServiceAccount:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        suspended:
+          type: boolean
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - username
+    LdapUser:
+      type: object
+      properties:
+        dn:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - username
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - username
+    MappedLdapGroup:
+      type: object
+      properties:
+        dn:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - dn
+      - uuid
     ManagedUser:
       type: object
       properties:
@@ -617,6 +761,16 @@ components:
       required:
       - lastPasswordChange
       - username
+    MappedOidcGroup:
+      type: object
+      properties:
+        group:
+          $ref: '#/components/schemas/OidcGroup'
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - uuid
     OidcUser:
       type: object
       properties:
@@ -645,55 +799,6 @@ components:
           pattern: '[\P{Cc}]+'
       required:
       - username
-    MappedOidcGroup:
-      type: object
-      properties:
-        group:
-          $ref: '#/components/schemas/OidcGroup'
-        uuid:
-          type: string
-          format: uuid
-      required:
-      - uuid
-    IdentifiableObject:
-      type: object
-      properties:
-        uuid:
-          type: string
-    DeleteUserRequest:
-      type: object
-      properties:
-        username:
-          type: string
-          description: Username of the user to delete
-          minLength: 1
-      required:
-      - username
-    ServiceAccount:
-      type: object
-      properties:
-        email:
-          type: string
-          maxLength: 255
-          minLength: 0
-          pattern: '[\P{Cc}]+'
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Permission'
-        suspended:
-          type: boolean
-        teams:
-          type: array
-          items:
-            $ref: '#/components/schemas/Team'
-        username:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-      required:
-      - username
     OidcGroup:
       type: object
       properties:
@@ -708,44 +813,6 @@ components:
       required:
       - name
       - uuid
-    MappedLdapGroup:
-      type: object
-      properties:
-        dn:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-        uuid:
-          type: string
-          format: uuid
-      required:
-      - dn
-      - uuid
-    Permission:
-      type: object
-      properties:
-        description:
-          type: string
-        ldapUsers:
-          type: array
-          items:
-            $ref: '#/components/schemas/LdapUser'
-        managedUsers:
-          type: array
-          items:
-            $ref: '#/components/schemas/ManagedUser'
-        name:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: ^[a-zA-Z_0-9]*$
-        oidcUsers:
-          type: array
-          items:
-            $ref: '#/components/schemas/OidcUser'
-      required:
-      - name
     Team:
       type: object
       properties:
@@ -792,34 +859,6 @@ components:
       required:
       - name
       - uuid
-    LdapUser:
-      type: object
-      properties:
-        dn:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-        email:
-          type: string
-          maxLength: 255
-          minLength: 0
-          pattern: '[\P{Cc}]+'
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Permission'
-        teams:
-          type: array
-          items:
-            $ref: '#/components/schemas/Team'
-        username:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-      required:
-      - username
     TeamsSetRequest:
       type: object
       properties:
@@ -834,29 +873,6 @@ components:
           pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}\n\r\t]*$
       required:
       - teams
-      - username
-    User:
-      type: object
-      properties:
-        email:
-          type: string
-          maxLength: 255
-          minLength: 0
-          pattern: '[\P{Cc}]+'
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Permission'
-        teams:
-          type: array
-          items:
-            $ref: '#/components/schemas/Team'
-        username:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-      required:
       - username
     ApiKey:
       type: object
@@ -887,37 +903,6 @@ components:
           type: string
           maxLength: 8
           minLength: 5
-    ProblemDetails:
-      type: object
-      description: An RFC 9457 problem object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation specific to this occurrence of the problem
-          example: Example detail
-        instance:
-          type: string
-          format: uri
-          description: Reference URI that identifies the specific occurrence of the problem
-          example: https://api.example.org/foo/bar/example-instance
-        status:
-          type: integer
-          format: int32
-          description: HTTP status code generated by the origin server for this occurrence of the problem
-          example: 400
-        title:
-          type: string
-          description: Short, human-readable summary of the problem type
-          example: Example title
-        type:
-          type: string
-          format: uri
-          description: A URI reference that identifies the problem type
-          example: https://api.example.org/foo/bar/example-problem
-      required:
-      - detail
-      - status
-      - title
   securitySchemes:
     ApiKeyAuth:
       description: Authentication via API key.
@@ -933,6 +918,3 @@ components:
         `POST /api/v1/user/oidc/login`.'
       scheme: bearer
       type: http
-x-refined-from:
-- dependency-track-openapi-v1.yaml
-- dependency-track-openapi.yml

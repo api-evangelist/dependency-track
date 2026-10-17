@@ -1,14 +1,21 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Bom API
-  version: 1.0.0
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
+  description: 'REST API of OWASP Dependency-Track
+
+
+    > **Note:** This API version is in maintenance mode and will be
+
+    > superseded by v2, available under `/api/v2`, which follows a
+
+    > spec-first approach.'
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged bom across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+  title: OWASP Dependency-Track Bom API
+  version: 1.0.0
 servers:
 - url: /api
 tags:
@@ -195,8 +202,6 @@ paths:
       summary: Upload a supported bill of material format document
       tags:
       - bom
-    servers:
-    - url: /api
   /v1/bom/cyclonedx/component/{uuid}:
     get:
       description: Requires permission VIEW_PORTFOLIO
@@ -245,8 +250,6 @@ paths:
       summary: Returns dependency metadata for a specific component in CycloneDX format
       tags:
       - bom
-    servers:
-    - url: /api
   /v1/bom/cyclonedx/project/{uuid}:
     get:
       description: 'Requires permission VIEW_PORTFOLIO
@@ -322,8 +325,6 @@ paths:
       summary: Returns dependency metadata for a project in CycloneDX format
       tags:
       - bom
-    servers:
-    - url: /api
   /v1/bom/token/{uuid}:
     get:
       deprecated: true
@@ -373,24 +374,8 @@ paths:
       summary: Determines if there are any tasks associated with the token that are being…
       tags:
       - bom
-    servers:
-    - url: /api
 components:
   schemas:
-    BomUploadResponse:
-      type: object
-      properties:
-        projectUuid:
-          type: string
-          format: uuid
-          description: UUID of the project the BOM was uploaded for
-        token:
-          type: string
-          format: uuid
-          description: Token used to check task progress
-      required:
-      - projectUuid
-      - token
     BomSubmitRequest:
       type: object
       properties:
@@ -442,16 +427,6 @@ components:
       - project
       - projectName
       - projectVersion
-    Tag:
-      type: object
-      properties:
-        name:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-      required:
-      - name
     IsTokenBeingProcessedResponse:
       type: object
       properties:
@@ -469,6 +444,30 @@ components:
           - FAILED
       required:
       - processing
+    Tag:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+      required:
+      - name
+    BomUploadResponse:
+      type: object
+      properties:
+        projectUuid:
+          type: string
+          format: uuid
+          description: UUID of the project the BOM was uploaded for
+        token:
+          type: string
+          format: uuid
+          description: Token used to check task progress
+      required:
+      - projectUuid
+      - token
     ProblemDetails:
       type: object
       description: An RFC 9457 problem object
@@ -515,6 +514,3 @@ components:
         `POST /api/v1/user/oidc/login`.'
       scheme: bearer
       type: http
-x-refined-from:
-- dependency-track-openapi-v1.yaml
-- dependency-track-openapi.yml

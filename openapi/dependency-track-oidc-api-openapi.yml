@@ -1,14 +1,21 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Oidc API
-  version: 1.0.0
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
+  description: 'REST API of OWASP Dependency-Track
+
+
+    > **Note:** This API version is in maintenance mode and will be
+
+    > superseded by v2, available under `/api/v2`, which follows a
+
+    > spec-first approach.'
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged oidc across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+  title: OWASP Dependency-Track Oidc API
+  version: 1.0.0
 servers:
 - url: /api
 tags:
@@ -30,8 +37,6 @@ paths:
       summary: Indicates if OpenID Connect is available for this application
       tags:
       - OIDC
-    servers:
-    - url: /api
   /v1/oidc/group:
     get:
       description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_READ
@@ -99,8 +104,6 @@ paths:
       summary: Creates group
       tags:
       - OIDC
-    servers:
-    - url: /api
   /v1/oidc/group/{groupUuid}/team/{teamUuid}/mapping:
     delete:
       description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_DELETE
@@ -133,8 +136,6 @@ paths:
       summary: Deletes a mapping
       tags:
       - OIDC
-    servers:
-    - url: /api
   /v1/oidc/group/{uuid}:
     delete:
       description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_DELETE
@@ -160,8 +161,6 @@ paths:
       summary: Deletes a group
       tags:
       - OIDC
-    servers:
-    - url: /api
   /v1/oidc/group/{uuid}/team:
     get:
       description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_READ
@@ -193,8 +192,6 @@ paths:
       summary: Returns a list of teams associated with the specified group
       tags:
       - OIDC
-    servers:
-    - url: /api
   /v1/oidc/mapping:
     put:
       description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_CREATE
@@ -223,8 +220,6 @@ paths:
       summary: Adds a mapping
       tags:
       - OIDC
-    servers:
-    - url: /api
   /v1/oidc/mapping/{uuid}:
     delete:
       description: Requires permission ACCESS_MANAGEMENT or ACCESS_MANAGEMENT_DELETE
@@ -250,10 +245,163 @@ paths:
       summary: Deletes a mapping
       tags:
       - OIDC
-    servers:
-    - url: /api
 components:
   schemas:
+    Permission:
+      type: object
+      properties:
+        description:
+          type: string
+        ldapUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/LdapUser'
+        managedUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagedUser'
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[a-zA-Z_0-9]*$
+        oidcUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OidcUser'
+      required:
+      - name
+    MappedOidcGroupResponse:
+      type: object
+      properties:
+        group:
+          $ref: '#/components/schemas/OidcGroupResponse'
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the mapping
+      required:
+      - group
+      - uuid
+    ServiceAccount:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        suspended:
+          type: boolean
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - username
+    LdapUser:
+      type: object
+      properties:
+        dn:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+          pattern: '[\P{Cc}]+'
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        username:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - username
+    UpdateOidcGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: New name of the group
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the group to update
+      required:
+      - name
+      - uuid
+    CreateOidcGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the group to create
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+      required:
+      - name
+    OidcGroupResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the group
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of the group
+      required:
+      - name
+      - uuid
+    MappedLdapGroup:
+      type: object
+      properties:
+        dn:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - dn
+      - uuid
+    MappedOidcGroupRequest:
+      type: object
+      properties:
+        group:
+          type: string
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+        team:
+          type: string
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      required:
+      - group
+      - team
     ManagedUser:
       type: object
       properties:
@@ -297,17 +445,6 @@ components:
       required:
       - lastPasswordChange
       - username
-    CreateOidcGroupRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the group to create
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-      required:
-      - name
     MappedOidcGroup:
       type: object
       properties:
@@ -318,44 +455,7 @@ components:
           format: uuid
       required:
       - uuid
-    MappedOidcGroupRequest:
-      type: object
-      properties:
-        group:
-          type: string
-          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
-        team:
-          type: string
-          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
-      required:
-      - group
-      - team
-    OidcGroupResponse:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the group
-        uuid:
-          type: string
-          format: uuid
-          description: UUID of the group
-      required:
-      - name
-      - uuid
-    MappedOidcGroupResponse:
-      type: object
-      properties:
-        group:
-          $ref: '#/components/schemas/OidcGroupResponse'
-        uuid:
-          type: string
-          format: uuid
-          description: UUID of the mapping
-      required:
-      - group
-      - uuid
-    ServiceAccount:
+    OidcUser:
       type: object
       properties:
         email:
@@ -367,8 +467,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Permission'
-        suspended:
-          type: boolean
+        subjectIdentifier:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: '[\P{Cc}]+'
         teams:
           type: array
           items:
@@ -394,88 +497,6 @@ components:
       required:
       - name
       - uuid
-    UpdateOidcGroupRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: New name of the group
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-        uuid:
-          type: string
-          format: uuid
-          description: UUID of the group to update
-      required:
-      - name
-      - uuid
-    MappedLdapGroup:
-      type: object
-      properties:
-        dn:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-        uuid:
-          type: string
-          format: uuid
-      required:
-      - dn
-      - uuid
-    Permission:
-      type: object
-      properties:
-        description:
-          type: string
-        ldapUsers:
-          type: array
-          items:
-            $ref: '#/components/schemas/LdapUser'
-        managedUsers:
-          type: array
-          items:
-            $ref: '#/components/schemas/ManagedUser'
-        name:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: ^[a-zA-Z_0-9]*$
-        oidcUsers:
-          type: array
-          items:
-            $ref: '#/components/schemas/OidcUser'
-      required:
-      - name
-    LdapUser:
-      type: object
-      properties:
-        dn:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-        email:
-          type: string
-          maxLength: 255
-          minLength: 0
-          pattern: '[\P{Cc}]+'
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Permission'
-        teams:
-          type: array
-          items:
-            $ref: '#/components/schemas/Team'
-        username:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-      required:
-      - username
     Team:
       type: object
       properties:
@@ -522,34 +543,6 @@ components:
       required:
       - name
       - uuid
-    OidcUser:
-      type: object
-      properties:
-        email:
-          type: string
-          maxLength: 255
-          minLength: 0
-          pattern: '[\P{Cc}]+'
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Permission'
-        subjectIdentifier:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-        teams:
-          type: array
-          items:
-            $ref: '#/components/schemas/Team'
-        username:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: '[\P{Cc}]+'
-      required:
-      - username
     ApiKey:
       type: object
       properties:
@@ -594,6 +587,3 @@ components:
         `POST /api/v1/user/oidc/login`.'
       scheme: bearer
       type: http
-x-refined-from:
-- dependency-track-openapi-v1.yaml
-- dependency-track-openapi.yml

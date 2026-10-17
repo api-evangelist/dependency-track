@@ -1,7 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track Task Queues API
-  version: 2.0.0
+  title: OWASP Dependency-Track Task Queues API
+  description: '# REST API of OWASP Dependency-Track
+
+
+    ## Pagination
+
+
+    This API implements token-based pagination.'
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
@@ -9,7 +15,7 @@ info:
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged Task Queues across 2 of this provider''s published API definitions: dependency-track-openapi-v2.yaml, dependency-track-v2-openapi.yml. Each path carries the servers of the definition it was published in.'
+  version: 2.0.0
 servers:
 - url: /api/v2
 security:
@@ -65,8 +71,6 @@ paths:
           $ref: '#/components/responses/generic-forbidden-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
   /internal/task-queues/{type}/{name}:
     patch:
       tags:
@@ -107,10 +111,47 @@ paths:
           $ref: '#/components/responses/generic-not-found-error'
         default:
           $ref: '#/components/responses/generic-error'
-    servers:
-    - url: /api/v2
 components:
   responses:
+    generic-error:
+      description: Unexpected error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+    generic-forbidden-error:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 403
+            title: Forbidden
+            detail: Not permitted to access the requested resource.
+    generic-unauthorized-error:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 401
+            title: Unauthorized
+            detail: Not authorized to access the requested resource.
+    generic-not-found-error:
+      description: Not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/problem-details'
+          example:
+            type: about:blank
+            status: 404
+            title: Not Found
+            detail: The requested resource could not be found.
     invalid-request-error:
       description: Bad request
       content:
@@ -126,110 +167,7 @@ components:
             - path: foo.bar
               value: baz
               message: Must be a number
-    generic-error:
-      description: Unexpected error
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-    generic-not-found-error:
-      description: Not found
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-          example:
-            type: about:blank
-            status: 404
-            title: Not Found
-            detail: The requested resource could not be found.
-    generic-unauthorized-error:
-      description: Unauthorized
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-          example:
-            type: about:blank
-            status: 401
-            title: Unauthorized
-            detail: Not authorized to access the requested resource.
-    generic-forbidden-error:
-      description: Forbidden
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/problem-details'
-          example:
-            type: about:blank
-            status: 403
-            title: Forbidden
-            detail: Not permitted to access the requested resource.
   schemas:
-    paginated-response:
-      required:
-      - total
-      type: object
-      properties:
-        next_page_token:
-          type: string
-          description: Token to retrieve the next page. Absent when no more items exist.
-        total:
-          $ref: '#/components/schemas/total-count'
-      x-parent: true
-    update-task-queue-request:
-      type: object
-      properties:
-        status:
-          $ref: '#/components/schemas/task-queue-status'
-        capacity:
-          minimum: 1
-          type: integer
-          format: int32
-    task-queue-type:
-      type: string
-      enum:
-      - ACTIVITY
-      - WORKFLOW
-    task-queue:
-      required:
-      - capacity
-      - created_at
-      - depth
-      - name
-      - status
-      type: object
-      properties:
-        name:
-          type: string
-        status:
-          $ref: '#/components/schemas/task-queue-status'
-        capacity:
-          minimum: 1
-          type: integer
-          format: int32
-        depth:
-          minimum: 0
-          type: integer
-          format: int32
-        created_at:
-          $ref: '#/components/schemas/timestamp'
-        updated_at:
-          $ref: '#/components/schemas/timestamp'
-    constraint-violation-error:
-      required:
-      - message
-      type: object
-      properties:
-        path:
-          type: string
-          description: Path to the invalid field in the request
-        value:
-          type: string
-          description: The invalid value
-        message:
-          type: string
-          description: Message explaining the error
     problem-details:
       required:
       - detail
@@ -265,6 +203,31 @@ components:
       externalDocs:
         url: https://www.rfc-editor.org/rfc/rfc9457.html
       x-parent: true
+    update-task-queue-request:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/task-queue-status'
+        capacity:
+          minimum: 1
+          type: integer
+          format: int32
+    task-queue-type:
+      type: string
+      enum:
+      - ACTIVITY
+      - WORKFLOW
+    invalid-request-problem-details:
+      required:
+      - errors
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/constraint-violation-error'
+      allOf:
+      - $ref: '#/components/schemas/problem-details'
     total-count:
       required:
       - count
@@ -278,6 +241,66 @@ components:
           format: int64
         type:
           $ref: '#/components/schemas/total-count-type'
+    total-count-type:
+      type: string
+      enum:
+      - AT_LEAST
+      - EXACT
+    task-queue-status:
+      type: string
+      enum:
+      - ACTIVE
+      - PAUSED
+    constraint-violation-error:
+      required:
+      - message
+      type: object
+      properties:
+        path:
+          type: string
+          description: Path to the invalid field in the request
+        value:
+          type: string
+          description: The invalid value
+        message:
+          type: string
+          description: Message explaining the error
+    task-queue:
+      required:
+      - capacity
+      - created_at
+      - depth
+      - name
+      - status
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/task-queue-status'
+        capacity:
+          minimum: 1
+          type: integer
+          format: int32
+        depth:
+          minimum: 0
+          type: integer
+          format: int32
+        created_at:
+          $ref: '#/components/schemas/timestamp'
+        updated_at:
+          $ref: '#/components/schemas/timestamp'
+    paginated-response:
+      required:
+      - total
+      type: object
+      properties:
+        next_page_token:
+          type: string
+          description: Token to retrieve the next page. Absent when no more items exist.
+        total:
+          $ref: '#/components/schemas/total-count'
+      x-parent: true
     list-task-queues-response:
       required:
       - items
@@ -294,27 +317,6 @@ components:
       description: Epoch timestamp in milliseconds since January 1, 1970 UTC.
       format: int64
       example: 1752209050377
-    task-queue-status:
-      type: string
-      enum:
-      - ACTIVE
-      - PAUSED
-    invalid-request-problem-details:
-      required:
-      - errors
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/constraint-violation-error'
-      allOf:
-      - $ref: '#/components/schemas/problem-details'
-    total-count-type:
-      type: string
-      enum:
-      - AT_LEAST
-      - EXACT
   securitySchemes:
     apiKeyAuth:
       type: apiKey
@@ -330,6 +332,3 @@ components:
         `POST /api/v1/user/oidc/login`, or `POST /api/v2/oauth/token`.'
       scheme: bearer
       bearerFormat: Opaque
-x-refined-from:
-- dependency-track-openapi-v2.yaml
-- dependency-track-v2-openapi.yml

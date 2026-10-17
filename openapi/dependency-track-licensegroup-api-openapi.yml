@@ -1,14 +1,21 @@
 openapi: 3.2.0
 info:
-  title: Dependency Track License Group API
-  version: 1.0.0
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
+  description: 'REST API of OWASP Dependency-Track
+
+
+    > **Note:** This API version is in maintenance mode and will be
+
+    > superseded by v2, available under `/api/v2`, which follows a
+
+    > spec-first approach.'
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  description: 'Operations tagged licenseGroup across 2 of this provider''s published API definitions: dependency-track-openapi-v1.yaml, dependency-track-openapi.yml. Each path carries the servers of the definition it was published in.'
+  title: OWASP Dependency-Track License Group API
+  version: 1.0.0
 servers:
 - url: /api
 tags:
@@ -126,8 +133,6 @@ paths:
       summary: Creates a new license group
       tags:
       - licenseGroup
-    servers:
-    - url: /api
   /v1/licenseGroup/{uuid}:
     delete:
       description: Requires permission POLICY_MANAGEMENT or POLICY_MANAGEMENT_DELETE
@@ -181,8 +186,6 @@ paths:
       summary: Returns a specific license group
       tags:
       - licenseGroup
-    servers:
-    - url: /api
   /v1/licenseGroup/{uuid}/license/{licenseUuid}:
     delete:
       description: Requires permission POLICY_MANAGEMENT or POLICY_MANAGEMENT_UPDATE
@@ -258,42 +261,8 @@ paths:
       summary: Adds the license to the specified license group
       tags:
       - licenseGroup
-    servers:
-    - url: /api
 components:
   schemas:
-    LicenseGroup:
-      type: object
-      properties:
-        licenses:
-          type: array
-          items:
-            $ref: '#/components/schemas/License'
-        name:
-          type: string
-          maxLength: 255
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-        riskWeight:
-          type: integer
-          format: int32
-        uuid:
-          type: string
-          format: uuid
-      required:
-      - name
-      - uuid
-    CreateLicenseGroupRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the license group
-          maxLength: 255
-          minLength: 1
-          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
-      required:
-      - name
     LicenseGroupResponse:
       type: object
       properties:
@@ -318,6 +287,17 @@ components:
       - name
       - riskWeight
       - uuid
+    CreateLicenseGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the license group
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+      required:
+      - name
     License:
       type: object
       properties:
@@ -378,6 +358,27 @@ components:
       required:
       - name
       - uuid
+    LicenseGroup:
+      type: object
+      properties:
+        licenses:
+          type: array
+          items:
+            $ref: '#/components/schemas/License'
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          pattern: ^[\p{IsWhite_Space}\p{L}\p{M}\p{S}\p{N}\p{P}]*$
+        riskWeight:
+          type: integer
+          format: int32
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - name
+      - uuid
   securitySchemes:
     ApiKeyAuth:
       description: Authentication via API key.
@@ -393,6 +394,3 @@ components:
         `POST /api/v1/user/oidc/login`.'
       scheme: bearer
       type: http
-x-refined-from:
-- dependency-track-openapi-v1.yaml
-- dependency-track-openapi.yml
