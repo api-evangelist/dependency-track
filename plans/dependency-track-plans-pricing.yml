@@ -19,3 +19,16 @@ plans:
   price_text: Dependency-Track is free and open source.
   features: []
   limits: []
+x-canonical:
+  generated: '2026-10-18'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  units: []
+  plans:
+  - name: Dependency-Track (open source)
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
