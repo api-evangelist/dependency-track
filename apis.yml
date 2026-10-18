@@ -127,6 +127,8 @@ apis:
   humanURL: >-
     https://github.com/DependencyTrack/docs/blob/main/docs/reference/notifications/notification.proto
   tags:
+  - Notification
+  tags_raw:
   - Notifications
   properties:
   - type: Protobuf
@@ -141,6 +143,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - ACL
+  tags_raw:
   - acl
   properties:
   - type: OpenAPI
@@ -177,6 +181,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Analysis
+  tags_raw:
   - analysis
   properties:
   - type: OpenAPI
@@ -213,6 +219,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Badge
+  tags_raw:
   - badge
   properties:
   - type: OpenAPI
@@ -249,6 +257,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - BOM
+  tags_raw:
   - bom
   properties:
   - type: OpenAPI
@@ -285,6 +295,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Calculator
+  tags_raw:
   - calculator
   properties:
   - type: OpenAPI
@@ -321,6 +333,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Components
+  tags_raw:
   - component
   properties:
   - type: OpenAPI
@@ -356,7 +370,8 @@ apis:
   description: The componentProperty API from Dependency-Track — 2 operation(s) for componentproperty.
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
-  tags:
+  tags: []
+  tags_raw:
   - componentProperty
   properties:
   - type: OpenAPI
@@ -428,7 +443,8 @@ apis:
   description: The configProperty API from Dependency-Track — 4 operation(s) for configproperty.
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
-  tags:
+  tags: []
+  tags_raw:
   - configProperty
   properties:
   - type: OpenAPI
@@ -465,6 +481,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - CWE
+  tags_raw:
   - cwe
   properties:
   - type: OpenAPI
@@ -501,6 +519,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Dependency-Graph
+  tags_raw:
   - dependencyGraph
   properties:
   - type: OpenAPI
@@ -537,6 +557,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Event
+  tags_raw:
   - event
   properties:
   - type: OpenAPI
@@ -609,6 +631,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Finding
+  tags_raw:
   - finding
   properties:
   - type: OpenAPI
@@ -681,6 +705,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - LDAP
+  tags_raw:
   - ldap
   properties:
   - type: OpenAPI
@@ -717,6 +743,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - License
+  tags_raw:
   - license
   properties:
   - type: OpenAPI
@@ -752,7 +780,8 @@ apis:
   description: The licenseGroup API from Dependency-Track — 3 operation(s) for licensegroup.
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
-  tags:
+  tags: []
+  tags_raw:
   - licenseGroup
   properties:
   - type: OpenAPI
@@ -789,6 +818,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Metrics
+  tags_raw:
   - metrics
   properties:
   - type: OpenAPI
@@ -825,6 +856,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Notification
+  tags_raw:
   - notification
   properties:
   - type: OpenAPI
@@ -861,6 +894,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Authentication
+  tags_raw:
   - OAuth
   properties:
   - type: OpenAPI
@@ -897,6 +932,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - OpenID Connect
+  tags_raw:
   - oidc
   properties:
   - type: OpenAPI
@@ -933,6 +970,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Permission
+  tags_raw:
   - permission
   properties:
   - type: OpenAPI
@@ -969,6 +1008,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Policy
+  tags_raw:
   - policy
   properties:
   - type: OpenAPI
@@ -1004,7 +1045,8 @@ apis:
   description: The policyCondition API from Dependency-Track — 3 operation(s) for policycondition.
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
-  tags:
+  tags: []
+  tags_raw:
   - policyCondition
   properties:
   - type: OpenAPI
@@ -1041,6 +1083,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Project
+  tags_raw:
   - project
   properties:
   - type: OpenAPI
@@ -1076,7 +1120,8 @@ apis:
   description: The projectProperty API from Dependency-Track — 1 operation(s) for projectproperty.
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
-  tags:
+  tags: []
+  tags_raw:
   - projectProperty
   properties:
   - type: OpenAPI
@@ -1113,6 +1158,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Project
+  tags_raw:
   - Projects
   properties:
   - type: OpenAPI
@@ -1149,6 +1196,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Repository
+  tags_raw:
   - repository
   properties:
   - type: OpenAPI
@@ -1257,6 +1306,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Services
+  tags_raw:
   - service
   properties:
   - type: OpenAPI
@@ -1329,6 +1380,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Tag
+  tags_raw:
   - tag
   properties:
   - type: OpenAPI
@@ -1401,6 +1454,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Team
+  tags_raw:
   - team
   properties:
   - type: OpenAPI
@@ -1437,6 +1492,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - User
+  tags_raw:
   - user
   properties:
   - type: OpenAPI
@@ -1473,6 +1530,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Version
+  tags_raw:
   - version
   properties:
   - type: OpenAPI
@@ -1509,6 +1568,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - VEX
+  tags_raw:
   - vex
   properties:
   - type: OpenAPI
@@ -1545,6 +1606,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Violation
+  tags_raw:
   - violation
   properties:
   - type: OpenAPI
@@ -1689,6 +1752,8 @@ apis:
   humanURL: https://docs.dependencytrack.org/integrations/rest-api/
   baseURL: http://{hostname}:{port}/api
   tags:
+  - Vulnerabilities
+  tags_raw:
   - vulnerability
   properties:
   - type: OpenAPI
